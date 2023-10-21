@@ -36,5 +36,7 @@ namespace DataAccessLayer
 
         public DbSet<Personas> Personas { get; set; }
         public DbSet<Vehiculos> Vehiculos { get; set; }
+        public DbSet<Productos> Productos { get; set; }
+        public DbSet<Categorias> Categorias { get; set; }
     }
 }

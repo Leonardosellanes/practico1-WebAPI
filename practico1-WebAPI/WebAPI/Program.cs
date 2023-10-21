@@ -96,6 +96,12 @@ try
 
     #endregion
 
+    builder.Services.AddTransient<IDAL_Categorias, DAL_Categorias_EF>();
+    builder.Services.AddTransient<IBL_Categorias, BL_Categorias>();
+
+    builder.Services.AddTransient<IDAL_Productos, DAL_Productos_EF>();
+    builder.Services.AddTransient<IBL_Productos, BL_Productos>();
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
