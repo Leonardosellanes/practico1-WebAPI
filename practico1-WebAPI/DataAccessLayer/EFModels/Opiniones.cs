@@ -1,24 +1,25 @@
-﻿using Shared;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.EFModels
 {
-    public class Categorias
+    public class Opiniones
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int Id { get; set; }
 
         [MaxLength(128), MinLength(3), Required]
-        public string Nombre { get; set; } = "";
+        public string Titulo { get; set; } = "";
 
-        public int CategoriaId { get; set; }
-        public Categorias? Cat_asociada { get; set; }
+        [MaxLength(256), MinLength(3), Required]
+        public string Descripcion { get; set; } = "";
+
+        public int ProductoId { get; set; }
     }
 }
