@@ -20,7 +20,7 @@ namespace DataAccessLayer.EFModels
         [MaxLength(128), MinLength(3), Required]
         public string Ubicacion { get; set; } = "";
 
-        [MaxLength(128), MinLength(3), Required]
+        [Required]
         public int TiempoEntrega { get; set; }
 
         public int EmpresaId { get; set; }
