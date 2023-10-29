@@ -31,9 +31,9 @@ try
 
     // For Identity
     builder.Services.AddIdentity<Usuarios, IdentityRole>(options => {
-        // Número máximo de intentos de inicio de sesión fallidos
+        // NÃºmero mÃ¡ximo de intentos de inicio de sesiÃ³n fallidos
         options.Lockout.MaxFailedAccessAttempts = 5;
-        // Tiempo que la cuenta queda bloqueada después de alcanzar el número máximo de intentos de inicio de sesión fallidos
+        // Tiempo que la cuenta queda bloqueada despuÃ©s de alcanzar el nÃºmero mÃ¡ximo de intentos de inicio de sesiÃ³n fallidos
         options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
         // Requerimientos de la password
         options.Password.RequireNonAlphanumeric = true;
@@ -86,7 +86,7 @@ try
     /********************************************************************************************************/
     /** Add Dependencies                                                                                   **/
     /********************************************************************************************************/
-    #region  Inyección de dependencias
+    #region  InyecciÃ³n de dependencias
 
     // DALs
     builder.Services.AddTransient<IDAL_Personas, DAL_Personas_EF>();
@@ -101,6 +101,15 @@ try
 
     builder.Services.AddTransient<IDAL_Productos, DAL_Productos_EF>();
     builder.Services.AddTransient<IBL_Productos, BL_Productos>();
+
+    builder.Services.AddTransient<IDAL_Empresas, DAL_Empresas>();
+    builder.Services.AddTransient<IBL_Empresas, BL_Empresas>();
+
+    builder.Services.AddTransient<IDAL_Sucursales, DAL_Sucursales>();
+    builder.Services.AddTransient<IBL_Sucursales, BL_Sucursales>();
+
+    builder.Services.AddTransient<IDAL_Facturas, DAL_Facturas>();
+    builder.Services.AddTransient<IBL_Facturas, BL_Facturas>();
 
     builder.Services.AddTransient<IDAL_Opiniones, DAL_Opiniones_EF>();
     builder.Services.AddTransient<IBL_Opiniones, BL_Opiniones>();
