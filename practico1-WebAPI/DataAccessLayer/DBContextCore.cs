@@ -39,7 +39,7 @@ namespace DataAccessLayer
         public DbSet<Productos> Productos { get; set; }
         public DbSet<Categorias> Categorias { get; set; }
         public DbSet<Empresas> Empresas { get; set; }
-
+        public DbSet<Sucursales> Sucursales { get; set; }
 
     }
 }

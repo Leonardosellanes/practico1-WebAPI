@@ -105,6 +105,9 @@ try
     builder.Services.AddTransient<IDAL_Empresas, DAL_Empresas>();
     builder.Services.AddTransient<IBL_Empresas, BL_Empresas>();
 
+    builder.Services.AddTransient<IDAL_Sucursales, DAL_Sucursales>();
+    builder.Services.AddTransient<IBL_Sucursales, BL_Sucursales>();
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.

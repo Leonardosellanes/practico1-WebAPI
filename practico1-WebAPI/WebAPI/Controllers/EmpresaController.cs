@@ -38,7 +38,6 @@ namespace WebAPI.Controllers
         // POST api/<EmpresaController>
         [ProducesResponseType(typeof(Empresa), 200)]
         [HttpPost]
-        //[Authorize(Roles = "ADMIN, OTRO")]
         public IActionResult Post([FromBody] Empresa e)
         {
             _bl.Insert(e);
