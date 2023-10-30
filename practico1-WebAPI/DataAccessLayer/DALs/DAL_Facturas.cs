@@ -40,7 +40,8 @@ namespace DataAccessLayer.DALs
                                  Empresa = new Empresa
                                  {
                                      Id = f.Empresa.Id,
-                                     Nombre = f.Empresa.Nombre
+                                     Nombre = f.Empresa.Nombre,
+                                     RUT = f.Empresa.RUT
                                  }
                              })
                              .ToList();
@@ -55,12 +56,13 @@ namespace DataAccessLayer.DALs
                 TotalComisiones = factura.TotalComisiones,
                 FechaInicio = factura.FechaInicio,
                 FechaFin = factura.FechaFin,
-                EmpresaId = factura.EmpresaId,
-                Empresa = new Empresa
-                {
-                    Id = factura.Empresa.Id,
-                    Nombre = factura.Empresa.Nombre
-                }
+                EmpresaId = factura.EmpresaId
+                //Empresa = new Empresa
+                //{
+                //    Id = factura.Empresa.Id,
+                //    Nombre = factura.Empresa.Nombre,
+                //    RUT = factura.Empresa.RUT
+                //}
             };
         }
 

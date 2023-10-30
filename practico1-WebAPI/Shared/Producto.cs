@@ -16,6 +16,7 @@ namespace Shared
         public int Precio { get; set; }
         public string Tipo_iva { get; set; } = "";
         public string Pdf { get; set; } = "";
+        public int EmpresaId { get; set; }
         public int CategoriaId {  get; set; }
         public Categoria? Categoria { get; set; }
     }

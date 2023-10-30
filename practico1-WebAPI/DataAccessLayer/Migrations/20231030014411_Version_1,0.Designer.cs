@@ -4,6 +4,7 @@ using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(DBContextCore))]
-    partial class DBContextCoreModelSnapshot : ModelSnapshot
+    [Migration("20231030014411_Version_1,0")]
+    partial class Version_10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,10 +36,7 @@ namespace DataAccessLayer.Migrations
                     b.Property<int?>("Cat_asociadaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CategoriaId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("EmpresasId")
+                    b.Property<int>("CategoriaId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
@@ -44,14 +44,9 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<int>("empresaId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Cat_asociadaId");
-
-                    b.HasIndex("EmpresasId");
 
                     b.ToTable("Categorias");
                 });
@@ -118,9 +113,6 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("Estrellas")
-                        .HasColumnType("int");
 
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
@@ -190,12 +182,6 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<int>("EmpresaId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("EmpresasId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Foto")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -223,8 +209,6 @@ namespace DataAccessLayer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoriaId");
-
-                    b.HasIndex("EmpresasId");
 
                     b.ToTable("Productos");
                 });
@@ -492,10 +476,6 @@ namespace DataAccessLayer.Migrations
                         .WithMany()
                         .HasForeignKey("Cat_asociadaId");
 
-                    b.HasOne("DataAccessLayer.EFModels.Empresas", null)
-                        .WithMany("Categorias")
-                        .HasForeignKey("EmpresasId");
-
                     b.Navigation("Cat_asociada");
                 });
 
@@ -517,10 +497,6 @@ namespace DataAccessLayer.Migrations
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("DataAccessLayer.EFModels.Empresas", null)
-                        .WithMany("Productos")
-                        .HasForeignKey("EmpresasId");
 
                     b.Navigation("Categoria");
                 });
@@ -596,13 +572,6 @@ namespace DataAccessLayer.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DataAccessLayer.EFModels.Empresas", b =>
-                {
-                    b.Navigation("Categorias");
-
-                    b.Navigation("Productos");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Personas", b =>

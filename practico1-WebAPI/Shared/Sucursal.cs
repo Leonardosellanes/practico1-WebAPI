@@ -13,6 +13,6 @@ namespace Shared
         public string Ubicacion { get; set; } = string.Empty;
         public int TiempoEntrega { get; set; }
         public int EmpresaId { get; set; }
-        public Empresa Empresa { get; set; } 
+        public Empresa? Empresa { get; set; } 
     }
 }

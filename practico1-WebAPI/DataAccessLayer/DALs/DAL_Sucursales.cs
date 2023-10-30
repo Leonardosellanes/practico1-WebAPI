@@ -31,7 +31,8 @@ namespace DataAccessLayer.DALs
                     Empresa = new Empresa 
                     { 
                         Id = suc.Empresa.Id, 
-                        Nombre = suc.Empresa.Nombre
+                        Nombre = suc.Empresa.Nombre,
+                        RUT = suc.Empresa.RUT
                     }
                 };
         }
@@ -49,7 +50,8 @@ namespace DataAccessLayer.DALs
                                  Empresa = new Empresa
                                  {
                                      Id = suc.Empresa.Id,
-                                     Nombre = suc.Empresa.Nombre
+                                     Nombre = suc.Empresa.Nombre,
+                                     RUT = suc.Empresa.RUT
                                  }
                              })
                              .ToList();

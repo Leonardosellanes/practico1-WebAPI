@@ -18,7 +18,9 @@ namespace DataAccessLayer.EFModels
         [MaxLength(128), MinLength(3), Required]
         public string Nombre { get; set; } = "";
 
-        public int CategoriaId { get; set; }
+        public int? CategoriaId { get; set; }
         public Categorias? Cat_asociada { get; set; }
+
+        public int empresaId { get; set; }
     }
 }

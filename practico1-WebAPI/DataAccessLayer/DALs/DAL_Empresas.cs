@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.EFModels;
 using DataAccessLayer.IDALs;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -20,16 +21,65 @@ namespace DataAccessLayer.DALs
 
         public Empresa GetById(int id)
         {
-            Empresas emp = _dbContext.Empresas.FirstOrDefault(e => e.Id == id);
-            return new Empresa { Id = emp.Id, Nombre = emp.Nombre, RUT = emp.RUT };
+            Empresas emp = _dbContext.Empresas
+                .Include(e => e.Categorias)
+                .Include(p => p.Productos)
+                .FirstOrDefault(e => e.Id == id);
+            return new Empresa { 
+                Id = emp.Id, 
+                Nombre = emp.Nombre, 
+                RUT = emp.RUT,
+                Categorias = emp.Categorias.Select(c => new Categoria
+                {
+                    Id = c.Id,
+                    Nombre = c.Nombre, 
+                }).ToList(),
+                Productos = emp.Productos.Select(c => new Producto
+                {
+                    Id = c.Id,
+                    Titulo = c.Titulo,
+                    Descripcion = c.Descripcion,
+                    Foto = c.Foto,
+                    Precio = c.Precio,
+                    Tipo_iva = c.Tipo_iva,
+                    Pdf = c.Pdf,
+                    EmpresaId = c.EmpresaId,
+                    CategoriaId = c.CategoriaId
+                }).ToList()
+            };
         }
 
         public List<Empresa> GetAll()
         {
             return _dbContext.Empresas
-                             .Select(e => new Empresa { Id = e.Id, Nombre = e.Nombre, RUT = e.RUT })
+                             .Include(e => e.Categorias)
+                             .Include(p => p.Productos)
+                             .Select(e => new Empresa
+                             {
+                                 Id = e.Id,
+                                 Nombre = e.Nombre,
+                                 RUT = e.RUT,
+                                 Categorias = e.Categorias.Select(c => new Categoria
+                                 {
+                                     Id = c.Id,
+                                     Nombre = c.Nombre
+                                 }).ToList(),
+                                 Productos = e.Productos.Select(c => new Producto
+                                 {
+                                     Id = c.Id,
+                                     Titulo = c.Titulo,
+                                     Descripcion = c.Descripcion,
+                                     Foto = c.Foto,
+                                     Precio = c.Precio,
+                                     Tipo_iva = c.Tipo_iva,
+                                     Pdf = c.Pdf,
+                                     EmpresaId = c.EmpresaId,
+                                     CategoriaId = c.CategoriaId
+                                 }).ToList()
+                             })
                              .ToList();
         }
+
 
         public void Insert(Empresa empresa)
         {

@@ -30,7 +30,7 @@ namespace DataAccessLayer.DALs
         public List<Opinion> Get()
         {
             return _dbContext.Opiniones
-                             .Select(p => new Opinion { Titulo = p.Titulo, Descripcion = p.Descripcion, Id = p.Id, ProductoId = p.ProductoId})
+                             .Select(p => new Opinion { Titulo = p.Titulo, Descripcion = p.Descripcion, Id = p.Id, Estrellas = p.Estrellas, ProductoId = p.ProductoId})
                              .ToList();
         }
 
@@ -42,13 +42,14 @@ namespace DataAccessLayer.DALs
                 Id = opinion.Id,
                 Titulo = opinion.Titulo,
                 Descripcion = opinion.Descripcion,
+                Estrellas = opinion.Estrellas,
                 ProductoId = opinion.ProductoId
             };
         }
 
         public void Insert(Opinion opinion)
         {
-            _dbContext.Opiniones.Add(new Opiniones{ Titulo = opinion.Titulo, Descripcion = opinion.Descripcion, ProductoId = opinion.ProductoId});
+            _dbContext.Opiniones.Add(new Opiniones{ Titulo = opinion.Titulo, Descripcion = opinion.Descripcion, ProductoId = opinion.ProductoId, Estrellas = opinion.Estrellas});
             _dbContext.SaveChanges();
         }
 
@@ -60,6 +61,7 @@ namespace DataAccessLayer.DALs
             {
                 existingOpinion.Titulo = opinion.Titulo;
                 existingOpinion.Descripcion = opinion.Descripcion;
+                existingOpinion.Estrellas = opinion.Estrellas;
 
                 _dbContext.SaveChanges();
             }

@@ -13,6 +13,6 @@ namespace Shared
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
         public int EmpresaId { get; set; }
-        public Empresa Empresa { get; set; }
+        public Empresa? Empresa { get; set; }
     }
 }

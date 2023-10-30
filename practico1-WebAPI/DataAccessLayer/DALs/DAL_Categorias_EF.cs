@@ -34,18 +34,19 @@ namespace DataAccessLayer.DALs
                 {
                     Id = c.Id,
                     Nombre = c.Nombre,
-                    CategoriaId = c.Id,
-                    Cat_asociada = new Categoria
+                    CategoriaId = c.CategoriaId,
+                    empresaId = c.empresaId,
+                    Cat_asociada = c.Cat_asociada != null ? new Categoria
                     {
                         Id = c.Cat_asociada.Id,
                         Nombre = c.Cat_asociada.Nombre,
+                        empresaId = c.empresaId,
                         CategoriaId = c.Cat_asociada.CategoriaId,
                         Cat_asociada = null
-                    }
+                    } : null
                 })
                 .ToList();
         }
-
 
         public Categoria Get(int id)
         {
@@ -58,6 +59,7 @@ namespace DataAccessLayer.DALs
                     Id = x.Id,
                     Nombre = x.Nombre,
                     CategoriaId = x.Id,
+                    empresaId = x.empresaId,
                     Cat_asociada = new Categoria
                     {
                         Id = x.Cat_asociada.Id,
@@ -84,6 +86,7 @@ namespace DataAccessLayer.DALs
                     Id = categoria.Id,
                     Nombre = categoria.Nombre,
                     CategoriaId = categoria.CategoriaId,
+                    empresaId = categoria.empresaId,
                     Cat_asociada = null
                 };
 
