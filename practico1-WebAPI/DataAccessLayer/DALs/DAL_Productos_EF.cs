@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.EFModels;
 using DataAccessLayer.IDALs;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace DataAccessLayer.DALs
         public List<Producto> Get()
         {
             return _dbContext.Productos
+                             .Include(c => c.CategoriaAsociada)
+                             .Include(o => o.OpinionesAsociadas)
                              .Select(
                                 p => new Producto
                                 {
@@ -51,37 +54,54 @@ namespace DataAccessLayer.DALs
                                     CategoriaId = p.CategoriaId,
                                     Categoria = new Categoria
                                     {
-                                        Id = p.Categoria.Id,
-                                        Nombre = p.Categoria.Nombre,
-                                        Cat_asociada = null
-                                    }
+                                        Id = p.CategoriaAsociada.Id,
+                                        Nombre = p.CategoriaAsociada.Nombre
+                                    },
+                                    OpinionesAsociadas = p.OpinionesAsociadas.Select(o => new Opinion
+                                    {
+                                        Titulo = o.Titulo,
+                                        Descripcion = o.Descripcion,
+                                        Id = o.Id,
+                                        Estrellas = o.Estrellas
+                                    }).ToList()
                                 })
                              .ToList();
         }
 
         public Producto Get(int id)
         {
-            Productos producto = _dbContext.Productos.FirstOrDefault(p => p.Id == id);
+            Productos producto = _dbContext.Productos
+                .Include(c => c.CategoriaAsociada)
+                .Include(o => o.OpinionesAsociadas)
+                .FirstOrDefault(p => p.Id == id);
 
-            return new Producto
-            {
-                Id = producto.Id,
-                Titulo = producto.Titulo,
-                Descripcion = producto.Descripcion,
-                Foto = producto.Foto,
-                Precio = producto.Precio,
-                Tipo_iva = producto.Tipo_iva,
-                EmpresaId = producto.EmpresaId,
-                CategoriaId = producto.CategoriaId,
-                Categoria = new Categoria
+            return producto == null
+                ? throw new Exception($"No se encontró un producto con el ID {id}")
+                : new Producto
                 {
-                    Id = producto.Categoria.Id,
-                    Nombre = producto.Categoria.Nombre,
+                    Id = producto.Id,
+                    Titulo = producto.Titulo,
+                    Descripcion = producto.Descripcion,
+                    Foto = producto.Foto,
+                    Precio = producto.Precio,
+                    Tipo_iva = producto.Tipo_iva,
+                    EmpresaId = producto.EmpresaId,
                     CategoriaId = producto.CategoriaId,
-                    Cat_asociada = null
-                }
-            };
+                    Categoria = new Categoria
+                    {
+                        Id = producto.CategoriaAsociada.Id,
+                        Nombre = producto.CategoriaAsociada.Nombre
+                    },
+                    OpinionesAsociadas = producto.OpinionesAsociadas.Select(o => new Opinion
+                    {
+                        Titulo = o.Titulo,
+                        Descripcion = o.Descripcion,
+                        Id = o.Id,
+                        Estrellas = o.Estrellas
+                    }).ToList()
+                };
         }
+
 
         public void Insert(Producto producto)
         {
@@ -97,7 +117,8 @@ namespace DataAccessLayer.DALs
                     Precio = producto.Precio,
                     Tipo_iva = producto.Tipo_iva,
                     EmpresaId = producto.EmpresaId,
-                    CategoriaId = producto.CategoriaId
+                    CategoriaId = producto.CategoriaId,
+                    Pdf = producto.Pdf
                 });
                 _dbContext.SaveChanges();
             }
@@ -124,17 +145,17 @@ namespace DataAccessLayer.DALs
                     productoExistente.Tipo_iva = producto.Tipo_iva;
 
                     
-                    if (producto.Categoria != null && productoExistente.Categoria != null)
+                    if (producto.Categoria != null && productoExistente.CategoriaAsociada != null)
                     {
-                        if (producto.Categoria.Id != productoExistente.Categoria.Id)
+                        if (producto.Categoria.Id != productoExistente.CategoriaAsociada.Id)
                         {
-                            productoExistente.Categoria.Id = producto.Categoria.Id;
-                            productoExistente.Categoria.Nombre = producto.Categoria.Nombre;
+                            productoExistente.CategoriaAsociada.Id = producto.Categoria.Id;
+                            productoExistente.CategoriaAsociada.Nombre = producto.Categoria.Nombre;
                         }
                     }
-                    else if (producto.Categoria != null && productoExistente.Categoria == null)
+                    else if (producto.Categoria != null && productoExistente.CategoriaAsociada == null)
                     {
-                        productoExistente.Categoria = new Categorias
+                        productoExistente.CategoriaAsociada = new Categorias
                         {
                             Id = producto.Categoria.Id,
                             Nombre = producto.Categoria.Nombre
@@ -142,7 +163,7 @@ namespace DataAccessLayer.DALs
                     }
                     else
                     {
-                        productoExistente.Categoria = null;
+                        productoExistente.CategoriaAsociada = null;
                     }
 
                     
