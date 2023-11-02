@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(DBContextCore))]
-    [Migration("20231030150702_Version_1,2")]
-    partial class Version_12
+    [Migration("20231102152816_Version_1.0")]
+    partial class Version_10
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,10 +33,10 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Cat_asociadaId")
+                    b.Property<int?>("CategoriaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CategoriaId")
+                    b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
@@ -46,7 +46,9 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Cat_asociadaId");
+                    b.HasIndex("CategoriaId");
+
+                    b.HasIndex("EmpresaId");
 
                     b.ToTable("Categorias");
                 });
@@ -127,6 +129,8 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductoId");
+
                     b.ToTable("Opiniones");
                 });
 
@@ -185,6 +189,9 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
+                    b.Property<int>("EmpresaId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Foto")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -212,6 +219,8 @@ namespace DataAccessLayer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoriaId");
+
+                    b.HasIndex("EmpresaId");
 
                     b.ToTable("Productos");
                 });
@@ -475,44 +484,71 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Categorias", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Categorias", "Cat_asociada")
+                    b.HasOne("DataAccessLayer.EFModels.Categorias", "CategoriaAsociada")
                         .WithMany()
-                        .HasForeignKey("Cat_asociadaId");
+                        .HasForeignKey("CategoriaId");
 
-                    b.Navigation("Cat_asociada");
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
+                        .WithMany("CategoriasAsociadas")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CategoriaAsociada");
+
+                    b.Navigation("EmpresaAsociada");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Facturas", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Empresas", "Empresa")
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
                         .WithMany()
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Empresa");
+                    b.Navigation("EmpresaAsociada");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.EFModels.Opiniones", b =>
+                {
+                    b.HasOne("DataAccessLayer.EFModels.Productos", "ProductoAsociados")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductoAsociados");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Productos", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Categorias", "Categoria")
-                        .WithMany()
+                    b.HasOne("DataAccessLayer.EFModels.Categorias", "CategoriaAsociada")
+                        .WithMany("ProductosAsociados")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Categoria");
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
+                        .WithMany("ProductosAsociados")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CategoriaAsociada");
+
+                    b.Navigation("EmpresaAsociada");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Sucursales", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Empresas", "Empresa")
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
                         .WithMany()
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Empresa");
+                    b.Navigation("EmpresaAsociada");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Vehiculos", b =>
@@ -575,6 +611,18 @@ namespace DataAccessLayer.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DataAccessLayer.EFModels.Categorias", b =>
+                {
+                    b.Navigation("ProductosAsociados");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.EFModels.Empresas", b =>
+                {
+                    b.Navigation("CategoriasAsociadas");
+
+                    b.Navigation("ProductosAsociados");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Personas", b =>

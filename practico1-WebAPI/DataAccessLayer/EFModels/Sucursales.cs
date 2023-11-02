@@ -24,6 +24,8 @@ namespace DataAccessLayer.EFModels
         public int TiempoEntrega { get; set; }
 
         public int EmpresaId { get; set; }
-        public Empresas? Empresa { get; set; }
+
+        [ForeignKey("EmpresaId")]
+        public Empresas? EmpresaAsociada { get; set; }
     }
 }

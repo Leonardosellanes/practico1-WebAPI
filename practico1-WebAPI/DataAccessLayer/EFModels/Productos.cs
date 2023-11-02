@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared;
 
 namespace DataAccessLayer.EFModels
 {
@@ -32,7 +33,15 @@ namespace DataAccessLayer.EFModels
         [MaxLength(128), MinLength(3), Required]
         public string Pdf { get; set; } = "";
         public int EmpresaId { get; set; }
+        
+        [ForeignKey("EmpresaId")]
+        public Empresas? EmpresaAsociada { get; set; }
+
         public int CategoriaId { get; set; }
-        public Categorias? Categoria { get; set; }
+
+        [ForeignKey("CategoriaId")]
+        public Categorias? CategoriaAsociada { get; set; }
+
+        public List<Opiniones>? OpinionesAsociadas { get; set; }
     }
 }

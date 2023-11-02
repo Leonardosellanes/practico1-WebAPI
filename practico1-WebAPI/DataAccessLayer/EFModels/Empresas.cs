@@ -20,9 +20,9 @@ namespace DataAccessLayer.EFModels
         [MaxLength(128), MinLength(3), Required]
         public string RUT { get; set; } = "";
 
-        public List<Categorias>? Categorias { get; set; }
+        public List<Categorias>? CategoriasAsociadas { get; set; }
 
-        public List<Productos>? Productos { get; set; }
+        public List<Productos>? ProductosAsociados { get; set; }
 
     }
 }

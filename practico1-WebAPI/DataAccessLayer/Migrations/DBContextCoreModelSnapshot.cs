@@ -30,13 +30,10 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Cat_asociadaId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CategoriaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EmpresasId")
+                    b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
@@ -44,14 +41,11 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<int>("empresaId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("Cat_asociadaId");
+                    b.HasIndex("CategoriaId");
 
-                    b.HasIndex("EmpresasId");
+                    b.HasIndex("EmpresaId");
 
                     b.ToTable("Categorias");
                 });
@@ -132,6 +126,8 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductoId");
+
                     b.ToTable("Opiniones");
                 });
 
@@ -193,9 +189,6 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EmpresasId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Foto")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -224,7 +217,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.HasIndex("EmpresasId");
+                    b.HasIndex("EmpresaId");
 
                     b.ToTable("Productos");
                 });
@@ -488,52 +481,71 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Categorias", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Categorias", "Cat_asociada")
+                    b.HasOne("DataAccessLayer.EFModels.Categorias", "CategoriaAsociada")
                         .WithMany()
-                        .HasForeignKey("Cat_asociadaId");
+                        .HasForeignKey("CategoriaId");
 
-                    b.HasOne("DataAccessLayer.EFModels.Empresas", null)
-                        .WithMany("Categorias")
-                        .HasForeignKey("EmpresasId");
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
+                        .WithMany("CategoriasAsociadas")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Cat_asociada");
+                    b.Navigation("CategoriaAsociada");
+
+                    b.Navigation("EmpresaAsociada");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Facturas", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Empresas", "Empresa")
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
                         .WithMany()
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Empresa");
+                    b.Navigation("EmpresaAsociada");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.EFModels.Opiniones", b =>
+                {
+                    b.HasOne("DataAccessLayer.EFModels.Productos", "ProductoAsociados")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductoAsociados");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Productos", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Categorias", "Categoria")
-                        .WithMany()
+                    b.HasOne("DataAccessLayer.EFModels.Categorias", "CategoriaAsociada")
+                        .WithMany("ProductosAsociados")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.EFModels.Empresas", null)
-                        .WithMany("Productos")
-                        .HasForeignKey("EmpresasId");
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
+                        .WithMany("ProductosAsociados")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Categoria");
+                    b.Navigation("CategoriaAsociada");
+
+                    b.Navigation("EmpresaAsociada");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Sucursales", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Empresas", "Empresa")
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
                         .WithMany()
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Empresa");
+                    b.Navigation("EmpresaAsociada");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Vehiculos", b =>
@@ -598,11 +610,16 @@ namespace DataAccessLayer.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DataAccessLayer.EFModels.Categorias", b =>
+                {
+                    b.Navigation("ProductosAsociados");
+                });
+
             modelBuilder.Entity("DataAccessLayer.EFModels.Empresas", b =>
                 {
-                    b.Navigation("Categorias");
+                    b.Navigation("CategoriasAsociadas");
 
-                    b.Navigation("Productos");
+                    b.Navigation("ProductosAsociados");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Personas", b =>

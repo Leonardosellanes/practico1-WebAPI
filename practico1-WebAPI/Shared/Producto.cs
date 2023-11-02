@@ -19,5 +19,6 @@ namespace Shared
         public int EmpresaId { get; set; }
         public int CategoriaId {  get; set; }
         public Categoria? Categoria { get; set; }
+        public List<Opinion>? OpinionesAsociadas { get; set; }
     }
 }

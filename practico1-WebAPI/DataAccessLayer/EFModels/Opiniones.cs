@@ -23,5 +23,8 @@ namespace DataAccessLayer.EFModels
         public int Estrellas { get; set; }
 
         public int ProductoId { get; set; }
+
+        [ForeignKey("ProductoId")]
+        public Productos? ProductoAsociados { get; set; }
     }
 }
