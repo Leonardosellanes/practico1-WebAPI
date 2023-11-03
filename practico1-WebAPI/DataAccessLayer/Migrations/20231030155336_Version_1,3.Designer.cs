@@ -4,6 +4,7 @@ using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(DBContextCore))]
-    partial class DBContextCoreModelSnapshot : ModelSnapshot
+    [Migration("20231030155336_Version_1,3")]
+    partial class Version_13
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,12 +193,6 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<int>("EmpresaId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("EmpresasId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Foto")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -223,8 +220,6 @@ namespace DataAccessLayer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoriaId");
-
-                    b.HasIndex("EmpresasId");
 
                     b.ToTable("Productos");
                 });
@@ -518,10 +513,6 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.EFModels.Empresas", null)
-                        .WithMany("Productos")
-                        .HasForeignKey("EmpresasId");
-
                     b.Navigation("Categoria");
                 });
 
@@ -601,8 +592,6 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("DataAccessLayer.EFModels.Empresas", b =>
                 {
                     b.Navigation("Categorias");
-
-                    b.Navigation("Productos");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Personas", b =>

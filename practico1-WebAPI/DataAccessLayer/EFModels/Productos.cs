@@ -31,6 +31,7 @@ namespace DataAccessLayer.EFModels
 
         [MaxLength(128), MinLength(3), Required]
         public string Pdf { get; set; } = "";
+        public int EmpresaId { get; set; }
         public int CategoriaId { get; set; }
         public Categorias? Categoria { get; set; }
     }

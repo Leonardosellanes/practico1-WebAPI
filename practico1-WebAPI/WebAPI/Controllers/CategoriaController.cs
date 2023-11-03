@@ -55,6 +55,7 @@ namespace WebAPI.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            _bl.Delete(id);
         }
     }
 }

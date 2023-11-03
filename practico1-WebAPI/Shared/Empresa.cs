@@ -11,5 +11,9 @@ namespace Shared
         public int Id { get; set; }
         public string Nombre { get; set; } = "";
         public string RUT { get; set; } = "";
+
+        public List<Categoria>? Categorias { get; set; }
+
+        public List<Producto>? Productos{ get; set; }
     }
 }

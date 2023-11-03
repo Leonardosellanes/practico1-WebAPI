@@ -31,9 +31,9 @@ try
 
     // For Identity
     builder.Services.AddIdentity<Usuarios, IdentityRole>(options => {
-        // N�mero m�ximo de intentos de inicio de sesi�n fallidos
+        // Número máximo de intentos de inicio de sesión fallidos
         options.Lockout.MaxFailedAccessAttempts = 5;
-        // Tiempo que la cuenta queda bloqueada despu�s de alcanzar el n�mero m�ximo de intentos de inicio de sesi�n fallidos
+        // Tiempo que la cuenta queda bloqueada después de alcanzar el número máximo de intentos de inicio de sesión fallidos
         options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
         // Requerimientos de la password
         options.Password.RequireNonAlphanumeric = true;
@@ -86,7 +86,7 @@ try
     /********************************************************************************************************/
     /** Add Dependencies                                                                                   **/
     /********************************************************************************************************/
-    #region  Inyecci�n de dependencias
+    #region  Inyección de dependencias
 
     // DALs
     builder.Services.AddTransient<IDAL_Personas, DAL_Personas_EF>();

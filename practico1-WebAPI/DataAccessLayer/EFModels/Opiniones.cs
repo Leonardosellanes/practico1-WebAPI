@@ -20,6 +20,8 @@ namespace DataAccessLayer.EFModels
         [MaxLength(256), MinLength(3), Required]
         public string Descripcion { get; set; } = "";
 
+        public int Estrellas { get; set; }
+
         public int ProductoId { get; set; }
     }
 }

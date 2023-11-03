@@ -47,6 +47,7 @@ namespace DataAccessLayer.DALs
                                     Foto = p.Foto,
                                     Precio = p.Precio,
                                     Tipo_iva = p.Tipo_iva,
+                                    EmpresaId = p.EmpresaId,
                                     CategoriaId = p.CategoriaId,
                                     Categoria = new Categoria
                                     {
@@ -70,6 +71,7 @@ namespace DataAccessLayer.DALs
                 Foto = producto.Foto,
                 Precio = producto.Precio,
                 Tipo_iva = producto.Tipo_iva,
+                EmpresaId = producto.EmpresaId,
                 CategoriaId = producto.CategoriaId,
                 Categoria = new Categoria
                 {
@@ -94,6 +96,7 @@ namespace DataAccessLayer.DALs
                     Foto = producto.Foto,
                     Precio = producto.Precio,
                     Tipo_iva = producto.Tipo_iva,
+                    EmpresaId = producto.EmpresaId,
                     CategoriaId = producto.CategoriaId
                 });
                 _dbContext.SaveChanges();

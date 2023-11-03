@@ -74,7 +74,7 @@ namespace WebAPI
                     var userAdmin = await userManager.FindByEmailAsync("admin@admin.com");
                     if (userAdmin == null)
                     {
-                        ApplicationUser user = new ApplicationUser()
+                        Usuarios user = new Usuarios()
                         {
                             Email = "admin@admin.com",
                             SecurityStamp = Guid.NewGuid().ToString(),
