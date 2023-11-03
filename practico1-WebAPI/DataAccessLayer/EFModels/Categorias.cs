@@ -19,8 +19,15 @@ namespace DataAccessLayer.EFModels
         public string Nombre { get; set; } = "";
 
         public int? CategoriaId { get; set; }
-        public Categorias? Cat_asociada { get; set; }
 
-        public int empresaId { get; set; }
+        [ForeignKey("CategoriaId")]
+        public Categorias? CategoriaAsociada { get; set; }
+
+        public int EmpresaId { get; set; }
+
+        [ForeignKey("EmpresaId")]
+        public Empresas? EmpresaAsociada { get; set; }
+
+        public List<Productos>? ProductosAsociados { get; set; }
     }
 }

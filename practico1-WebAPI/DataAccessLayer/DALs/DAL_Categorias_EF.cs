@@ -21,36 +21,65 @@ namespace DataAccessLayer.DALs
 
         public void Delete(int id)
         {
-            var categoria = _dbContext.Categorias.FirstOrDefault(c => c.Id == id);
+            var categoria = _dbContext.Categorias
+                .Include(p => p.ProductosAsociados)
+                .FirstOrDefault(c => c.Id == id);
+
+            if (categoria == null)
+            {
+                throw new Exception($"No se encontró una categoría con el ID {categoria.Id}");
+            }
+
+            if (categoria.ProductosAsociados != null)
+            {
+                throw new Exception("No se puede eliminar una categoria con productos asociados");
+            }
 
             _dbContext.Categorias.Remove(categoria);
             _dbContext.SaveChanges();
+    
         }
+
 
         public List<Categoria> Get()
         {
             return _dbContext.Categorias
+                .Include(p => p.ProductosAsociados)
                 .Select(c => new Categoria
                 {
                     Id = c.Id,
                     Nombre = c.Nombre,
                     CategoriaId = c.CategoriaId,
-                    empresaId = c.empresaId,
-                    Cat_asociada = c.Cat_asociada != null ? new Categoria
+                    EmpresaId = c.EmpresaId,
+                    CategoriaAsociada = c.CategoriaAsociada != null ? new Categoria
                     {
-                        Id = c.Cat_asociada.Id,
-                        Nombre = c.Cat_asociada.Nombre,
-                        empresaId = c.empresaId,
-                        CategoriaId = c.Cat_asociada.CategoriaId,
-                        Cat_asociada = null
-                    } : null
+                        Id = c.CategoriaAsociada.Id,
+                        Nombre = c.CategoriaAsociada.Nombre,
+                        EmpresaId = c.EmpresaId,
+                        CategoriaId = c.CategoriaAsociada.CategoriaId
+                    } : null,
+                    Productos = c.ProductosAsociados.Select(c => new Producto
+                    {
+                        Id = c.Id,
+                        Titulo = c.Titulo,
+                        Descripcion = c.Descripcion,
+                        Foto = c.Foto,
+                        Precio = c.Precio,
+                        Tipo_iva = c.Tipo_iva,
+                        Pdf = c.Pdf,
+                        EmpresaId = c.EmpresaId,
+                        CategoriaId = c.CategoriaId
+                    }).ToList()
                 })
                 .ToList();
         }
 
         public Categoria Get(int id)
         {
-            Categorias x = _dbContext.Categorias.FirstOrDefault(x => x.Id == id);
+            Categorias x = _dbContext.Categorias
+                .Include(p => p.ProductosAsociados)
+                .Include(a => a.CategoriaAsociada)
+                .FirstOrDefault(x => x.Id == id);
 
             if (x != null)
             {
@@ -58,15 +87,27 @@ namespace DataAccessLayer.DALs
                 {
                     Id = x.Id,
                     Nombre = x.Nombre,
-                    CategoriaId = x.Id,
-                    empresaId = x.empresaId,
-                    Cat_asociada = new Categoria
+                    CategoriaId = x.CategoriaId,
+                    EmpresaId = x.EmpresaId,
+                    CategoriaAsociada = x.CategoriaAsociada != null ? new Categoria
                     {
-                        Id = x.Cat_asociada.Id,
-                        Nombre = x.Cat_asociada.Nombre,
-                        CategoriaId = x.Cat_asociada.CategoriaId,
-                        Cat_asociada = null
-                    }
+                        Id = x.CategoriaAsociada.Id,
+                        Nombre = x.CategoriaAsociada.Nombre,
+                        EmpresaId = x.EmpresaId,
+                        CategoriaId = x.CategoriaAsociada.CategoriaId
+                    } : null,
+                    Productos = x.ProductosAsociados.Select(c => new Producto
+                    {
+                        Id = c.Id,
+                        Titulo = c.Titulo,
+                        Descripcion = c.Descripcion,
+                        Foto = c.Foto,
+                        Precio = c.Precio,
+                        Tipo_iva = c.Tipo_iva,
+                        Pdf = c.Pdf,
+                        EmpresaId = c.EmpresaId,
+                        CategoriaId = c.CategoriaId
+                    }).ToList()
                 };
             }
             else {  
@@ -86,8 +127,7 @@ namespace DataAccessLayer.DALs
                     Id = categoria.Id,
                     Nombre = categoria.Nombre,
                     CategoriaId = categoria.CategoriaId,
-                    empresaId = categoria.empresaId,
-                    Cat_asociada = null
+                    EmpresaId = categoria.EmpresaId,
                 };
 
                 _dbContext.Categorias.Add(categoriaEntity);

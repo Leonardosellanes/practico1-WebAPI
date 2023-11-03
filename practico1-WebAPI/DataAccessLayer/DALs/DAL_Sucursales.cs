@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.EFModels;
 using DataAccessLayer.IDALs;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -19,23 +20,28 @@ namespace DataAccessLayer.DALs
 
         public Sucursal GetById(int id)
         {
-            Sucursales suc = _dbContext.Sucursales.FirstOrDefault(s => s.Id == id);
-            
-            return new Sucursal 
-                { 
-                    Id = suc.Id, 
-                    Nombre = suc.Nombre, 
-                    Ubicacion = suc.Ubicacion, 
-                    TiempoEntrega = suc.TiempoEntrega, 
+            Sucursales suc = _dbContext.Sucursales
+                .Include(e => e.EmpresaAsociada)
+                .FirstOrDefault(s => s.Id == id);
+
+            return suc == null
+                ? throw new Exception($"No se encontró una sucursal con el ID {id}")
+                : new Sucursal
+                {
+                    Id = suc.Id,
+                    Nombre = suc.Nombre,
+                    Ubicacion = suc.Ubicacion,
+                    TiempoEntrega = suc.TiempoEntrega,
                     EmpresaId = suc.EmpresaId,
-                    Empresa = new Empresa 
-                    { 
-                        Id = suc.Empresa.Id, 
-                        Nombre = suc.Empresa.Nombre,
-                        RUT = suc.Empresa.RUT
+                    Empresa = new Empresa
+                    {
+                        Id = suc.EmpresaAsociada.Id,
+                        Nombre = suc.EmpresaAsociada.Nombre,
+                        RUT = suc.EmpresaAsociada.RUT
                     }
                 };
         }
+
 
         public List<Sucursal> GetAll()
         {
@@ -49,9 +55,9 @@ namespace DataAccessLayer.DALs
                                  EmpresaId = suc.EmpresaId,
                                  Empresa = new Empresa
                                  {
-                                     Id = suc.Empresa.Id,
-                                     Nombre = suc.Empresa.Nombre,
-                                     RUT = suc.Empresa.RUT
+                                     Id = suc.EmpresaAsociada.Id,
+                                     Nombre = suc.EmpresaAsociada.Nombre,
+                                     RUT = suc.EmpresaAsociada.RUT
                                  }
                              })
                              .ToList();

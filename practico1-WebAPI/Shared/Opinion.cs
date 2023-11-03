@@ -13,5 +13,6 @@ namespace Shared
         public string Descripcion { get; set; } = "";
         public int Estrellas { get; set; }
         public int ProductoId { get; set; }
+        public Producto? ProductoAsociado { get; set; }
     }
 }

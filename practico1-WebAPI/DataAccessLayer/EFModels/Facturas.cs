@@ -22,8 +22,10 @@ namespace DataAccessLayer.EFModels
 
         [Required]
         public DateTime FechaFin { get; set; }
-
+        
         public int EmpresaId { get; set; }
-        public Empresas? Empresa { get; set; }
+
+        [ForeignKey("EmpresaId")]
+        public Empresas? EmpresaAsociada { get; set; }
     }
 }

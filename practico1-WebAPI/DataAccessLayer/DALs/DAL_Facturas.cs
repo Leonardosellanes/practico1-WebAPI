@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.EFModels;
 using DataAccessLayer.IDALs;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -39,9 +40,9 @@ namespace DataAccessLayer.DALs
                                  EmpresaId = f.EmpresaId,
                                  Empresa = new Empresa
                                  {
-                                     Id = f.Empresa.Id,
-                                     Nombre = f.Empresa.Nombre,
-                                     RUT = f.Empresa.RUT
+                                     Id = f.EmpresaAsociada.Id,
+                                     Nombre = f.EmpresaAsociada.Nombre,
+                                     RUT = f.EmpresaAsociada.RUT
                                  }
                              })
                              .ToList();
@@ -49,22 +50,28 @@ namespace DataAccessLayer.DALs
 
         public Factura GetById(int id)
         {
-            Facturas factura = _dbContext.Facturas.FirstOrDefault(f => f.Id == id);
-            return new Factura
-            {
-                Id = factura.Id,
-                TotalComisiones = factura.TotalComisiones,
-                FechaInicio = factura.FechaInicio,
-                FechaFin = factura.FechaFin,
-                EmpresaId = factura.EmpresaId
-                //Empresa = new Empresa
-                //{
-                //    Id = factura.Empresa.Id,
-                //    Nombre = factura.Empresa.Nombre,
-                //    RUT = factura.Empresa.RUT
-                //}
-            };
+            Facturas factura = _dbContext.Facturas
+                .Include(e => e.EmpresaAsociada)
+                .FirstOrDefault(f => f.Id == id);
+
+            return factura == null
+                ? throw new Exception($"No se encontró una factura con el ID {id}")
+                : new Factura
+                {
+                    Id = factura.Id,
+                    TotalComisiones = factura.TotalComisiones,
+                    FechaInicio = factura.FechaInicio,
+                    FechaFin = factura.FechaFin,
+                    EmpresaId = factura.EmpresaId,
+                    Empresa = new Empresa
+                    {
+                        Id = factura.EmpresaAsociada.Id,
+                        Nombre = factura.EmpresaAsociada.Nombre,
+                        RUT = factura.EmpresaAsociada.RUT
+                    }
+                };
         }
+
 
         public void Insert(Factura factura)
         {

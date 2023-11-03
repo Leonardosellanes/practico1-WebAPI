@@ -22,49 +22,54 @@ namespace DataAccessLayer.DALs
         public Empresa GetById(int id)
         {
             Empresas emp = _dbContext.Empresas
-                .Include(e => e.Categorias)
-                .Include(p => p.Productos)
+                .Include(e => e.CategoriasAsociadas)
+                .Include(p => p.ProductosAsociados)
                 .FirstOrDefault(e => e.Id == id);
-            return new Empresa { 
-                Id = emp.Id, 
-                Nombre = emp.Nombre, 
-                RUT = emp.RUT,
-                Categorias = emp.Categorias.Select(c => new Categoria
+
+            return emp == null
+                ? throw new Exception($"No se encontró una empresa con el ID {id}")
+                : new Empresa
                 {
-                    Id = c.Id,
-                    Nombre = c.Nombre, 
-                }).ToList(),
-                Productos = emp.Productos.Select(c => new Producto
-                {
-                    Id = c.Id,
-                    Titulo = c.Titulo,
-                    Descripcion = c.Descripcion,
-                    Foto = c.Foto,
-                    Precio = c.Precio,
-                    Tipo_iva = c.Tipo_iva,
-                    Pdf = c.Pdf,
-                    EmpresaId = c.EmpresaId,
-                    CategoriaId = c.CategoriaId
-                }).ToList()
-            };
+                    Id = emp.Id,
+                    Nombre = emp.Nombre,
+                    RUT = emp.RUT,
+                    Categorias = emp.CategoriasAsociadas.Select(c => new Categoria
+                    {
+                        Id = c.Id,
+                        Nombre = c.Nombre,
+                    }).ToList(),
+                    Productos = emp.ProductosAsociados.Select(c => new Producto
+                    {
+                        Id = c.Id,
+                        Titulo = c.Titulo,
+                        Descripcion = c.Descripcion,
+                        Foto = c.Foto,
+                        Precio = c.Precio,
+                        Tipo_iva = c.Tipo_iva,
+                        Pdf = c.Pdf,
+                        EmpresaId = c.EmpresaId,
+                        CategoriaId = c.CategoriaId
+                    }).ToList()
+                };
         }
+
 
         public List<Empresa> GetAll()
         {
             return _dbContext.Empresas
-                             .Include(e => e.Categorias)
-                             .Include(p => p.Productos)
+                             .Include(e => e.CategoriasAsociadas)
+                             .Include(p => p.ProductosAsociados)
                              .Select(e => new Empresa
                              {
                                  Id = e.Id,
                                  Nombre = e.Nombre,
                                  RUT = e.RUT,
-                                 Categorias = e.Categorias.Select(c => new Categoria
+                                 Categorias = e.CategoriasAsociadas.Select(c => new Categoria
                                  {
                                      Id = c.Id,
                                      Nombre = c.Nombre
                                  }).ToList(),
-                                 Productos = e.Productos.Select(c => new Producto
+                                 Productos = e.ProductosAsociados.Select(c => new Producto
                                  {
                                      Id = c.Id,
                                      Titulo = c.Titulo,
