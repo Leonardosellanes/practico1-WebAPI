@@ -52,7 +52,7 @@ namespace DataAccessLayer.DALs
                                     {
                                         Id = p.Categoria.Id,
                                         Nombre = p.Categoria.Nombre,
-                                        Cat_asociadas = null
+                                        Cat_asociada = null
                                     }
                                 })
                              .ToList();
@@ -75,6 +75,8 @@ namespace DataAccessLayer.DALs
                 {
                     Id = producto.Categoria.Id,
                     Nombre = producto.Categoria.Nombre,
+                    CategoriaId = producto.CategoriaId,
+                    Cat_asociada = null
                 }
             };
         }

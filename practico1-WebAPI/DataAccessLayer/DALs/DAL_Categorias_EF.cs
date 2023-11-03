@@ -21,40 +21,27 @@ namespace DataAccessLayer.DALs
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
-            //var categoria = _dbContext.Categorias.FirstOrDefault(c => c.Id == id);
+            var categoria = _dbContext.Categorias.FirstOrDefault(c => c.Id == id);
 
-            //if (categoria != null)
-            //{
-               
-            //    if (categoria.Productos.Any())
-            //    {
-            //        throw new Exception($"No se puede eliminar la categoría con ID {id} porque tiene productos asociados.");
-            //    }
-
-                
-            //    _dbContext.Categorias.Remove(categoria);
-            //    _dbContext.SaveChanges();
-            //}
-            //else
-            //{
-            //    throw new Exception($"No se encontró una categoría con el ID {id}");
-            //}
+            _dbContext.Categorias.Remove(categoria);
+            _dbContext.SaveChanges();
         }
 
         public List<Categoria> Get()
         {
             return _dbContext.Categorias
-                .Include(c => c.Cat_asociadas)
                 .Select(c => new Categoria
                 {
                     Id = c.Id,
                     Nombre = c.Nombre,
-                    Cat_asociadas = c.Cat_asociadas.Select(ca => new Categoria
+                    CategoriaId = c.Id,
+                    Cat_asociada = new Categoria
                     {
-                        Id = ca.Id,
-                        Nombre = ca.Nombre
-                    }).ToList()
+                        Id = c.Cat_asociada.Id,
+                        Nombre = c.Cat_asociada.Nombre,
+                        CategoriaId = c.Cat_asociada.CategoriaId,
+                        Cat_asociada = null
+                    }
                 })
                 .ToList();
         }
@@ -70,11 +57,14 @@ namespace DataAccessLayer.DALs
                 {
                     Id = x.Id,
                     Nombre = x.Nombre,
-                    Cat_asociadas = x.Cat_asociadas.Select(ca => new Categoria
+                    CategoriaId = x.Id,
+                    Cat_asociada = new Categoria
                     {
-                        Id = ca.Id,
-                        Nombre = ca.Nombre
-                    }).ToList()
+                        Id = x.Cat_asociada.Id,
+                        Nombre = x.Cat_asociada.Nombre,
+                        CategoriaId = x.Cat_asociada.CategoriaId,
+                        Cat_asociada = null
+                    }
                 };
             }
             else {  
@@ -93,11 +83,8 @@ namespace DataAccessLayer.DALs
                 {
                     Id = categoria.Id,
                     Nombre = categoria.Nombre,
-                    Cat_asociadas = categoria.Cat_asociadas?.Select(ca => new Categorias
-                    {
-                        Id = ca.Id,
-                        Nombre = ca.Nombre
-                    }).ToList()
+                    CategoriaId = categoria.CategoriaId,
+                    Cat_asociada = null
                 };
 
                 _dbContext.Categorias.Add(categoriaEntity);
@@ -120,7 +107,7 @@ namespace DataAccessLayer.DALs
                 {
                    
                     categoriaExistente.Nombre = categoria.Nombre;
-
+                    categoriaExistente.CategoriaId = categoria.CategoriaId;
                     
                     _dbContext.SaveChanges();
                 }

@@ -10,8 +10,9 @@ namespace Shared
     {
         public int Id { get; set; }
         public string Nombre { get; set; } = "";
+        public int CategoriaId {  get; set; }
+        public Categoria? Cat_asociada { get; set; }
 
-        public List<Categoria>? Cat_asociadas { get; set; }
-
+        
     }
 }

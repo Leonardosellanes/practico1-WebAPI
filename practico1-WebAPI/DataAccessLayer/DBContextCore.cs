@@ -42,5 +42,6 @@ namespace DataAccessLayer
         public DbSet<Sucursales> Sucursales { get; set; }
         public DbSet<Facturas> Facturas { get; set; }
 
+        public DbSet<Opiniones> Opiniones { get; set; }
     }
 }
