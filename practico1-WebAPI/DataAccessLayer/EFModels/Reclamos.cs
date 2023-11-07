@@ -16,7 +16,10 @@ namespace DataAccessLayer.EFModels
         [MaxLength(128), MinLength(3), Required]
         public string Descripcion { get; set; } = "";
         [Required]
-        public DateOnly Fecha{ get; set; }
+        public DateTime Fecha{ get; set; }
         public int EmpresaId { get; set; }
+
+        [ForeignKey("EmpresaId")]
+        public Empresas? EmpresaAsociada { get; set; }
     }
 }

@@ -47,9 +47,9 @@ namespace WebAPI.Controllers
 
         // PUT api/<ReclamoController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] Reclamo reclamo)
         {
-            
+            _bl.Update(reclamo);
         }
 
         // DELETE api/<ValuesController>/5

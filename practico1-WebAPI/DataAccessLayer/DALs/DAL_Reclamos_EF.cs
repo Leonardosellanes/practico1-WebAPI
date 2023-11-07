@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.EFModels;
 using DataAccessLayer.IDALs;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -28,21 +29,45 @@ namespace DataAccessLayer.DALs
         public List<Reclamo> Get()
         {
             return _dbContext.Reclamos
-                             .Select(r => new Reclamo { Id = r.Id, Descripcion = r.Descripcion, EmpresaId = r.EmpresaId, Fecha = r.Fecha})
+                             .Include(e => e.EmpresaAsociada)
+                             .Select(r => new Reclamo { 
+                                 Id = r.Id,
+                                 Descripcion = r.Descripcion, 
+                                 Fecha = r.Fecha,
+                                 EmpresaId = r.EmpresaId,
+                                 EmpresaAsociada = new Empresa
+                                 {
+                                     Id = r.EmpresaAsociada.Id,
+                                     Nombre = r.EmpresaAsociada.Nombre,
+                                     RUT = r.EmpresaAsociada.RUT
+                                 }
+                             })
                              .ToList();
         }
 
         public Reclamo Get(int id)
         {
-            var reclamo = _dbContext.Reclamos.FirstOrDefault(o => o.Id == id);
-            return new Reclamo
-            {
-                Id = reclamo.Id,
-                Descripcion = reclamo.Descripcion,
-                Fecha = reclamo.Fecha,
-                EmpresaId = reclamo.EmpresaId
-            };
+            var reclamo = _dbContext.Reclamos
+                .Include(e => e.EmpresaAsociada)
+                .FirstOrDefault(o => o.Id == id);
+
+            return reclamo == null
+                ? throw new Exception($"No se encontró un reclamo con el ID {id}")
+                : new Reclamo
+                {
+                    Id = reclamo.Id,
+                    Descripcion = reclamo.Descripcion,
+                    Fecha = reclamo.Fecha,
+                    EmpresaId = reclamo.EmpresaId,
+                    EmpresaAsociada = new Empresa
+                    {
+                        Id = reclamo.EmpresaAsociada.Id,
+                        Nombre = reclamo.EmpresaAsociada.Nombre,
+                        RUT = reclamo.EmpresaAsociada.RUT
+                    }
+                };
         }
+
 
         public void Insert(Reclamo reclamo)
         {
