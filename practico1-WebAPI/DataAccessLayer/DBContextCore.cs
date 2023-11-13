@@ -43,5 +43,6 @@ namespace DataAccessLayer
         public DbSet<Facturas> Facturas { get; set; }
 
         public DbSet<Opiniones> Opiniones { get; set; }
+        public DbSet<Reclamos> Reclamos { get; set; }
     }
 }

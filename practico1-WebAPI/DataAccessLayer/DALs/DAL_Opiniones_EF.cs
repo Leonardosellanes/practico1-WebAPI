@@ -96,8 +96,8 @@ namespace DataAccessLayer.DALs
 
         public void Insert(Opinion opinion)
         {
-            _dbContext.Opiniones.Add(new Opiniones{ Titulo = opinion.Titulo, Descripcion = opinion.Descripcion, ProductoId = opinion.ProductoId, Estrellas = opinion.Estrellas});
-            _dbContext.SaveChanges();
+                _dbContext.Opiniones.Add(new Opiniones{ Titulo = opinion.Titulo, Descripcion = opinion.Descripcion, ProductoId = opinion.ProductoId, Estrellas = opinion.Estrellas});
+                _dbContext.SaveChanges();
         }
 
         public void Update(Opinion opinion)

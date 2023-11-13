@@ -113,6 +113,9 @@ try
     builder.Services.AddTransient<IDAL_Opiniones, DAL_Opiniones_EF>();
     builder.Services.AddTransient<IBL_Opiniones, BL_Opiniones>();
 
+    builder.Services.AddTransient<IDAL_Reclamos, DAL_Reclamos_EF>();
+    builder.Services.AddTransient<IBL_Reclamos, BL_Reclamos>();
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
