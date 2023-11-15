@@ -1,22 +1,35 @@
+// src/router/index.js
+
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
-import categoria from '../views/Categoria/categoria.vue'
+
+
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home,
-  },
-  {
-    path: '/Categorias',
-    name: 'Categorias',
-    component: categoria,
-  },
+    {
+        path: '/',
+        name: 'Home',
+        component: () => import('../layout/index.vue'),
+        meta: {
+            title: 'Home',
+        },
+        children: [
+
+            {
+                path: '/Categorias',
+                name: 'Categorias',
+                component: () => import('../views/Categoria/categoria.vue'),
+                meta: {
+                    title: 'Categorias',
+                },
+            },
+
+        ],
+    },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
+    history: createWebHistory(),
+    routes,
 });
 
 export default router;
+
