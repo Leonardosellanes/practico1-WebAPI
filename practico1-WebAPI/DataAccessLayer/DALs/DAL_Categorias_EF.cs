@@ -30,10 +30,10 @@ namespace DataAccessLayer.DALs
                 throw new Exception($"No se encontró una categoría con el ID {categoria.Id}");
             }
 
-            if (categoria.ProductosAsociados != null)
-            {
-                throw new Exception("No se puede eliminar una categoria con productos asociados");
-            }
+            //if (categoria.ProductosAsociados != null)
+            //{
+            //    throw new Exception("No se puede eliminar una categoria con productos asociados");
+            //}
 
             _dbContext.Categorias.Remove(categoria);
             _dbContext.SaveChanges();
