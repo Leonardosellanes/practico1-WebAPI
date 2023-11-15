@@ -45,6 +45,7 @@ try
     .AddEntityFrameworkStores<DBContextCore>()
     .AddDefaultTokenProviders();
 
+
     #region Authentication
     // Adding Authentication
     string? JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET");
@@ -124,6 +125,11 @@ try
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.UseCors(
+        options => options.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+    );
     }
 
     StartUp.InitializeDatabase(app);
