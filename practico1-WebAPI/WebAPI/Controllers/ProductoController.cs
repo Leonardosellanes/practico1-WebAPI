@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
             _bl = bl;
         }
 
-        // GET: api/<CategoriasController>
+        // GET: api/<ProductoController>
         [ProducesResponseType(typeof(List<Producto>), 200)]
         [HttpGet]
         public IActionResult Get()
@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
             return Ok(_bl.Get());
         }
 
-        // GET api/<CategoriasController>/1
+        // GET api/<ProductoController>/1
         [ProducesResponseType(typeof(Producto), 200)]
         [HttpGet("{id}")]
         public IActionResult Get(int id)
