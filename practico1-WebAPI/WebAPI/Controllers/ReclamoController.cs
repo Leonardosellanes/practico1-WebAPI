@@ -10,45 +10,46 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductoController : ControllerBase
+    public class ReclamoController : ControllerBase
     {
-        private readonly IBL_Productos _bl;
+        private readonly IBL_Reclamos _bl;
 
-        public ProductoController(IBL_Productos bl)
+        public ReclamoController(IBL_Reclamos bl)
         {
             _bl = bl;
         }
 
-        // GET: api/<ProductoController>
-        [ProducesResponseType(typeof(List<Producto>), 200)]
+        // GET: api/<ReclamoController>
+        [ProducesResponseType(typeof(List<Reclamo>), 200)]
         [HttpGet]
         public IActionResult Get()
         {
             return Ok(_bl.Get());
         }
 
-        // GET api/<ProductoController>/1
-        [ProducesResponseType(typeof(Producto), 200)]
+        // GET api/<ReclamoController>/1
+        [ProducesResponseType(typeof(Reclamo), 200)]
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
             return Ok(_bl.Get(id));
         }
 
-        // POST api/<CategoriaController>
-        [ProducesResponseType(typeof(Producto), 200)]
+        // POST api/<ReclamoController>
+        [ProducesResponseType(typeof(Reclamo), 200)]
         [HttpPost]
         //[Authorize(Roles = "ADMIN, OTRO")]
-        public IActionResult Post([FromBody] Producto p)
+        public IActionResult Post([FromBody] Reclamo x)
         {
-            _bl.Insert(p);
+            _bl.Insert(x);
             return Ok();
         }
 
-        // PUT api/<CategoriasController>/5
+        // PUT api/<ReclamoController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] Reclamo reclamo)
         {
+            _bl.Update(reclamo);
         }
 
         // DELETE api/<ValuesController>/5

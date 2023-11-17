@@ -44,6 +44,6 @@ namespace DataAccessLayer
         public DbSet<Opiniones> Opiniones { get; set; }
         public DbSet<OC> OC { get; set; }
         public DbSet<CarritoProducto> CarritoProducto { get; set; }
-
+        public DbSet<Reclamos> Reclamos { get; set; }
     }
 }

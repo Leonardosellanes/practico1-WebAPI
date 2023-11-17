@@ -45,6 +45,7 @@ try
     .AddEntityFrameworkStores<DBContextCore>()
     .AddDefaultTokenProviders();
 
+
     #region Authentication
     // Adding Authentication
     string? JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET");
@@ -114,6 +115,9 @@ try
     builder.Services.AddTransient<IDAL_Opiniones, DAL_Opiniones_EF>();
     builder.Services.AddTransient<IBL_Opiniones, BL_Opiniones>();
 
+    builder.Services.AddTransient<IDAL_Reclamos, DAL_Reclamos_EF>();
+    builder.Services.AddTransient<IBL_Reclamos, BL_Reclamos>();
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -121,6 +125,11 @@ try
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.UseCors(
+        options => options.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+    );
     }
 
     StartUp.InitializeDatabase(app);

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI
 {
-    public static class StartUp
+    public class StartUp
     {
         internal static void UpdateDatabase(IApplicationBuilder app)
         {
@@ -19,6 +19,7 @@ namespace WebAPI
                 }
             }
         }
+
 
         internal static async void InitializeDatabase(IApplicationBuilder app) 
         {
@@ -57,5 +58,7 @@ namespace WebAPI
                 }
             }
         }
+
+        
     }
 }
