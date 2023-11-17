@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
+using Shared.DTOs;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -41,8 +42,14 @@ namespace WebAPI.Controllers
         //[Authorize(Roles = "ADMIN, OTRO")]
         public IActionResult Post([FromBody] Opinion x)
         {
+            try
+            {
             _bl.Insert(x);
             return Ok();
+            } catch (Exception ex) {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
 
         // PUT api/<CategoriasController>/5
