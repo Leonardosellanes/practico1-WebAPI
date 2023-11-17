@@ -22,6 +22,15 @@ const routes = [
                 },
             },
 
+            {
+                path: '/Productos',
+                name: 'Productos',
+                component: () => import('../views/Productos/producto.vue'),
+                meta: {
+                    title: 'Productos',
+                },
+            },
+
         ],
     },
 ];

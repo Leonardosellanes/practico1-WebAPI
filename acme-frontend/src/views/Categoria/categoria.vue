@@ -1,7 +1,6 @@
 <template>
     <div class=" w-full h-full space-y-10">
-        <a-page-header class="demo-page-header" style="border: 1px solid rgb(235, 237, 240)" title="Categorias"
-            sub-title="Categorias de la empresa" @back="() => $router.go(-1)">
+        <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Categorias" sub-title="Categorias de la empresa">
             <template #extra>
                 <a-button type="primary" @click="showModal">Agregar</a-button>
                 <a-modal v-model:open="open" title="Agregar Categoria" :confirm-loading="confirmLoading" @ok="handleOk">

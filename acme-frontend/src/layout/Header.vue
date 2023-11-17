@@ -34,12 +34,20 @@ const router = useRouter();
 const current = ref(['']);
 const items = ref([
   {
+    key: 'Productos',
+    label: 'Productos',
+    onClick: () => {
+      router.push('/Productos');
+    },
+  },
+  {
     key: 'Categorias',
     label: 'Categorias',
     onClick: () => {
       router.push('/Categorias');
     },
-  },
+  }
+  
 ]);
 
 const toHome = () => {
