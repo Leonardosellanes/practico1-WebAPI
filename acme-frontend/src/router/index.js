@@ -23,13 +23,22 @@ const routes = [
             },
 
             {
-              path: '/Empresas',
-              name: 'Empresas',
-              component: () => import('../views/Empresa/ListadoEmpresas.vue'),
-              meta: {
-                  title: 'Categorias',
-              },
-          },
+                path: '/Empresas',
+                name: 'Empresas',
+                component: () => import('../views/Empresa/ListadoEmpresas.vue'),
+                meta: {
+                    title: 'Empresas',
+                },
+            },
+
+            {
+                path: '/Sucursales/:id',
+                name: 'Sucursales',
+                component: () => import('../views/Sucursal/ListadoSucursales.vue'),
+                meta: {
+                    title: 'Sucursales',
+                },
+            },
 
         ],
     },

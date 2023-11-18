@@ -44,8 +44,8 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
-        // PUT api/<EmpresaController>/5
-       // [HttpPut("{id}")]
+        // PUT api/<EmpresaController>
+        [HttpPut]
         public void Put( [FromBody] Empresa e)
         {
             _bl.Update(e);
