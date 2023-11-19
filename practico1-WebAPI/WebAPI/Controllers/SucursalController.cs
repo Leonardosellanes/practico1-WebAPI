@@ -23,7 +23,15 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_bl.Get());
+            try
+            {
+               return Ok(_bl.Get());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
 
         // GET api/<SucursalController>/1
@@ -31,7 +39,15 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return Ok(_bl.Get(id));
+            try
+            {
+                return Ok(_bl.Get(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
 
         // POST api/<SucursalController>
@@ -39,22 +55,48 @@ namespace WebAPI.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Sucursal s)
         {
-            _bl.Insert(s);
-            return Ok();
+            try
+            {
+                _bl.Insert(s);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
 
         // PUT api/<SucursalController>
         [HttpPut]
-        public void Put([FromBody] Sucursal s)
+        public IActionResult Put([FromBody] Sucursal s)
         {
-            _bl.Update(s);
+            try
+            {
+                _bl.Update(s);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
 
         // DELETE api/<SucursalController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _bl.Delete(id);
+            try
+            {
+                _bl.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
 
     }
