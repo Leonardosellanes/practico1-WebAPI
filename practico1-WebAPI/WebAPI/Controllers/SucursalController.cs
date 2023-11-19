@@ -43,5 +43,19 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
+        // PUT api/<SucursalController>
+        [HttpPut]
+        public void Put([FromBody] Sucursal s)
+        {
+            _bl.Update(s);
+        }
+
+        // DELETE api/<SucursalController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            _bl.Delete(id);
+        }
+
     }
 }

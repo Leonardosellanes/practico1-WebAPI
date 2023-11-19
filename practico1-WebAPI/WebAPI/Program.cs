@@ -111,7 +111,6 @@ try
 
     builder.Services.AddTransient<IDAL_Facturas, DAL_Facturas>();
     builder.Services.AddTransient<IBL_Facturas, BL_Facturas>();
-
     builder.Services.AddTransient<IDAL_Opiniones, DAL_Opiniones_EF>();
     builder.Services.AddTransient<IBL_Opiniones, BL_Opiniones>();
 
