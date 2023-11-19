@@ -33,10 +33,10 @@ namespace DataAccessLayer.EFModels
         [Required]
         public DateTime Fecha { get; set; }
 
-        public List<CarritoProducto> CarritoProducto { get; set; }
+        public List<CarritoProducto>? CarritoProducto { get; set; }
 
         [ForeignKey("ReclamoId")]
-        public Reclamo? Rcs { get; set; }
+        public Reclamos? Rcs { get; set; }
 
         [ForeignKey("FacturaId")]
         public Facturas? FAs { get; set; }

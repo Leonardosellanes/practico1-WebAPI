@@ -12,37 +12,19 @@ namespace WebAPI.Controllers
     [ApiController]
     public class PersonasController : ControllerBase
     {
-        private readonly IBL_Personas _bl;
+        private readonly IBL_ApplicationUsers _bl;
 
-        public PersonasController(IBL_Personas bl)
+        public PersonasController(IBL_ApplicationUsers bl)
         {
             _bl = bl;
         }
 
         // GET: api/<PersonasController>
-        [ProducesResponseType(typeof(List<Persona>), 200)]
+        [ProducesResponseType(typeof(List<Usuario>), 200)]
         [HttpGet]
         public IActionResult Get()
         {
             return Ok(_bl.Get());
-        }
-
-        // GET api/<PersonasController>/12345678
-        [ProducesResponseType(typeof(Persona), 200)]
-        [HttpGet("{id}")]
-        public IActionResult Get(string documento)
-        {
-            return Ok(_bl.Get(documento));
-        }
-
-        // POST api/<PersonasController>
-        [ProducesResponseType(typeof(Persona), 200)]
-        [HttpPost]
-        [Authorize(Roles = "ADMIN, OTRO")]
-        public IActionResult Post([FromBody] Persona x)
-        {
-            _bl.Insert(x);
-            return Ok();
         }
 
         // PUT api/<ValuesController>/5

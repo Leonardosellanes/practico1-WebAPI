@@ -30,7 +30,7 @@ try
     builder.Services.AddDbContext<DBContextCore>();
 
     // For Identity
-    builder.Services.AddIdentity<Usuarios, IdentityRole>(options => {
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
         // Número máximo de intentos de inicio de sesión fallidos
         options.Lockout.MaxFailedAccessAttempts = 5;
         // Tiempo que la cuenta queda bloqueada después de alcanzar el número máximo de intentos de inicio de sesión fallidos
@@ -90,10 +90,10 @@ try
     #region  Inyección de dependencias
 
     // DALs
-    builder.Services.AddTransient<IDAL_Personas, DAL_Personas_EF>();
+    builder.Services.AddTransient<IDAL_ApplicationUsers, DAL_ApplicationUsers>();
 
     // BLs
-    builder.Services.AddTransient<IBL_Personas, BL_Personas>();
+    builder.Services.AddTransient<IBL_ApplicationUsers, BL_ApplicationUsers>();
 
     #endregion
 

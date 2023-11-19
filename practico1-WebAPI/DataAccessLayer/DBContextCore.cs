@@ -13,9 +13,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DataAccessLayer
 {
-    public class DBContextCore : IdentityDbContext<Usuarios>
+    public class DBContextCore : IdentityDbContext<ApplicationUser>
     {
-        private string _connectionString = "Server=sqlserver,1433;Database=Practico4;User Id=sa;Password=Abc*123!;Encrypt=False;";
+        private string _connectionString = "Server=localhost,1433;Database=Practico4;User Id=sa;Password=Abc*123!;Encrypt=False;";
 
         public DBContextCore()
         { }
@@ -34,15 +34,13 @@ namespace DataAccessLayer
             base.OnModelCreating(builder);
         }
 
-        public DbSet<Personas> Personas { get; set; }
-        public DbSet<Vehiculos> Vehiculos { get; set; }
         public DbSet<Productos> Productos { get; set; }
         public DbSet<Categorias> Categorias { get; set; }
         public DbSet<Empresas> Empresas { get; set; }
         public DbSet<Sucursales> Sucursales { get; set; }
         public DbSet<Facturas> Facturas { get; set; }
         public DbSet<Opiniones> Opiniones { get; set; }
-        public DbSet<OC> OC { get; set; }
+        public DbSet<EFModels.OC> OC { get; set; }
         public DbSet<CarritoProducto> CarritoProducto { get; set; }
         public DbSet<Reclamos> Reclamos { get; set; }
     }
