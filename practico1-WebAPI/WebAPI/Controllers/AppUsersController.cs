@@ -10,16 +10,31 @@ namespace AcmeSolutions.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class AppUsersController : Controller
+    public class AppUsersController : ControllerBase
     {
-        private IBL_ApplicationUsers _bl;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IBL_ApplicationUsers _bl;
 
-        public AppUsersController(IBL_ApplicationUsers bl, UserManager<ApplicationUser> userManager)
+        public AppUsersController(IBL_ApplicationUsers bl)
         {
             _bl = bl;
-            _userManager = userManager;
         }
+
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var users = _bl.Get();
+            return Ok(users);
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] ApplicationUser user)
+        {
+            _bl.Insert(user);
+            return Ok("User added successfully.");
+        }
+
+        // Agrega métodos para actualizar y eliminar según sea necesario.
     }
+
 }
 

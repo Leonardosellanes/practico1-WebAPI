@@ -34,6 +34,7 @@ namespace DataAccessLayer
             base.OnModelCreating(builder);
         }
 
+        public DbSet<ApplicationUser> Usuarios { get; set; }
         public DbSet<Productos> Productos { get; set; }
         public DbSet<Categorias> Categorias { get; set; }
         public DbSet<Empresas> Empresas { get; set; }

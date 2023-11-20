@@ -128,7 +128,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Route("Register")]
         [ProducesResponseType(typeof(StatusDTO), 200)]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] ApplicationUser model)
         {
             try
             {
