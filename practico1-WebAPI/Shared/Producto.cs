@@ -13,9 +13,12 @@ namespace Shared
         public string Titulo { get; set; } = "";
         public string Descripcion { get; set; } = "";
         public string Foto { get; set; } = "";
+
+        public string? Base64 { get; set; } = "";
         public int Precio { get; set; }
         public string Tipo_iva { get; set; } = "";
         public string Pdf { get; set; } = "";
+        public string? Base64pdf { get; set; } = "";
         public int EmpresaId { get; set; }
         public int CategoriaId {  get; set; }
         public Categoria? Categoria { get; set; }

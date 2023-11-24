@@ -26,7 +26,7 @@ app.MapPost("/reporte", (RequestData requestData) =>
     // Lee los datos del cuerpo de la solicitud
     var htmlCode = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "Template\\invoice1.html");
 
-    var fechaInicio = requestData.fechaInicio.ToString();
+    var fechaInicio = requestData.FechaInicio.ToString();
     var fechaFin = requestData.FechaFin.ToString();
     var comisionesTotales = requestData.ComisionesTotales.ToString();
 

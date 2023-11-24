@@ -12,15 +12,15 @@ namespace WebAPI.Controllers
     [ApiController]
     public class PersonasController : ControllerBase
     {
-        private readonly IBL_Personas _bl;
+        private readonly IBL_ApplicationUsers _bl;
 
-        public PersonasController(IBL_Personas bl)
+        public PersonasController(IBL_ApplicationUsers bl)
         {
             _bl = bl;
         }
 
         // GET: api/<PersonasController>
-        [ProducesResponseType(typeof(List<Persona>), 200)]
+        [ProducesResponseType(typeof(List<Usuario>), 200)]
         [HttpGet]
         public IActionResult Get()
         {
@@ -33,40 +33,6 @@ namespace WebAPI.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
             }
             
-        }
-
-        // GET api/<PersonasController>/12345678
-        [ProducesResponseType(typeof(Persona), 200)]
-        [HttpGet("{id}")]
-        public IActionResult Get(string documento)
-        {
-            try
-            {
-                return Ok(_bl.Get(documento));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
-            }
-            
-        }
-
-        // POST api/<PersonasController>
-        [ProducesResponseType(typeof(Persona), 200)]
-        [HttpPost]
-        [Authorize(Roles = "ADMIN, OTRO")]
-        public IActionResult Post([FromBody] Persona x)
-        {
-            try
-            {
-                _bl.Insert(x);
-            return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
-            }
-           
         }
 
         // PUT api/<ValuesController>/5

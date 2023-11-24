@@ -32,12 +32,11 @@ namespace WebAPI.Controllers
                 }
 
                 // Guarda la ruta del archivo en tu base de datos si es necesario
-                // (alternativamente, podrías almacenar solo el nombre del archivo y reconstruir la ruta cuando sea necesario)
-                var rutaBaseDatos = rutaDirectorio + nombreArchivo;
+                // (alternativamente, podrías almacenar solo el nombre del archivo y reconstruir la ruta cuando sea necesario
 
                 // Resto de la lógica según tus necesidades
 
-                return Ok(new { ruta = rutaBaseDatos });
+                return Ok(new { ruta = nombreArchivo });
             }
 
             return BadRequest("No se proporcionó un archivo válido.");
@@ -61,11 +60,10 @@ namespace WebAPI.Controllers
 
                     // Puedes guardar la ruta del archivo en tu base de datos si es necesario
                     // (alternativamente, podrías almacenar solo el nombre del archivo y reconstruir la ruta cuando sea necesario)
-                    var rutaBaseDatos = Path.Combine("Archivos", "Pdf", nombreArchivo);
 
                     // Resto de la lógica según tus necesidades
 
-                    return Ok(new { ruta = rutaBaseDatos });
+                    return Ok(new { ruta = nombreArchivo });
                 }
 
                 return BadRequest("No se proporcionó un archivo PDF válido.");
@@ -74,6 +72,22 @@ namespace WebAPI.Controllers
             {
                 // Manejar cualquier excepción aquí
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error interno del servidor: {ex.Message}");
+            }
+        }
+
+        [HttpGet("obtener-pdf")]
+        public IActionResult ObtenerPdf(string nombreArchivo)
+        {
+            var rutaCompleta = Path.Combine(_env.ContentRootPath, "Archivos", "Pdf", nombreArchivo);
+
+            if (System.IO.File.Exists(rutaCompleta))
+            {
+                var archivoBytes = System.IO.File.ReadAllBytes(rutaCompleta);
+                return File(archivoBytes, "application/pdf", nombreArchivo);
+            }
+            else
+            {
+                return NotFound();
             }
         }
     }

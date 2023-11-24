@@ -48,8 +48,11 @@ namespace DataAccessLayer.DALs
                                     Titulo = p.Titulo,
                                     Descripcion = p.Descripcion,
                                     Foto = p.Foto,
+                                    Base64 = GetImage(p.Foto),
                                     Precio = p.Precio,
                                     Tipo_iva = p.Tipo_iva,
+                                    Pdf = p.Pdf,
+                                    Base64pdf = GetPdf(p.Pdf),
                                     EmpresaId = p.EmpresaId,
                                     CategoriaId = p.CategoriaId,
                                     Categoria = new Categoria
@@ -83,8 +86,11 @@ namespace DataAccessLayer.DALs
                     Titulo = producto.Titulo,
                     Descripcion = producto.Descripcion,
                     Foto = producto.Foto,
+                    Base64 = GetImage(producto.Foto),
                     Precio = producto.Precio,
                     Tipo_iva = producto.Tipo_iva,
+                    Pdf = producto.Pdf,
+                    Base64pdf = GetPdf(producto.Pdf),
                     EmpresaId = producto.EmpresaId,
                     CategoriaId = producto.CategoriaId,
                     Categoria = new Categoria
@@ -143,30 +149,20 @@ namespace DataAccessLayer.DALs
                     productoExistente.Foto = producto.Foto;
                     productoExistente.Precio = producto.Precio;
                     productoExistente.Tipo_iva = producto.Tipo_iva;
+                    productoExistente.Pdf = producto.Pdf;
 
-                    
-                    if (producto.Categoria != null && productoExistente.CategoriaAsociada != null)
+                    if (producto.CategoriaId != 0 && productoExistente.CategoriaId != 0)
                     {
-                        if (producto.Categoria.Id != productoExistente.CategoriaAsociada.Id)
+                        if (producto.CategoriaId != productoExistente.CategoriaId)
                         {
-                            productoExistente.CategoriaAsociada.Id = producto.Categoria.Id;
-                            productoExistente.CategoriaAsociada.Nombre = producto.Categoria.Nombre;
+                            productoExistente.CategoriaId = producto.CategoriaId;
                         }
                     }
-                    else if (producto.Categoria != null && productoExistente.CategoriaAsociada == null)
+                    else if (producto.CategoriaId != 0 && productoExistente.CategoriaId == 0)
                     {
-                        productoExistente.CategoriaAsociada = new Categorias
-                        {
-                            Id = producto.Categoria.Id,
-                            Nombre = producto.Categoria.Nombre
-                        };
-                    }
-                    else
-                    {
-                        productoExistente.CategoriaAsociada = null;
+                        productoExistente.CategoriaId = producto.CategoriaId;
                     }
 
-                    
                     _dbContext.SaveChanges();
                 }
                 else
@@ -181,8 +177,48 @@ namespace DataAccessLayer.DALs
         }
 
 
+        public static string GetImage(string fileName)
+        {
+            string filePath = Path.Combine("Archivos", "Imagenes", fileName);
 
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    byte[] fileBytes = File.ReadAllBytes(filePath);
+                    return Convert.ToBase64String(fileBytes);
+                }
+                catch (Exception ex)
+                {
+                    return $"Error al leer el archivo: {ex.Message}";
+                }
+            }
+            else
+            {
+                return "El archivo no fue encontrado.";
+            }
+        }
 
+        public static string GetPdf(string fileName)
+        {
+            string filePath = Path.Combine("Archivos", "Pdf", fileName);
 
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    byte[] fileBytes = File.ReadAllBytes(filePath);
+                    return Convert.ToBase64String(fileBytes);
+                }
+                catch (Exception ex)
+                {
+                    return $"Error al leer el archivo: {ex.Message}";
+                }
+            }
+            else
+            {
+                return "El archivo no fue encontrado.";
+            }
+        }
     }
 }

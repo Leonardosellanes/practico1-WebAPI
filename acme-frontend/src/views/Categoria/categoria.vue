@@ -1,21 +1,19 @@
 <template>
     <div class=" w-full h-full space-y-10">
-        <a-page-header class="demo-page-header" style="border: 1px solid rgb(235, 237, 240)" title="Categorias"
-            sub-title="Categorias de la empresa" @back="() => $router.go(-1)">
+        <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Categorias" sub-title="Categorias de la empresa">
             <template #extra>
                 <a-button type="primary" @click="showModal">Agregar</a-button>
                 <a-modal v-model:open="open" title="Agregar Categoria" :confirm-loading="confirmLoading" @ok="handleOk">
                     <a-space direction="vertical" style="width: 100%;">
-                        <a-input v-model:value="nombre" placeholder="Nombre" />
-                        <a-select ref="select" v-model:value="value" style="width: 100%" :options="options"
-                            placeholder="Categoria Asociada" />
+                        <a-input v-model:value="nombre" placeholder="Nombre" :status="errorNombre" />
+                        <a-select ref="select" v-model:value="value" style="width: 100%" placeholder="Categoria Asociada" :options="options"/>
                     </a-space>
                 </a-modal>
                 <a-modal v-model:open="openEditar" title="Editar Categoria" :confirm-loading="confirmLoading"
                     @ok="handleEditOk">
                     <a-space direction="vertical" style="width: 100%;">
-                        <a-input v-model:value="nombre" placeholder="Nombre" />
-                        <a-select ref="select" v-model:value="value" style="width: 100%" :options="options"
+                        <a-input v-model:value="nombre" placeholder="Nombre" :status="errorNombre" />
+                        <a-select ref="select" v-model:value="value" style="width: 100%" :options="options.filter(categoria => categoria.value != editarCategoria.key)"
                             placeholder="Categoria Asociada" />
                     </a-space>
                 </a-modal>
@@ -57,7 +55,7 @@ import { ref, h, onMounted } from 'vue';
 import CategoriaController from '../../services/CategoriaController'
 import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { createVNode } from 'vue';
-import { Modal } from 'ant-design-vue';
+import { Modal, message } from 'ant-design-vue';
 
 const open = ref(false);
 const openEditar = ref(false);
@@ -67,6 +65,7 @@ const options = ref([]);
 const value = ref('');
 const data = ref([]);
 const editarCategoria = ref([]);
+const errorNombre = ref('')
 
 const indicator = h(LoadingOutlined, {
     style: {
@@ -115,41 +114,56 @@ const cargarCategorias = () => {
                 .sort((a, b) => a.label.localeCompare(b.label));
         })
         .catch((error) => {
-            console.error('Error al obtener la lista de categorias:', error);
+            message.error('Error al obtener la lista de categorias');
         });
 }
 
 const showModal = () => {
     nombre.value = '';
-    value.value = null;
+    value.value = '';
     open.value = true;
 };
 
 const handleOk = () => {
-    const data = {
-        Id: 0,
-        nombre: nombre.value,
-        categoriaId: value.value,
-        empresaId: 1
-    }
+    if (nombre.value != '') {
+        console.log(value.value)
+        errorNombre.value = ''
+        const data = {
+            Id: 0,
+            nombre: nombre.value,
+            categoriaId: value.value,
+            empresaId: 1
+        }
 
-    confirmLoading.value = true;
-    const create = CategoriaController.createCategorias(data)
-        .then(() => {
-            open.value = false;
-            confirmLoading.value = false;
-            cargarCategorias()
-        })
-        .catch((error) => {
-            console.error('Error al crear categoria:', error);
-        });
+        confirmLoading.value = true;
+        const create = CategoriaController.createCategorias(data)
+            .then(() => {
+                open.value = false;
+                confirmLoading.value = false;
+                message.success('Categoría creada');
+                cargarCategorias()
+            })
+            .catch((error) => {
+                message.error('Error al crear categoria');
+            });
+    }
+    else {
+        if (nombre.value == '') {
+            errorNombre.value = 'error'
+        }
+    }
 };
 
 const handleEditOk = () => {
+    
+
+    if (nombre.value != '') {
+        errorNombre.value = ''
+    }
 
     const foundCategory = options.value.find((opt) => opt.label === value.value);
     const key = foundCategory ? foundCategory.key : null;
-
+    if (nombre.value != '') {
     const data = {
         id: editarCategoria.value.key,
         nombre: nombre.value,
@@ -163,17 +177,25 @@ const handleEditOk = () => {
         .then(() => {
             openEditar.value = false;
             confirmLoading.value = false;
+            message.success('Categoría editada');
             cargarCategorias()
         })
         .catch((error) => {
-            console.error('Error al editar categoria:', error);
+            message.error('Error al editar la categoria');
         });
+    }
+    else {
+        if (nombre.value == '') {
+            errorNombre.value = 'error'
+        }
+    }
 };
 
 
 // Puedes implementar una función similar para editar si es necesario
 const editCategory = (category) => {
-
+    console.log(options.value[0].value)
+    errorNombre.value = ''
 
     editarCategoria.value = category
     nombre.value = category.name
