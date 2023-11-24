@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.EFModels;
+﻿using DataAccessLayer;
+using DataAccessLayer.EFModels;
 using DataAccessLayer.IDALs;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,30 +8,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.DALs
+public class DAL_ApplicationUsers : IDAL_ApplicationUsers
 {
-    public class DAL_ApplicationUsers : IDAL_ApplicationUsers
+    private readonly DBContextCore _dbContext;
+
+    public DAL_ApplicationUsers(DBContextCore dbContext)
     {
-        public void Delete(ApplicationUser applicationUsers)
-        {
-            throw new NotImplementedException();
-        }
+        _dbContext = dbContext;
+    }
 
-        public List<ApplicationUser> Get()
-        {
-            throw new NotImplementedException();
-        }
+    public void Delete(ApplicationUser applicationUser)
+    {
+        _dbContext.Users.Remove(applicationUser);
+        _dbContext.SaveChanges();
+    }
 
-        public void Insert(ApplicationUser applicationUsers)
-        {
-            throw new NotImplementedException();
-        }
+    public List<ApplicationUser> Get()
+    {
+        return _dbContext.Users.ToList();
+    }
 
-        public void Update(ApplicationUser applicationUsers)
-        {
-            throw new NotImplementedException();
-        }
+    public void Insert(ApplicationUser applicationUser)
+    {
+        _dbContext.Users.Add(applicationUser);
+        _dbContext.SaveChanges();
+    }
+
+    public void Update(ApplicationUser applicationUser)
+    {
+        _dbContext.Users.Update(applicationUser);
+        _dbContext.SaveChanges();
     }
 }
-
 

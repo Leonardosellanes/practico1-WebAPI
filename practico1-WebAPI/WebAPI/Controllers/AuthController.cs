@@ -27,23 +27,21 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<Usuarios> userManager;
+        private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration configuration;
-        private readonly IBL_Personas blPersonas;
         private readonly DBContextCore db;
 
         public AuthController(
-                UserManager<Usuarios> _userManager,
+                UserManager<ApplicationUser> _userManager,
                 RoleManager<IdentityRole> _roleManager,
                 IConfiguration _configuration,
-                IBL_Personas _blPersonas,
+                IBL_ApplicationUsers _blPersonas,
                 DBContextCore _db)
         {
             userManager = _userManager;
             roleManager = _roleManager;
             configuration = _configuration;
-            blPersonas = _blPersonas;
             db = _db;
         }
 
@@ -54,7 +52,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                Usuarios user = await userManager.FindByNameAsync(userName: model.Username);
+                ApplicationUser user = await userManager.FindByNameAsync(userName: model.Username);
 
                 // Si el usuario existe, está activo, no está bloqueado y la contraseña es correcta
                 if (user != null &&
@@ -130,7 +128,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Route("Register")]
         [ProducesResponseType(typeof(StatusDTO), 200)]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] ApplicationUser model)
         {
             try
             {
@@ -139,7 +137,7 @@ namespace WebAPI.Controllers
                     return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "El usuario ya existe!"));
 
                 // Creamos el usuario.
-                Usuarios user = new Usuarios()
+                ApplicationUser user = new ApplicationUser()
                 {
                     Email = model.Email,
                     SecurityStamp = Guid.NewGuid().ToString(),

@@ -10,7 +10,7 @@ namespace Shared
     {
         public Boolean? isAdmin { get; set; }
 
-        public Empresa[] Empleadora { get; set; }
+        public Empresa[]? Empleadora { get; set; }
 
     }
 }

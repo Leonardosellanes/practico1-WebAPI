@@ -28,7 +28,7 @@ namespace WebAPI
                 .CreateScope())
             {
                 using (var dbContext = serviceScope.ServiceProvider.GetService<DBContextCore>())
-                using (var userManager = serviceScope.ServiceProvider.GetService<UserManager<Usuarios>>())
+                using (var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>())
                 using (var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>())
                 {
                     #region Agregamos Los Roles Por defecto
