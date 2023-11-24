@@ -10,8 +10,8 @@ namespace Shared
     {
         public string? shipAdress { get; set; }
 
-        public Opinion[] Emitida { get; set; }
+        public Opinion[]? Emitida { get; set; }
 
-        public Empresa[] Relacionada { get; set; }
+        public Empresa[]? Relacionada { get; set; }
     }
 }
