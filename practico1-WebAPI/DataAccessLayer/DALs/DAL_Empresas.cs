@@ -24,6 +24,7 @@ namespace DataAccessLayer.DALs
             Empresas emp = _dbContext.Empresas
                 .Include(e => e.CategoriasAsociadas)
                 .Include(p => p.ProductosAsociados)
+                .Include(s => s.SucursalesAsociadas)
                 .FirstOrDefault(e => e.Id == id);
 
             return emp == null
@@ -49,7 +50,14 @@ namespace DataAccessLayer.DALs
                         Pdf = c.Pdf,
                         EmpresaId = c.EmpresaId,
                         CategoriaId = c.CategoriaId
-                    }).ToList()
+                    }).ToList(),
+                    Sucursales = emp.SucursalesAsociadas.Select(s => new Sucursal
+                    {
+                        Id = s.Id,
+                        Nombre = s.Nombre,
+                        Ubicacion = s.Ubicacion,
+                        TiempoEntrega = s.TiempoEntrega
+                    }).ToList(),
                 };
         }
 
@@ -59,6 +67,7 @@ namespace DataAccessLayer.DALs
             return _dbContext.Empresas
                              .Include(e => e.CategoriasAsociadas)
                              .Include(p => p.ProductosAsociados)
+                             .Include(s => s.SucursalesAsociadas)
                              .Select(e => new Empresa
                              {
                                  Id = e.Id,
@@ -80,6 +89,13 @@ namespace DataAccessLayer.DALs
                                      Pdf = c.Pdf,
                                      EmpresaId = c.EmpresaId,
                                      CategoriaId = c.CategoriaId
+                                 }).ToList(),
+                                 Sucursales = e.SucursalesAsociadas.Select(s => new Sucursal
+                                 {
+                                     Id = s.Id,
+                                     Nombre = s.Nombre,
+                                     Ubicacion = s.Ubicacion,
+                                     TiempoEntrega = s.TiempoEntrega
                                  }).ToList()
                              })
                              .ToList();
