@@ -7,22 +7,33 @@
               <a-modal v-model:open="open" title="Agregar Sucursal" :confirm-loading="confirmLoading" @ok="handleOk">
                 <a-divider type="horizontal" />
                     <a-space direction="vertical" style="width: 100%;">
-                      <a-input v-model:value="nombre" placeholder="Nombre" />
-                      <a-input v-model:value="latitud" placeholder="Latitud" />
-                      <a-input v-model:value="longitud" placeholder="Longitud" />
-                      <label>Tiempo de entrega (dias)</label>
-                      <a-input v-model:value="tiempoEntrega" type="numeric" />
+                        <a-input v-model:value="nombre" placeholder="Nombre" />
+                        <label>Tiempo de entrega (dias)</label>
+                        <a-input v-model:value="tiempoEntrega" type="numeric" />
+                        <mapaIngreso :latitud="latitud" :longitud="longitud" :nombre="nombre"
+                            @actualizar-coordenadas="actualizarCoordenadas" >
+                        </mapaIngreso>
+                        <a-space direction="horizontal" style="width: 100%; gap: 30px;">
+                            <a-input v-model:value="latitud" placeholder="Latitud" />
+                            <a-input v-model:value="longitud" placeholder="Longitud" />
+                        </a-space>
+                      
                     </a-space>
               </a-modal>
               <a-modal v-model:open="openEditar" title="Editar Sucursal" :confirm-loading="confirmLoading"
                   @ok="handleEditOk">
                   <a-divider type="horizontal" />
                     <a-space direction="vertical" style="width: 100%;">
-                      <a-input v-model:value="nombre" placeholder="Nombre" />
-                      <a-input v-model:value="latitud" placeholder="Latitud" />
-                      <a-input v-model:value="longitud" placeholder="Longitud" />
-                      <label>Tiempo de entrega (dias)</label>
-                      <a-input v-model:value="tiempoEntrega" type="numeric" />
+                        <a-input v-model:value="nombre" placeholder="Nombre" />
+                        <label>Tiempo de entrega (dias)</label>
+                        <a-input v-model:value="tiempoEntrega" type="numeric" />
+                        <mapaIngreso :latitud="latitud" :longitud="longitud" :nombre="nombre"
+                            @actualizar-coordenadas="actualizarCoordenadas" >
+                        </mapaIngreso>
+                        <a-space direction="horizontal" style="width: 100%; gap: 30px;">
+                            <a-input v-model:value="latitud" placeholder="Latitud" />
+                            <a-input v-model:value="longitud" placeholder="Longitud" />
+                        </a-space>
                   </a-space>
               </a-modal>
           </template>
@@ -52,6 +63,7 @@
               </a-table>
           </div>
       </div>
+      <!--mapaSelect></mapaSelect-->
   </div>
 </template>
   
@@ -63,6 +75,8 @@
     import { createVNode } from 'vue';
     import { Modal, message } from 'ant-design-vue';
     import { useRouter, useRoute } from 'vue-router';
+    import mapaIngreso from './mapaIngreso.vue';
+    //import mapaSelect from './mapaIngreso.vue';
 
     export default {
     data() {
@@ -119,6 +133,9 @@
         const { id } = this.route.params;
         this.idEmpresa = id;
         this.buscarEmpresa();
+    },
+    components: {
+        mapaIngreso, //mapaSelect
     },
     methods: {
         buscarEmpresa() {
@@ -233,7 +250,10 @@
             }
         },
 
-
+        actualizarCoordenadas(coordenadas) {
+            this.latitud = coordenadas.latitud;
+            this.longitud = coordenadas.longitud;
+        },
     },
 
   };
