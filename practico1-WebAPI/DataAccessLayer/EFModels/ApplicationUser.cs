@@ -22,5 +22,11 @@ namespace DataAccessLayer.EFModels
         public bool IsAdmin { get; set; }
 
         public string? Address { get; set; }
+
+        public List<OC>? OCs { get; set; }
+
+        public List<Empresas>? Ecs { get; set; }
+
+        public List<Opiniones>? OPs { get; set; }
     }
 }

@@ -24,7 +24,15 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_bl.Get());
+            try
+            {
+                return Ok(_bl.Get());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
 
         // GET api/<PersonasController>/12345678
@@ -32,7 +40,15 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(string documento)
         {
-            return Ok(_bl.Get(documento));
+            try
+            {
+                return Ok(_bl.Get(documento));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
 
         // POST api/<PersonasController>
@@ -41,8 +57,16 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "ADMIN, OTRO")]
         public IActionResult Post([FromBody] Persona x)
         {
-            _bl.Insert(x);
+            try
+            {
+                _bl.Insert(x);
             return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+           
         }
 
         // PUT api/<ValuesController>/5

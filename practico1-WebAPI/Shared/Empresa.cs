@@ -15,5 +15,7 @@ namespace Shared
         public List<Categoria>? Categorias { get; set; }
 
         public List<Producto>? Productos{ get; set; }
+
+        public List<Sucursal>? Sucursales { get; set; }
     }
 }

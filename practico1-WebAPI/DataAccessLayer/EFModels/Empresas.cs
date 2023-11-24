@@ -24,5 +24,7 @@ namespace DataAccessLayer.EFModels
 
         public List<Productos>? ProductosAsociados { get; set; }
 
+        public List<Sucursales>? SucursalesAsociadas { get; set; }
+
     }
 }

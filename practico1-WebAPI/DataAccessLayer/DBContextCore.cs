@@ -41,7 +41,10 @@ namespace DataAccessLayer
         public DbSet<Empresas> Empresas { get; set; }
         public DbSet<Sucursales> Sucursales { get; set; }
         public DbSet<Facturas> Facturas { get; set; }
+
         public DbSet<Opiniones> Opiniones { get; set; }
+        public DbSet<EFModels.OC> OC { get; set; }
+        public DbSet<CarritoProducto> CarritoProducto { get; set; }
         public DbSet<Reclamos> Reclamos { get; set; }
     }
 }

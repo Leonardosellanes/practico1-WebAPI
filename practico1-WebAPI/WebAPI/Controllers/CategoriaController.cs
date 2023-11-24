@@ -24,7 +24,15 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_bl.Get());
+            try
+            {
+                return Ok(_bl.Get());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
 
         // GET api/<CategoriasController>/1
@@ -32,7 +40,15 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return Ok(_bl.Get(id));
+            try
+            {
+                return Ok(_bl.Get(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+           
         }
 
         // POST api/<CategoriaController>
@@ -41,22 +57,48 @@ namespace WebAPI.Controllers
         //[Authorize(Roles = "ADMIN, OTRO")]
         public IActionResult Post([FromBody] Categoria x)
         {
-            _bl.Insert(x);
-            return Ok();
+            try
+            {
+                _bl.Insert(x);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
 
         // PUT api/<CategoriasController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Categoria categoria)
+        public IActionResult Put(int id, [FromBody] Categoria categoria)
         {
-            _bl.Update(categoria);
+            try
+            {
+                 _bl.Update(categoria);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+           
         }
 
         // DELETE api/<ValuesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _bl.Delete(id);
+            try
+            {
+                _bl.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+            
         }
     }
 }
