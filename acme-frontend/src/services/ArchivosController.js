@@ -10,5 +10,9 @@ export default{
         return axios.post("Archivos/subir-pdf", data);
     },
 
+    obtenerPdf(nombre){
+        return axios.post("Archivos/obtener-pdf", nombre);
+    },
+
 
 }

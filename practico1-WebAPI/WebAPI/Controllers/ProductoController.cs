@@ -47,8 +47,9 @@ namespace WebAPI.Controllers
 
         // PUT api/<CategoriasController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] Producto p)
         {
+            _bl.Update(p);
         }
 
         // DELETE api/<ValuesController>/5

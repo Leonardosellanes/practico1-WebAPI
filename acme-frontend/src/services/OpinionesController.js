@@ -10,8 +10,8 @@ export default{
         return axios.get("Producto/" + id);
     },
 
-    createProducto(body){
-        return axios.post("Producto", body);
+    createOpinion(body){
+        return axios.post("Opinion", body);
     },
 
     editarProducto(id, body){
