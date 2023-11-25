@@ -41,10 +41,11 @@ namespace DataAccessLayer.DALs
         }
 
 
-        public List<Categoria> Get()
+        public List<Categoria> Get(int empresaId)
         {
             return _dbContext.Categorias
                 .Include(p => p.ProductosAsociados)
+                .Where(x => x.EmpresaId == empresaId)
                 .Select(c => new Categoria
                 {
                     Id = c.Id,
@@ -74,7 +75,7 @@ namespace DataAccessLayer.DALs
                 .ToList();
         }
 
-        public Categoria Get(int id)
+        public Categoria GetbyId(int id)
         {
             Categorias x = _dbContext.Categorias
                 .Include(p => p.ProductosAsociados)

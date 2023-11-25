@@ -9,9 +9,9 @@ namespace DataAccessLayer.IDALs
 {
     public interface IDAL_Categorias
     {
-        List<Categoria> Get();
+        List<Categoria> Get(int empresaId);
 
-        Categoria Get(int id);
+        Categoria GetbyId(int id);
 
         void Insert(Categoria categoria);
 

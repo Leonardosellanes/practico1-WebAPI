@@ -121,6 +121,7 @@
 import { ref, h, onMounted } from 'vue';
 import CategoriaController from '../../services/CategoriaController'
 import ProductoController from '../../services/ProductosController'
+import EmpresasController from '../../services/EmpresasController';
 import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { createVNode } from 'vue';
 import { Modal, message } from 'ant-design-vue';
@@ -296,7 +297,7 @@ const headersPdf = {
 };
 
 const cargarCategorias = () => {
-    const dataCategorias = CategoriaController.getCategorias()
+    const dataCategorias = CategoriaController.getCategorias(1)
         .then((response) => {
 
             options.value = response.data
@@ -313,13 +314,14 @@ const cargarCategorias = () => {
 
 const cargarProductos = () => {
     loading.value = true
-    const dataProductos = ProductoController.getProductos()
+    const dataProductos = EmpresasController.getById(1)
         .then((response) => {
-            data.value = response.data.reverse();
+            data.value = response.data.productos
             loading.value= false;
         })
         .catch((error) => {
             loading.value= false;
+            console.log(error)
             message.error('Error al obtener la lista de productos');
         });
 }
@@ -370,7 +372,7 @@ const editProducto = (producto) => {
     editarProducto.value = producto;
     titleRef.value = producto.titulo,
         descriptionRef.value = producto.descripcion,
-        value.value = producto.categoria.id,
+        value.value = producto.categoriaId,
         priceRef.value = producto.precio,
         IVA.value = producto.tipo_iva
 
@@ -398,8 +400,16 @@ const viewPdf = (data) => {
 
 
 const viewOpiniones = (data) => {
-    opiniones.value = data.opinionesAsociadas;
-    openOpiniones.value = true;
+    console.log(data)
+    const producto = ProductoController.getProductoById(data.id)
+    .then((response) => {
+           opiniones.value = response.data.opinionesAsociadas;
+            openOpiniones.value = true;
+        })
+        .catch((error) => {
+            message.error('Error al cargar las opiniones');
+        });
+    
 };
 
 

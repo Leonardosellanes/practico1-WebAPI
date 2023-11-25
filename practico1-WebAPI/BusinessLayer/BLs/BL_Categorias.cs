@@ -23,14 +23,14 @@ namespace BusinessLayer.BLs
             _categorias.Delete(id);
         }
 
-        public List<Categoria> Get()
+        public List<Categoria> Get(int empresaId)
         {
-            return _categorias.Get();
+            return _categorias.Get(empresaId);
         }
 
-        public Categoria Get(int id)
+        public Categoria GetbyId(int id)
         {
-            return _categorias.Get(id);
+            return _categorias.GetbyId(id);
         }
 
         public void Insert(Categoria categoria)

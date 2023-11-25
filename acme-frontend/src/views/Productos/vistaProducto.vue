@@ -134,6 +134,7 @@ const indicator = h(LoadingOutlined, {
 const cargarProducto = () => {
     const dataProductos = ProductosController.getProductoById(productId.value)
         .then((response) => {
+            console.log(response.data.categoriaId)
             data.value = response.data
             opiniones.value = response.data.opinionesAsociadas
             cargarAsociados(response.data.categoriaId)
@@ -146,12 +147,14 @@ const cargarProducto = () => {
 const cargarAsociados = (catId) => {
   const dataProductos = CategoriaController.getById(catId)
     .then((response) => {
+        console.log(response)
         CategoriaController.getById(response.data.categoriaAsociada.id)
         .then((response) => {
         productosAsociados.value = response.data.productos;
     })
     })
     .catch((error) => {
+        console.log(error)
       console.error('Error al obtener la lista de productos asociados:', error);
     });
 };
