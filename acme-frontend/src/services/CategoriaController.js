@@ -6,6 +6,10 @@ export default{
         return axios.get("Categoria");
     },
 
+    getById(id){
+        return axios.get("Categoria/" + id);
+    },
+
     createCategorias(body){
         return axios.post("Categoria", body);
     },
