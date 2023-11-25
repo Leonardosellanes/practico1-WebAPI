@@ -2,8 +2,8 @@ import axios from "./axios";
 
 export default{
 
-    getCategorias(){
-        return axios.get("Categoria");
+    getCategorias(id){
+        return axios.get("Categoria/Empresa/" + id);
     },
 
     getById(id){

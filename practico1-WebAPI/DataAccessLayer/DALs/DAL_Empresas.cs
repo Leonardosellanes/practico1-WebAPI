@@ -45,9 +45,11 @@ namespace DataAccessLayer.DALs
                         Titulo = c.Titulo,
                         Descripcion = c.Descripcion,
                         Foto = c.Foto,
+                        Base64 = GetImage(c.Foto),
                         Precio = c.Precio,
                         Tipo_iva = c.Tipo_iva,
                         Pdf = c.Pdf,
+                        Base64pdf = GetPdf(c.Pdf),
                         EmpresaId = c.EmpresaId,
                         CategoriaId = c.CategoriaId
                     }).ToList(),
@@ -129,6 +131,50 @@ namespace DataAccessLayer.DALs
             {
                 _dbContext.Empresas.Remove(empresa);
                 _dbContext.SaveChanges();
+            }
+        }
+
+        public static string GetImage(string fileName)
+        {
+            string filePath = Path.Combine("Archivos", "Imagenes", fileName);
+
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    byte[] fileBytes = File.ReadAllBytes(filePath);
+                    return Convert.ToBase64String(fileBytes);
+                }
+                catch (Exception ex)
+                {
+                    return $"Error al leer el archivo: {ex.Message}";
+                }
+            }
+            else
+            {
+                return "El archivo no fue encontrado.";
+            }
+        }
+
+        public static string GetPdf(string fileName)
+        {
+            string filePath = Path.Combine("Archivos", "Pdf", fileName);
+
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    byte[] fileBytes = File.ReadAllBytes(filePath);
+                    return Convert.ToBase64String(fileBytes);
+                }
+                catch (Exception ex)
+                {
+                    return $"Error al leer el archivo: {ex.Message}";
+                }
+            }
+            else
+            {
+                return "El archivo no fue encontrado.";
             }
         }
     }

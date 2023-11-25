@@ -93,7 +93,7 @@ const columns = [
 ];
 
 const cargarCategorias = () => {
-    const dataCategorias = CategoriaController.getCategorias()
+    const dataCategorias = CategoriaController.getCategorias(1)
         .then((response) => {
             data.value = response.data
                 .map((categoria) => ({
@@ -161,8 +161,11 @@ const handleEditOk = () => {
         errorNombre.value = ''
     }
 
-    const foundCategory = options.value.find((opt) => opt.label === value.value);
-    const key = foundCategory ? foundCategory.key : null;
+    console.log(value.value)
+    const foundCategory = options.value.find((opt) => opt.value == value.value);
+    const key = foundCategory ? foundCategory.value : null;
+    console.log(foundCategory)
+    console.log(key)
     if (nombre.value != '') {
     const data = {
         id: editarCategoria.value.key,

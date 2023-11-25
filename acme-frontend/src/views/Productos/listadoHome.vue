@@ -33,6 +33,7 @@
 <script setup>
 import { ref, onMounted,h } from 'vue';
 import ProductosController from '../../services/ProductosController';
+import EmpresasController from '../../services/EmpresasController';
 import { useRouter } from 'vue-router';
 import { LoadingOutlined } from '@ant-design/icons-vue';
 
@@ -48,9 +49,10 @@ const indicator = h(LoadingOutlined, {
 
 const cargarProductos = () => {
     loading.value = true
-    const dataProductos = ProductosController.getProductos()
+    const dataProductos = EmpresasController.getById(1)
         .then((response) => {
-            data.value = response.data.reverse();
+            console.log(response.data.productos)
+            data.value = response.data.productos.reverse();
             loading.value = false
         })
         .catch((error) => {

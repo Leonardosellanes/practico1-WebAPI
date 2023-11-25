@@ -21,12 +21,12 @@ namespace WebAPI.Controllers
 
         // GET: api/<CategoriasController>
         [ProducesResponseType(typeof(List<Categoria>), 200)]
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("Empresa/{id}")]
+        public IActionResult Get(int id)
         {
             try
             {
-                return Ok(_bl.Get());
+                return Ok(_bl.Get(id));
             }
             catch (Exception ex)
             {
@@ -38,11 +38,11 @@ namespace WebAPI.Controllers
         // GET api/<CategoriasController>/1
         [ProducesResponseType(typeof(Categoria), 200)]
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetbyId(int id)
         {
             try
             {
-                return Ok(_bl.Get(id));
+                return Ok(_bl.GetbyId(id));
             }
             catch (Exception ex)
             {
