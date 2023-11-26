@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using BusinessLayer.IBLs;
 using DataAccessLayer.DALs;
-using DataAccessLayer.EFModels;
+//using DataAccessLayer.EFModels;
 using DataAccessLayer.IDALs;
+using Shared;
 
 namespace BusinessLayer.BLs
 {
@@ -19,22 +20,25 @@ namespace BusinessLayer.BLs
             _dalOC = dalOC ?? throw new ArgumentNullException(nameof(dalOC));
         }
 
-        public OC ObtenerOCPorId(long id)
+        public Orden ObtenerOCPorId(long id)
         {
             return _dalOC.ObtenerOCPorId(id);
         }
-
-        public List<OC> ObtenerTodasLasOcs()
+        public Orden obtenerCarrito(string clienteId)
+        {
+            return _dalOC.obtenerCarrito(clienteId);
+        }
+        public List<Orden> ObtenerTodasLasOcs()
         {
             return _dalOC.ObtenerTodasLasOcs();
         }
 
-        public void CrearOC(OC orden)
+        public void CrearOC(Orden orden)
         {
             _dalOC.CrearOC(orden);
         }
 
-        public void ActualizarOC(OC orden)
+        public void ActualizarOC(Orden orden)
         {
             _dalOC.ActualizarOC(orden);
         }

@@ -49,7 +49,7 @@ const indicator = h(LoadingOutlined, {
 
 const cargarProductos = () => {
     loading.value = true
-    const dataProductos = EmpresasController.getById(1)
+    const dataProductos = EmpresasController.getById(15)
         .then((response) => {
             console.log(response.data.productos)
             data.value = response.data.productos.reverse();
