@@ -93,7 +93,7 @@ const columns = [
 ];
 
 const cargarCategorias = () => {
-    const dataCategorias = CategoriaController.getCategorias(1)
+    const dataCategorias = CategoriaController.getCategorias(15)
         .then((response) => {
             data.value = response.data
                 .map((categoria) => ({
@@ -132,7 +132,7 @@ const handleOk = () => {
             Id: 0,
             nombre: nombre.value,
             categoriaId: value.value,
-            empresaId: 1
+            empresaId: 15
         }
 
         confirmLoading.value = true;
@@ -171,7 +171,7 @@ const handleEditOk = () => {
         id: editarCategoria.value.key,
         nombre: nombre.value,
         categoriaId: key,
-        empresaId: 1
+        empresaId: 15
     }
 
     console.log(data)

@@ -6,9 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Serialization;
 
 namespace DataAccessLayer.EFModels
 {
+    [DataContract(Name = "EFModels_OC")]
     public class OC
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

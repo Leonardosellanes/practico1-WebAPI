@@ -5,21 +5,22 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Shared
 {
-    public class OC
+    public class Orden
     {
         public long Id { get; set; }
 
 
-        public string MedioDePago { get; set; } 
+        public string MedioDePago { get; set; } = "";
 
-        public string DireccionDeEnvio { get; set; } 
+        public string DireccionDeEnvio { get; set; } = "";
 
         public DateTime FechaEstimadaEntrega { get; set; }
 
-        public decimal Total { get; set; }
+        public decimal Total { get; set; } = 0 ;
 
         public string EstadoOrden { get; set; } 
 
@@ -31,7 +32,7 @@ namespace Shared
 
         public Factura[] FAs { get; set; }
 
-        public UsuCliente[] Cli { get; set; }
+        public UsuCliente Cli { get; set; }
 
     }
 }
