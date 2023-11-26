@@ -26,5 +26,8 @@ namespace DataAccessLayer.EFModels
 
         [ForeignKey("ProductoId")]
         public Productos? ProductoAsociados { get; set; }
+
+        [ForeignKey("ClienteId")]
+        public ApplicationUser? Cliente { get; set; }
     }
 }

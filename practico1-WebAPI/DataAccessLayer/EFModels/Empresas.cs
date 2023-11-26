@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared;
 
 namespace DataAccessLayer.EFModels
 {
@@ -26,5 +27,8 @@ namespace DataAccessLayer.EFModels
 
         public List<Sucursales>? SucursalesAsociadas { get; set; }
 
+        public List<Reclamos>? Reclamos { get; set; }
+
+        public List<ApplicationUser>? Empleados { get; set; }
     }
 }
