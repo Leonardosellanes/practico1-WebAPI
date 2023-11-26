@@ -15,6 +15,6 @@ namespace Shared
         public int EmpresaId { get; set; }
         public Empresa? EmpresaAsociada { get; set; }
         public int OrdenId { get; set; }
-        public OC? OrdenAsociada { get; set; }
+        public Orden? OrdenAsociada { get; set; }
     }
 }
