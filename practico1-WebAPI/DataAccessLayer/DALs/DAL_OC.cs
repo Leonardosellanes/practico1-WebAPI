@@ -107,6 +107,7 @@ namespace DataAccessLayer.DALs
                     {
                        Id = cp.Id,
                        Cantidad = cp.Cantidad,
+                       ProductoId = cp.ProductoId,
                        POs = new Producto
                        {
                            Id = cp.POs.Id,
@@ -149,6 +150,7 @@ namespace DataAccessLayer.DALs
                     {
                         Id = cp.Id,
                         Cantidad = cp.Cantidad,
+                        ProductoId = cp.ProductoId,
                         POs = new Producto
                         {
                             Id = cp.POs.Id,

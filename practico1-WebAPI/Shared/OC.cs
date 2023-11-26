@@ -22,15 +22,15 @@ namespace Shared
 
         public decimal Total { get; set; } = 0 ;
 
-        public string EstadoOrden { get; set; } 
+        public string EstadoOrden { get; set; } = "";
 
         public DateTime Fecha { get; set; }
 
-        public List<Carrito> Carritos { get; set; }
+        public List<Carrito>? Carritos { get; set; } = null;
 
-        public Reclamo[] Rcs { get; set; }
+        public Reclamo? Rcs { get; set; } = null;
 
-        public Factura[] FAs { get; set; }
+        public Factura? FAs { get; set; } = null;
 
         public UsuCliente Cli { get; set; }
 
