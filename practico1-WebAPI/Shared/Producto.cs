@@ -13,7 +13,6 @@ namespace Shared
         public string Titulo { get; set; } = "";
         public string Descripcion { get; set; } = "";
         public string Foto { get; set; } = "";
-
         public string? Base64 { get; set; } = "";
         public int Precio { get; set; }
         public string Tipo_iva { get; set; } = "";

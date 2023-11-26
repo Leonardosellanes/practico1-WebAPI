@@ -21,5 +21,8 @@ namespace DataAccessLayer.EFModels
 
         [ForeignKey("EmpresaId")]
         public Empresas? EmpresaAsociada { get; set; }
+
+        [ForeignKey("OcId")]
+        public EFModels.OC? OrdenAsociada{ get; set; }
     }
 }
