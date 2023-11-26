@@ -35,7 +35,7 @@ namespace DataAccessLayer.EFModels
         [Required]
         public DateTime Fecha { get; set; }
 
-        public List<CarritoProducto>? CarritoProducto { get; set; } = null;
+        public List<CarritoProducto>? CarritoProducto { get; set; }
 
         [ForeignKey("ReclamoId")]
         public Reclamos? Rcs { get; set; } = null;

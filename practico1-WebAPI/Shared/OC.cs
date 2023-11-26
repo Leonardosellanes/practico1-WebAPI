@@ -26,7 +26,7 @@ namespace Shared
 
         public DateTime Fecha { get; set; }
 
-        public List<Carrito>? Carritos { get; set; } = null;
+        public List<Carrito>? Carritos { get; set; }
 
         public Reclamo? Rcs { get; set; } = null;
 
