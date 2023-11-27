@@ -30,6 +30,7 @@ namespace DataAccessLayer.DALs
         {
             return _dbContext.Reclamos
                              .Include(e => e.EmpresaAsociada)
+                             .Include(o => o.OrdenAsociada)
                              .Select(r => new Reclamo { 
                                  Id = r.Id,
                                  Descripcion = r.Descripcion, 
@@ -40,6 +41,17 @@ namespace DataAccessLayer.DALs
                                      Id = r.EmpresaAsociada.Id,
                                      Nombre = r.EmpresaAsociada.Nombre,
                                      RUT = r.EmpresaAsociada.RUT
+                                 },
+                                 OCId = r.OCId,
+                                 OrdenAsociada = new Orden
+                                 {
+                                     Id = r.OrdenAsociada.Id,
+                                     DireccionDeEnvio = r.OrdenAsociada.DireccionDeEnvio,
+                                     MedioDePago = r.OrdenAsociada.MedioDePago,
+                                     Fecha = r.OrdenAsociada.Fecha,
+                                     FechaEstimadaEntrega = r.OrdenAsociada.FechaEstimadaEntrega,
+                                     Total = r.OrdenAsociada.Total,
+                                     EstadoOrden = r.OrdenAsociada.EstadoOrden
                                  }
                              })
                              .ToList();
@@ -76,7 +88,8 @@ namespace DataAccessLayer.DALs
                 Id = reclamo.Id, 
                 Descripcion = reclamo.Descripcion, 
                 Fecha = reclamo.Fecha, 
-                EmpresaId = reclamo.EmpresaId 
+                EmpresaId = reclamo.EmpresaId,
+                OCId = reclamo.OCId,
             });
             _dbContext.SaveChanges();
         }

@@ -16,7 +16,7 @@
         <template #overlay>
           <a-menu>
             <a-menu-item key="0">
-              <a href="http://www.alipay.com/">Perfil</a>
+              <a @click="toProfile">Perfil</a>
             </a-menu-item>
             <a-menu-divider />
             <a-menu-item key="3">Cerrar Sesion</a-menu-item>
@@ -56,12 +56,31 @@ const items = ref([
     onClick: () => {
       router.push('/Categorias');
     },
+  },
+  {
+    key: 'Ordenes',
+    label: 'Ordenes',
+    onClick: () => {
+      router.push('/Ordenes');
+    },
+  },
+  {
+    key: 'Reclamos',
+    label: 'Reclamos',
+    onClick: () => {
+      router.push('/Reclamos');
+    },
   }
   
 ]);
 
 const toHome = () => {
     current.value[0] = 'Home';  // o current.value = [];
+};
+
+const toProfile = () => {
+    current.value[0] = ''; 
+    router.push('/Perfil')
 };
 
 </script>

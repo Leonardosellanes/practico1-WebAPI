@@ -2,7 +2,7 @@
     <div class="app-admin-wrap-layout-2 w-full h-screen bg-[#F8F8F8]">
         <Header></Header>
         <main>
-            <div class="main-content-wrap flex flex-col flex-grow print-area pt-24 ">
+            <div class="main-content-wrap flex flex-col flex-grow print-area pt-24">
                 <router-view></router-view>
             </div>
         </main>
