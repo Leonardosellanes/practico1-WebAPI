@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { createStore } from 'vuex';
 import axios from 'axios';
-import store from '../views/Login/store.js';
+import store from '../services/store.js';
 
 const requireAuth = (to, from, next) => {
     if (!store.getters.isAuthenticated) {
@@ -110,6 +110,7 @@ const routes = [
                   },
                 ],
               },
+              { 
                 path: '/Perfil',
                 name: 'Perfil',
                 component: () => import('../views/Usuario/perfil.vue'),
