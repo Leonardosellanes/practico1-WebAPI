@@ -16,7 +16,7 @@
                             </template>
                             <template #actions>
                                 <a-button type="primary" shape="round" >
-                                    Añadir al carrito
+                                    Ver Más
                                 </a-button>
                             </template>
                             <a-card-meta :title="item.titulo" :description="'$' + item.precio">
@@ -49,7 +49,7 @@ const indicator = h(LoadingOutlined, {
 
 const cargarProductos = () => {
     loading.value = true
-    const dataProductos = EmpresasController.getById(15)
+    const dataProductos = EmpresasController.getById(1)
         .then((response) => {
             console.log(response.data.productos)
             data.value = response.data.productos.reverse();

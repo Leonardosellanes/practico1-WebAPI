@@ -66,7 +66,8 @@ namespace DataAccessLayer.DALs
                         Id = s.Id,
                         Descripcion = s.Descripcion,
                         Fecha = s.Fecha,
-                        EmpresaId = s.EmpresaId
+                        EmpresaId = s.EmpresaId,
+                        OCId = s.OCId,
                     }).ToList(),
                 };
         }

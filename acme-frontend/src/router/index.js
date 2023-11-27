@@ -65,7 +65,30 @@ const routes = [
                     title: 'Sucursales',
                 },
             },
-
+            {
+                path: '/Perfil',
+                name: 'Perfil',
+                component: () => import('../views/Usuario/perfil.vue'),
+                meta: {
+                    title: 'Perfil',
+                },
+            },
+            {
+                path: '/Reclamos',
+                name: 'Reclamos',
+                component: () => import('../views/Reclamos/listadoReclamos.vue'),
+                meta: {
+                    title: 'Reclamos',
+                },
+            },
+            {
+                path: '/Ordenes',
+                name: 'Ordenes',
+                component: () => import('../views/OrdenesCompra/Ordenes.vue'),
+                meta: {
+                    title: 'Reclamos',
+                },
+            },
         ],
     },
 ];
