@@ -4,10 +4,12 @@ namespace WebAPI.Models
 {
     public class LoginModel
     {
+        [EmailAddress]
         [Required(ErrorMessage = "El nombre de Usuario es requerido")]
-        public string Username { get; set; } = string.Empty;
+        public required string Email { get; set; }
 
         [Required(ErrorMessage = "La contraseña es requerida")]
-        public string Password { get; set; } = string.Empty;
+        public required string Password { get; set; }
     }
+
 }
