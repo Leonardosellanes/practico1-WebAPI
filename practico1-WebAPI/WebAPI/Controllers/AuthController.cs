@@ -52,7 +52,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                ApplicationUser user = await userManager.FindByNameAsync(userName: model.Username);
+                ApplicationUser user = await userManager.FindByNameAsync(userName: model.Email);
 
                 // Si el usuario existe, está activo, no está bloqueado y la contraseña es correcta
                 if (user != null &&
@@ -63,7 +63,7 @@ namespace WebAPI.Controllers
 
                     var authClaims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.Name, user.Email),
                         new Claim(ClaimTypes.NameIdentifier, user.Id),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
@@ -128,7 +128,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Route("Register")]
         [ProducesResponseType(typeof(StatusDTO), 200)]
-        public async Task<IActionResult> Register([FromBody] ApplicationUser model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             try
             {
@@ -136,15 +136,15 @@ namespace WebAPI.Controllers
                 if (userExists != null)
                     return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "El usuario ya existe!"));
 
-                // Creamos el usuario.
                 ApplicationUser user = new ApplicationUser()
                 {
                     Email = model.Email,
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = model.Email
+                    UserName = model.Email,
+                    Password = model.Password
                 };
 
-                var result = await userManager.CreateAsync(user);
+                var result = await userManager.CreateAsync(user, model.Password);
 
                 if (!result.Succeeded)
                 {
@@ -153,22 +153,11 @@ namespace WebAPI.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al crear usuario! Revisar los datos ingresados y probar nuevamente. Errores: " + errors));
                 }
 
-                // Asignar Rol User
-                await userManager.AddToRoleAsync(user, "OTRO");
+                await userManager.AddToRoleAsync(user, "USER");
 
                 // Envío notificación de activación.
                 var token = await userManager.GeneratePasswordResetTokenAsync(user);
-                var param = new Dictionary<string, string?>
-                {
-                        {"token", token },
-                        {"email", user.Email }
-                };
-
-                var resetPassResult = await userManager.ResetPasswordAsync(user, token, model.Password);
-
-                // ToDo
-                //var callback = QueryHelpers.AddQueryString(blNotificaciones.GetUrlRestorePassword(), param);
-                //blNotificaciones.EnviarForgotPassword(user.Email, persona.GetFullName(), callback);
+                // ToDo: Agregar lógica para enviar el correo de confirmación si es necesario.
 
                 return Ok(new StatusDTO(true, "Usuario creado correctamente! Se le ha enviado un email para establecer la contraseña"));
             }
@@ -177,6 +166,147 @@ namespace WebAPI.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, ex.Message));
             }
         }
+
+        [HttpPost]
+        [Authorize(Roles = "ADMIN")] // Solo los usuarios con rol ADMIN pueden acceder a este endpoint
+        [Route("RegisterEmpleado")]
+        [ProducesResponseType(typeof(StatusDTO), 200)]
+        public async Task<IActionResult> CreateEmpleado([FromBody] RegisterEmpleadoModel model)
+        {
+            try
+            {
+                // Crear instancia de ApplicationUser para Empleado
+                ApplicationUser user = new ApplicationUser()
+                {
+                    Email = model.Email, // Asegúrate de tener la propiedad Email en el modelo
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = model.Email,
+                    Password = model.Password,
+                    Name = model.Name,
+                    LName = model.LName,
+                    Address = model.Address,
+                    // Agrega más propiedades según sea necesario para la creación de empleados
+                };
+
+                // Crear el usuario en la base de datos
+                var result = await userManager.CreateAsync(user, model.Password);
+
+                if (!result.Succeeded)
+                {
+                    string errors = string.Join(". ", result.Errors.Select(x => x.Description));
+                    return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al crear empleado. Revisar los datos ingresados y probar nuevamente. Errores: " + errors));
+                }
+
+                // Agregar el usuario al rol de EMPLEADO (puedes ajustar el nombre del rol según sea necesario)
+                await userManager.AddToRoleAsync(user, "EMPLEADO");
+
+                // ToDo: Agregar lógica adicional si es necesario.
+
+                return Ok(new StatusDTO(true, "Empleado creado correctamente!"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, ex.Message));
+            }
+        }
+
+
+        [HttpPost]
+        [Route("RegisterCliente")]
+        [ProducesResponseType(typeof(StatusDTO), 200)]
+        public async Task<IActionResult> RegisterCliente([FromBody] RegisterClienteModel model)
+        {
+            try
+            {
+                // Verificar si el usuario ya existe
+                var userExists = await userManager.FindByNameAsync(model.Email);
+                if (userExists != null)
+                    return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "El usuario ya existe!"));
+
+                // Crear instancia de ApplicationUser para Cliente
+                ApplicationUser user = new ApplicationUser()
+                {
+                    Email = model.Email,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = model.Email,
+                    Password = model.Password,
+                    Name = model.Name,
+                    LName = model.LName,
+                    Address = model.ShipAddress
+                };
+
+                // Crear el usuario en la base de datos
+                var result = await userManager.CreateAsync(user, model.Password);
+
+                if (!result.Succeeded)
+                {
+                    string errors = string.Join(". ", result.Errors.Select(x => x.Description));
+                    return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al crear usuario. Revisar los datos ingresados y probar nuevamente. Errores: " + errors));
+                }
+
+                // Agregar el usuario al rol de Cliente
+                await userManager.AddToRoleAsync(user, "USER");
+
+                // ToDo: Agregar lógica para enviar el correo de confirmación si es necesario.
+
+                return Ok(new StatusDTO(true, "Usuario creado como Cliente correctamente!"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, ex.Message));
+            }
+        }
+
+        [HttpPost]
+        //[Authorize(Roles = "ADMIN")] // Solo los usuarios con rol ADMIN pueden acceder a este endpoint
+        [Route("RegisterAdmin")]
+        [ProducesResponseType(typeof(StatusDTO), 200)]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterAdminModel model)
+        {
+            try
+            {
+                // Verificar si el usuario ya existe
+                var userExists = await userManager.FindByNameAsync(model.Email);
+                if (userExists != null)
+                    return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "El usuario ya existe!"));
+
+                // Crear instancia de ApplicationUser para Administrador
+                ApplicationUser user = new ApplicationUser()
+                {
+                    Email = model.Email,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = model.Email,
+                    Password = model.Password,
+                    Name = model.Name,
+                    LName = model.LName,
+                    Address = model.Address,
+                    IsAdmin = true
+                };
+
+                // Crear el usuario en la base de datos
+                var result = await userManager.CreateAsync(user, model.Password);
+
+                if (!result.Succeeded)
+                {
+                    string errors = string.Join(". ", result.Errors.Select(x => x.Description));
+                    return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al crear usuario. Revisar los datos ingresados y probar nuevamente. Errores: " + errors));
+                }
+
+                // Agregar el usuario al rol de ADMIN
+                await userManager.AddToRoleAsync(user, "ADMIN");
+
+                // ToDo: Agregar lógica para enviar el correo de confirmación si es necesario.
+
+                return Ok(new StatusDTO(true, "Usuario creado como Administrador correctamente!"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, ex.Message));
+            }
+        }
+
+
+
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
