@@ -15,7 +15,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useStore } from 'vuex';
-import axios from 'axios';
+import AuthController from '../../services/AuthController';
 
 const store = useStore();
 const formData = ref({
@@ -23,20 +23,27 @@ const formData = ref({
   password: '',
 });
 
-const login = async () => {
-  try {
-    const response = await axios.post('/api/Auth/Login', {
-      username: formData.email,
-      password: formData.password,
+const login = () => {
+
+  const data = {
+    email: formData.value.email,
+    password: formData.value.password,
+  }
+
+  console.log(formData)
+  AuthController.Login(data)
+    .then((response) => {
+      const token = response.data.token;
+      store.commit('setAuthToken', token);
+    })
+    .catch((error) => {
+      console.error('Error de inicio de sesión:', error.response.data);
     });
 
-    const token = response.data.token;
 
-    store.commit('setAuthToken', token);
 
-  } catch (error) {
-    console.error('Error de inicio de sesión:', error.response.data);
-  }
+
+
 };
 </script>
 

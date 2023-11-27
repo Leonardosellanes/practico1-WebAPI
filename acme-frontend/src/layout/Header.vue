@@ -38,22 +38,6 @@
           </template>
         </a-dropdown>
       </a-space>
-
-      <ShoppingCartOutlined :style="{fontSize: '24px', color: 'gray'}"/>
-      <a-dropdown :trigger="['click']">
-        <a-avatar style="color: #f56a00; background-color: #fde3cf">U</a-avatar>
-        <template #overlay>
-          <a-menu>
-            <a-menu-item key="0">
-              <a @click="toProfile">Perfil</a>
-            </a-menu-item>
-            <a-menu-divider />
-            <a-menu-item key="3">Cerrar Sesion</a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
-    </a-space>
-
     </div>
   </div>
 </template>
