@@ -14,5 +14,8 @@ namespace Shared
         public int Estrellas { get; set; }
         public int ProductoId { get; set; }
         public Producto? ProductoAsociado { get; set; }
+
+        public int ClienteId { get; set; }
+        public UsuCliente? Cliente { get; set; }
     }
 }

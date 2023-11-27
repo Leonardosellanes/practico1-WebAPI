@@ -25,6 +25,7 @@ namespace DataAccessLayer.DALs
                 .Include(e => e.CategoriasAsociadas)
                 .Include(p => p.ProductosAsociados)
                 .Include(s => s.SucursalesAsociadas)
+                .Include(r => r.Reclamos)
                 .FirstOrDefault(e => e.Id == id);
 
             return emp == null
@@ -60,6 +61,13 @@ namespace DataAccessLayer.DALs
                         Ubicacion = s.Ubicacion,
                         TiempoEntrega = s.TiempoEntrega
                     }).ToList(),
+                    Reclamos = emp.Reclamos.Select(s => new Reclamo
+                    {
+                        Id = s.Id,
+                        Descripcion = s.Descripcion,
+                        Fecha = s.Fecha,
+                        EmpresaId = s.EmpresaId
+                    }).ToList(),
                 };
         }
 
@@ -70,6 +78,7 @@ namespace DataAccessLayer.DALs
                              .Include(e => e.CategoriasAsociadas)
                              .Include(p => p.ProductosAsociados)
                              .Include(s => s.SucursalesAsociadas)
+                             .Include(r => r.Reclamos)
                              .Select(e => new Empresa
                              {
                                  Id = e.Id,
@@ -98,7 +107,14 @@ namespace DataAccessLayer.DALs
                                      Nombre = s.Nombre,
                                      Ubicacion = s.Ubicacion,
                                      TiempoEntrega = s.TiempoEntrega
-                                 }).ToList()
+                                 }).ToList(),
+                                 Reclamos = e.Reclamos.Select(s => new Reclamo
+                                 {
+                                     Id = s.Id,
+                                     Descripcion = s.Descripcion,
+                                     Fecha = s.Fecha,
+                                     EmpresaId = s.EmpresaId
+                                 }).ToList(),
                              })
                              .ToList();
         }
