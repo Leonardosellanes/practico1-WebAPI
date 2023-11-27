@@ -14,7 +14,7 @@ namespace Shared
         public DateTime Fecha { get; set; }
         public int EmpresaId { get; set; }
         public Empresa? EmpresaAsociada { get; set; }
-        public int OrdenId { get; set; }
+        public long OCId { get; set; }
         public Orden? OrdenAsociada { get; set; }
     }
 }

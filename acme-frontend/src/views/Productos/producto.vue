@@ -220,22 +220,22 @@ const handleOk = async () => {
 
         confirmLoading.value = true
         try {
-            //const imageUrl = await subirImagen();
-            //const pdfUrl = await subirPdf();
+            const imageUrl = await subirImagen();
+            const pdfUrl = await subirPdf();
 
-            // Después de que ambas operaciones hayan finalizado con éxito
-            //console.log('Imagen subida:', imageUrl);
-            //console.log('PDF subido:', pdfUrl);
+            //Después de que ambas operaciones hayan finalizado con éxito
+            console.log('Imagen subida:', imageUrl);
+            console.log('PDF subido:', pdfUrl);
 
             const data = {
                 id: 0,
                 titulo: titleRef.value,
                 descripcion: descriptionRef.value,
-                foto: "",
+                foto: imageUrl.ruta,
                 precio: priceRef.value,
                 tipo_iva: IVA.value,
-                pdf: "",
-                empresaId: 15,
+                pdf: pdfUrl.ruta,
+                empresaId: 1,
                 categoriaId: value.value
             }
 
@@ -297,7 +297,7 @@ const headersPdf = {
 };
 
 const cargarCategorias = () => {
-    const dataCategorias = CategoriaController.getCategorias(15)
+    const dataCategorias = CategoriaController.getCategorias(1)
         .then((response) => {
 
             options.value = response.data
@@ -314,7 +314,7 @@ const cargarCategorias = () => {
 
 const cargarProductos = () => {
     loading.value = true
-    const dataProductos = EmpresasController.getById(15)
+    const dataProductos = EmpresasController.getById(1)
         .then((response) => {
             data.value = response.data.productos
             loading.value= false;
@@ -347,7 +347,7 @@ const handleEditOk = () => {
         precio: priceRef.value,
         tipo_iva: IVA.value,
         pdf: editarProducto.value.pdf,
-        empresaId: 15,
+        empresaId: 1,
         categoriaId: value.value
     }
 

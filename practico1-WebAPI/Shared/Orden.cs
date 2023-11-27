@@ -30,8 +30,6 @@ namespace Shared
 
         public Reclamo? Rcs { get; set; } = null;
 
-        public Factura? FAs { get; set; } = null;
-
         public UsuCliente Cli { get; set; }
 
     }
