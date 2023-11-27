@@ -86,7 +86,6 @@ namespace DataAccessLayer.Migrations
                     EstadoOrden = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReclamoId = table.Column<int>(type: "int", nullable: true),
-                    FacturaId = table.Column<int>(type: "int", nullable: true),
                     ClienteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -96,11 +95,6 @@ namespace DataAccessLayer.Migrations
                         name: "FK_OC_ApplicationUser_ClienteId",
                         column: x => x.ClienteId,
                         principalTable: "ApplicationUser",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_OC_Facturas_FacturaId",
-                        column: x => x.FacturaId,
-                        principalTable: "Facturas",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_OC_Reclamos_ReclamoId",
@@ -158,11 +152,6 @@ namespace DataAccessLayer.Migrations
                 name: "IX_OC_ClienteId",
                 table: "OC",
                 column: "ClienteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OC_FacturaId",
-                table: "OC",
-                column: "FacturaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OC_ReclamoId",

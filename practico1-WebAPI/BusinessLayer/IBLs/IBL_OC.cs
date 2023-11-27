@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using DataAccessLayer.EFModels;
+//using DataAccessLayer.EFModels;
+using Shared;
 
 namespace BusinessLayer.IBLs
 {
     public interface IBL_OC
     {
-        OC ObtenerOCPorId(long id);
-        List<OC> ObtenerTodasLasOcs();
-        void CrearOC(OC orden);
-        void ActualizarOC(OC orden);
+        Orden ObtenerOCPorId(long id);
+        Orden obtenerCarrito(string clienteId);
+        List<Orden> ObtenerTodasLasOcs();
+        void CrearOC(Orden orden);
+        void ActualizarOC(Orden orden);
         void EliminarOC(long id);
     }
 }

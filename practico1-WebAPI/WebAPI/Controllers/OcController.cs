@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using BusinessLayer.IBLs;
-using DataAccessLayer.EFModels;
+﻿using BusinessLayer.IBLs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Shared;
 
 namespace WebAPI.Controllers
 {
@@ -12,9 +12,9 @@ namespace WebAPI.Controllers
     {
         private readonly IBL_OC _blOC;
 
-        public OCController(IBL_OC blOC)
+        public OCController(IBL_OC blOc)
         {
-            _blOC = blOC ?? throw new ArgumentNullException(nameof(blOC));
+            _blOC = blOc ?? throw new ArgumentNullException(nameof(blOc));
         }
 
         [HttpGet("{id}")]
@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var orden = _blOC.ObtenerOCPorId(id);
+                Orden orden = _blOC.ObtenerOCPorId(id);
 
                 if (orden == null)
                 {
@@ -37,6 +37,28 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpGet("carrito/{clienteId}")]
+        public IActionResult GetCarrito(string clienteId)
+        {
+            try
+            {
+                Orden orden = _blOC.obtenerCarrito(clienteId);
+
+                if (orden == null)
+                {
+                    return NotFound($"Carrito del cliente {clienteId} no encontrada.");
+                }
+
+                return Ok(orden);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al obtener la orden: {ex.Message}");
+            }
+        }
+
+
+        //cambiar este
         [HttpGet]
         public IActionResult Get()
         {
@@ -52,7 +74,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] OC orden)
+        public IActionResult Post([FromBody] Orden orden)
         {
             try
             {
@@ -65,18 +87,11 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] OC orden)
+        [HttpPut]
+        public IActionResult Put([FromBody] Orden orden)
         {
             try
-            {
-                var existingOrden = _blOC.ObtenerOCPorId(id);
-
-                if (existingOrden == null)
-                {
-                    return NotFound($"Orden con ID {id} no encontrada.");
-                }
-
+            {                
                 _blOC.ActualizarOC(orden);
                 return Ok("Orden actualizada exitosamente.");
             }

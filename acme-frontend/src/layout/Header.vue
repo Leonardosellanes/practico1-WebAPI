@@ -10,6 +10,7 @@
     </div>
     <div class="w-1/6 h-full flex justify-end items-center mr-8">
       <a-space>
+
         <router-link v-if="!isLoggedIn" to="/Login">
           <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
             Login
@@ -37,6 +38,22 @@
           </template>
         </a-dropdown>
       </a-space>
+
+      <ShoppingCartOutlined :style="{fontSize: '24px', color: 'gray'}"/>
+      <a-dropdown :trigger="['click']">
+        <a-avatar style="color: #f56a00; background-color: #fde3cf">U</a-avatar>
+        <template #overlay>
+          <a-menu>
+            <a-menu-item key="0">
+              <a @click="toProfile">Perfil</a>
+            </a-menu-item>
+            <a-menu-divider />
+            <a-menu-item key="3">Cerrar Sesion</a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
+    </a-space>
+
     </div>
   </div>
 </template>
@@ -73,6 +90,21 @@ const items = ref([
       router.push('/Categorias');
     },
   },
+  {
+    key: 'Ordenes',
+    label: 'Ordenes',
+    onClick: () => {
+      router.push('/Ordenes');
+    },
+  },
+  {
+    key: 'Reclamos',
+    label: 'Reclamos',
+    onClick: () => {
+      router.push('/Reclamos');
+    },
+  }
+  
 ]);
 
 const handleAuthentication = () => {
@@ -90,9 +122,15 @@ const goToLogin = () => {
   router.push('/login');
 };
 
+
 const toHome = () => {
   current.value[0] = 'Home';
 };
+const toProfile = () => {
+    current.value[0] = ''; 
+    router.push('/Perfil')
+};
+
 </script>
 
 <style scoped>

@@ -17,5 +17,9 @@ namespace Shared
         public List<Producto>? Productos{ get; set; }
 
         public List<Sucursal>? Sucursales { get; set; }
+
+        public List<Reclamo>? Reclamos { get; set; }
+
+        public List<UsuEmpleado>? Empleados { get; set; }
     }
 }

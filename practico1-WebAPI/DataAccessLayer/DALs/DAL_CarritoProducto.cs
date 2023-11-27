@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared;
 
 namespace DataAccessLayer.DALs
 {
@@ -18,26 +19,78 @@ namespace DataAccessLayer.DALs
             _dbContext = dbContext;
         }
 
-        public CarritoProducto ObtenerCarritoProductoPorId(long id)
+        public Carrito ObtenerCarritoProductoPorId(long id)
         {
-            return _dbContext.CarritoProducto.Find(id);
+            CarritoProducto x = _dbContext.CarritoProducto
+                .Include(p => p.POs)
+                .FirstOrDefault(x => x.Id == id);
+
+            if (x != null)
+            {
+                return new Carrito
+                {
+                    Id = x.Id,
+                    Cantidad = x.Cantidad,
+                    ProductoId = x.ProductoId,
+                    POs = new Producto
+                    {
+                        Id = x.POs.Id,
+                        Titulo = x.POs.Titulo,
+                        Descripcion = x.POs.Descripcion,
+                        Foto = x.POs.Foto,
+                        Precio = x.POs.Precio,
+                        Tipo_iva = x.POs.Tipo_iva,
+                        EmpresaId = x.POs.EmpresaId,
+                        CategoriaId = x.POs.CategoriaId
+                    },
+                    OCId = x.OCId
+                };
+            }
+            else
+            {
+
+                return null;
+            }
         }
 
-        public List<CarritoProducto> ObtenerTodosLosCarritoProductos()
+        /*public List<CarritoProducto> ObtenerTodosLosCarritoProductos()
         {
             return _dbContext.CarritoProducto.ToList();
+        }*/
+
+        public void AgregarCarritoProducto(Carrito carrito)
+        {
+            OC o = _dbContext.OC.Find(carrito.OCId);
+
+            Productos p = _dbContext.Productos.Find(carrito.ProductoId);
+            if (o != null && p != null) { 
+                CarritoProducto c = new CarritoProducto 
+                { 
+                    Id = carrito.Id,
+                    Cantidad = carrito.Cantidad,
+                    ProductoId = carrito.ProductoId,
+                    OCId = carrito.OCId,
+                    OCs = o,
+                    POs = p
+                };
+
+                _dbContext.CarritoProducto.Add(c);
+                _dbContext.SaveChanges();
+            }
         }
 
-        public void AgregarCarritoProducto(CarritoProducto carritoProducto)
+        public void ActualizarCarritoProducto(Carrito carrito)
         {
-            _dbContext.CarritoProducto.Add(carritoProducto);
-            _dbContext.SaveChanges();
-        }
+            CarritoProducto c = _dbContext.CarritoProducto.FirstOrDefault(c => c.Id == carrito.Id);
 
-        public void ActualizarCarritoProducto(CarritoProducto carritoProducto)
-        {
-            _dbContext.Entry(carritoProducto).State = EntityState.Modified;
-            _dbContext.SaveChanges();
+            if (c != null)
+            {
+                c.Cantidad = carrito.Cantidad;
+                c.ProductoId = carrito.ProductoId;
+                c.OCId = carrito.OCId;
+
+                _dbContext.SaveChanges();
+            }
         }
 
         public void EliminarCarritoProducto(long id)

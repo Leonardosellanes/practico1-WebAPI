@@ -85,7 +85,7 @@ const routes = [
                 },
             },
             {
-                path: '/registro',
+                path: '/Registro',
                 name: 'Registro',
                 component: () => import('../views/Login/Registro.vue'),
                 meta: {
@@ -101,7 +101,7 @@ const routes = [
                     },
                   },
                   {
-                    path: 'administrador',
+                    path: 'Administrador',
                     name: 'RegistroAdministrador',
                     component: () => import('../views/Login/RegistroAdministrador.vue'),
                     meta: {
@@ -110,7 +110,29 @@ const routes = [
                   },
                 ],
               },
-            
+                path: '/Perfil',
+                name: 'Perfil',
+                component: () => import('../views/Usuario/perfil.vue'),
+                meta: {
+                    title: 'Perfil',
+                },
+            },
+            {
+                path: '/Reclamos',
+                name: 'Reclamos',
+                component: () => import('../views/Reclamos/listadoReclamos.vue'),
+                meta: {
+                    title: 'Reclamos',
+                },
+            },
+            {
+                path: '/Ordenes',
+                name: 'Ordenes',
+                component: () => import('../views/OrdenesCompra/Ordenes.vue'),
+                meta: {
+                    title: 'Reclamos',
+                },
+            },
         ],
     },
 ];

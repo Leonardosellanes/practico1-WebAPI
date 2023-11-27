@@ -13,8 +13,10 @@ namespace Shared
 
         public int Cantidad { get; set; }
 
-        public Producto[] POs { get; set; }
+        public int ProductoId { get; set; }
+        public Producto? POs { get; set; }
 
-        public OC[] OCs { get; set; }
+        public long OCId { get; set; }
+        public Orden? OCs { get; set; }
     }
 }

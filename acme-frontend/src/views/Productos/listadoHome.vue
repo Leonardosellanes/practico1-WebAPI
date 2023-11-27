@@ -16,7 +16,7 @@
                             </template>
                             <template #actions>
                                 <a-button type="primary" shape="round" >
-                                    Añadir al carrito
+                                    Ver Más
                                 </a-button>
                             </template>
                             <a-card-meta :title="item.titulo" :description="'$' + item.precio">

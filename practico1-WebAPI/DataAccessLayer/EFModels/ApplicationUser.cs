@@ -31,7 +31,7 @@ namespace DataAccessLayer.EFModels
 
         public List<OC>? OCs { get; set; }
 
-        public List<Empresas>? Ecs { get; set; }
+        public int? EmpresaId { get; set; }
 
         public List<Opiniones>? OPs { get; set; }
     }

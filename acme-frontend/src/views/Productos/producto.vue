@@ -223,7 +223,7 @@ const handleOk = async () => {
             const imageUrl = await subirImagen();
             const pdfUrl = await subirPdf();
 
-            // Después de que ambas operaciones hayan finalizado con éxito
+            //Después de que ambas operaciones hayan finalizado con éxito
             console.log('Imagen subida:', imageUrl);
             console.log('PDF subido:', pdfUrl);
 
