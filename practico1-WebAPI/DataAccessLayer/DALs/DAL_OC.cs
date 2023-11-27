@@ -103,28 +103,36 @@ namespace DataAccessLayer.DALs
                     Total = oc.Total,
                     EstadoOrden = oc.EstadoOrden,
                     Fecha = oc.Fecha,
-                    Carritos = oc.CarritoProducto != null ? oc.CarritoProducto.Select(cp => new Carrito
-                    {
-                       Id = cp.Id,
-                       Cantidad = cp.Cantidad,
-                       POs = new Producto
-                       {
-                           Id = cp.POs.Id,
-                           Titulo = cp.POs.Titulo,
-                           Descripcion = cp.POs.Descripcion,
-                           Foto = cp.POs.Foto,
-                           Precio = cp.POs.Precio,
-                           Tipo_iva = cp.POs.Tipo_iva,
-                           Pdf = cp.POs.Pdf,
-                           EmpresaId = cp.POs.EmpresaId,
-                           CategoriaId = cp.POs.CategoriaId,
-                           Categoria = new Categoria
-                           {
-                               Id = cp.POs.CategoriaAsociada.Id,
-                               Nombre = cp.POs.CategoriaAsociada.Nombre
-                           }
-                       }     
-                    }).ToList() : null
+                    Carritos = oc.CarritoProducto != null
+                        ? oc.CarritoProducto.Select(cp => new Carrito
+                        {
+                            Id = cp.Id,
+                            Cantidad = cp.Cantidad,
+                            ProductoId = cp.ProductoId,
+                            OCId = oc.Id,
+                            POs = cp.POs != null
+                                ? new Producto
+                                {
+                                    Id = cp.POs.Id,
+                                    Titulo = cp.POs.Titulo,
+                                    Descripcion = cp.POs.Descripcion,
+                                    Foto = cp.POs.Foto,
+                                    Precio = cp.POs.Precio,
+                                    Tipo_iva = cp.POs.Tipo_iva,
+                                    Pdf = cp.POs.Pdf,
+                                    EmpresaId = cp.POs.EmpresaId,
+                                    CategoriaId = cp.POs.CategoriaId,
+                                    Categoria = cp.POs.CategoriaAsociada != null
+                                          ? new Categoria
+                                          {
+                                              Id = cp.POs.CategoriaAsociada.Id,
+                                              Nombre = cp.POs.CategoriaAsociada.Nombre
+                                          }
+                                          : null
+                                }
+                                : null
+                        }).ToList()
+                        : null
                 };
             }
 
@@ -149,6 +157,7 @@ namespace DataAccessLayer.DALs
                     {
                         Id = cp.Id,
                         Cantidad = cp.Cantidad,
+                        ProductoId = cp.ProductoId,
                         POs = new Producto
                         {
                             Id = cp.POs.Id,

@@ -17,8 +17,12 @@ namespace DataAccessLayer.EFModels
 
         public int Cantidad { get; set; }
 
+        public int ProductoId { get; set; }
+
         [ForeignKey("ProductoId")]
         public Productos? POs { get; set; }
+
+        public long OCId { get; set; }
 
         [ForeignKey("OCId")]
         public OC? OCs { get; set; }

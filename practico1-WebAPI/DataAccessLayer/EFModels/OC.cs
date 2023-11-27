@@ -27,7 +27,7 @@ namespace DataAccessLayer.EFModels
         public DateTime FechaEstimadaEntrega { get; set; }
 
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal Total { get; set; }
+        public decimal Total { get; set; } 
 
         [MaxLength(128), MinLength(3), Required]
         public string EstadoOrden { get; set; } = "";
@@ -38,12 +38,12 @@ namespace DataAccessLayer.EFModels
         public List<CarritoProducto>? CarritoProducto { get; set; }
 
         [ForeignKey("ReclamoId")]
-        public Reclamos? Rcs { get; set; }
+        public Reclamos? Rcs { get; set; } = null;
 
         [ForeignKey("FacturaId")]
-        public Facturas? FAs { get; set; }
+        public Facturas? FAs { get; set; } = null;
 
         [ForeignKey("ClienteId")]
-        public ApplicationUser? Cliente { get; set; }
+        public ApplicationUser? Cliente { get; set; } = null;  
     }
 }
