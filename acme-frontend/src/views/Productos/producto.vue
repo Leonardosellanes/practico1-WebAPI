@@ -235,7 +235,7 @@ const handleOk = async () => {
                 precio: priceRef.value,
                 tipo_iva: IVA.value,
                 pdf: pdfUrl.ruta,
-                empresaId: 1,
+                empresaId: 15,
                 categoriaId: value.value
             }
 
@@ -261,6 +261,7 @@ const subirImagen = async () => {
     const formData = new FormData();
     formData.append('archivo', fileList.value[0].originFileObj);
 
+    console.log(formData);
     return ArchivosController.cargarImagen(formData)
         .then((response) => response.data)
         .catch((error) => {

@@ -13,11 +13,20 @@ export default {
             "pOs": {},
             "ocId": idOrden,
             "oCs": {
+                "ClienteId": "1",
                 "cli": {}
             }
         };
         console.log(body);
         return axios.post("CarritoProducto", body)
+    },
+
+    deleteProductoCarrito(id){
+        return axios.delete("CarritoProducto/" + id);
+    },
+
+    editProductoCarrito(body){
+        return axios.put("CarritoProducto", body);
     }
 
 

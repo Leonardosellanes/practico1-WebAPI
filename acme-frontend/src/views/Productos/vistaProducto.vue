@@ -190,6 +190,8 @@ const handleOpinion = () => {
 
 const cardClicked = (item) => {
     console.log(item)
+    productId.value =  item.id;
+    //cargarProducto();
     router.push({ name: 'Product', params: { id: item.id } });
 }
 
@@ -219,7 +221,7 @@ const fetchData = async () => {
 
 onBeforeRouteUpdate(() => {
   // Este hook se ejecutará cuando la ruta se actualice
-  productId.value = route.params.id;
+  //productId.value = route.params.id;
   fetchData();
 });
 
@@ -235,7 +237,8 @@ const  agregarACarrito =() => {
     CarritoController.buscarCarritoActual().then((response) => {
         if (response && response.status === 200) {
             const productos = response.data.carritos;
-            if(productos.length > 0 && productos.some(carrito => carrito.productoId === data.value.id)){            
+            console.log(response.data);
+            if(productos && productos.some(carrito => carrito.productoId === data.value.id)){            
                 message.info('El producto ya se encuentra en el carrito');
             }else {
                 const orden = response.data.id;

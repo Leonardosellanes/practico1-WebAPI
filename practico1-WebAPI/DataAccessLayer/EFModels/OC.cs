@@ -39,8 +39,10 @@ namespace DataAccessLayer.EFModels
 
         [ForeignKey("ReclamoId")]
         public Reclamos? Rcs { get; set; } = null;
+        public String ClienteId { get; set; }
 
         [ForeignKey("ClienteId")]
-        public ApplicationUser? Cliente { get; set; } = null;  
+        public ApplicationUser? Cliente { get; set; } = null;
+
     }
 }
