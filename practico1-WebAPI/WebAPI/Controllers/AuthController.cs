@@ -65,10 +65,13 @@ namespace WebAPI.Controllers
                     Console.WriteLine($"User Roles///////////: {string.Join(", ", userRoles)}");
                     var authClaims = new List<Claim>
                     {
-                       new Claim(ClaimTypes.Name, user.Email),
-                       new Claim(ClaimTypes.NameIdentifier, user.Id),
-                       //new Claim(ClaimTypes.WindowsDeviceClaim, user.EmpresaId),
-                       new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(ClaimTypes.Name, user.Email),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id),
+                        new Claim("EmpresaId", user.EmpresaId?.ToString()),
+                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim("Name", user.Name),
+                        new Claim("LName", user.LName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                     };
 
                     foreach (var claim in authClaims)
@@ -93,11 +96,13 @@ namespace WebAPI.Controllers
                         {
                             StatusOk = true,
                             StatusMessage = "Usuario logueado correctamente!",
-                            IdUsuario = user.Name,
+                            IdUsuario = user.Id,
                             Token = new JwtSecurityTokenHandler().WriteToken(token),
                             Expiration = token.ValidTo,
                             Email = user.Email,
-                            ExpirationMinutes = Convert.ToInt32((token.ValidTo - DateTime.UtcNow).TotalMinutes)
+                            EmpresaId = user.EmpresaId,
+                            ExpirationMinutes = Convert.ToInt32((token.ValidTo - DateTime.UtcNow).TotalMinutes),
+                            Roles = userRoles
                         });
                     }
                     catch (Exception ex)

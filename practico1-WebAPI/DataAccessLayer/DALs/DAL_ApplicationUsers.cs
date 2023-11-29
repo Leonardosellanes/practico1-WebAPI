@@ -23,6 +23,7 @@ public class DAL_ApplicationUsers : IDAL_ApplicationUsers
         _dbContext.SaveChanges();
     }
 
+    //Roles y empresaId
     public List<ApplicationUser> Get()
     {
         return _dbContext.Users.ToList();

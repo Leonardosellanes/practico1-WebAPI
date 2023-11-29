@@ -9,6 +9,7 @@
         public DateTime Expiration { get; set; }
         public int ExpirationMinutes { get; set; }
         public string Email { get; set; } = string.Empty;
-        public List<string>? Roles { get; set; }
+        public IList<string>? Roles { get; set; }
+        public int? EmpresaId { get; set; }
     }
 }

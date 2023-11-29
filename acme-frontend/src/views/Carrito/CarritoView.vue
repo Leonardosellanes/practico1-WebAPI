@@ -124,13 +124,15 @@
         <a-divider type="horizontal" />
         <a-space direction="vertical" style="width: 100%; margin-bottom: 8px;">
             <a-radio-group v-model:value="selectEntrega" style="width: 100%;">
+                <a-space direction="vertical" style="width: 100%; ">
                 <a-card>
-                    <a-radio :style="radioStyle" :value="'Domicilio'">Envío a Domicilio</a-radio>
+                    <a-radio  :value="'Domicilio'">Envío a Domicilio</a-radio>
                 </a-card>
                 
                 <a-card class="mt-4">
-                    <a-radio :style="radioStyle" :value="'Sucursal'">Retiro en sucursal</a-radio>
+                    <a-radio  :value="'Sucursal'">Retiro en sucursal</a-radio>
                 </a-card>
+            </a-space>
             </a-radio-group>
         </a-space>
     </a-modal>

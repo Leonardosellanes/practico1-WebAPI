@@ -10,7 +10,8 @@
 
       <div class="mb-4">
         <label for="password" class="block text-sm font-medium text-gray-600">Contraseña:</label>
-        <input v-model="formData.password" type="password" id="password" name="password" class="mt-1 p-2 w-full border rounded-md" />
+        <input v-model="formData.password" type="password" id="password" name="password"
+          class="mt-1 p-2 w-full border rounded-md" />
       </div>
 
       <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -28,7 +29,7 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex';
 import AuthController from '../../services/AuthController';
-
+import {useRouter} from 'vue-router';
 const store = useStore();
 const formData = ref({
   email: '',
@@ -36,26 +37,31 @@ const formData = ref({
 });
 const error = ref(null);
 
-const login = async () => {
-  try {
-    const data = {
-      Email: formData.value.email,
-      Password: formData.value.password,
-    };
+const router = useRouter();
 
-    const response = await AuthController.Login(data);
-    const token = response.data.token;
-    store.commit('setAuthToken', token);
-    if (store.getters.isAuthenticated) {
-      router.push('/');
-    }
-    formData.value.email = '';
-    formData.value.password = '';
-    error.value = null;
-  } catch (error) {
-    // Manejar errores de inicio de sesión
-    console.error('Error de inicio de sesión:', error.response.data);
-    error.value = 'Inicio de sesión fallido. Verifica tus credenciales.';
-  }
+const login = () => {
+
+  const data = {
+    Email: formData.value.email,
+    Password: formData.value.password,
+  };
+  AuthController.Login(data)
+    .then((response) => {
+      console.log(response.data)
+      const token = response.data
+      store.commit('setToken', token);
+      if (store.getters.isAuthenticated) {
+        router.push('/Home');
+      }
+      formData.value.email = '';
+      formData.value.password = '';
+      error.value = null;
+    })
+    .catch((error) => {
+      console.error('Error de inicio de sesión:', error);
+      error.value = 'Inicio de sesión fallido. Verifica tus credenciales.';
+    });
+
+
 };
 </script>

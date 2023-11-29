@@ -235,7 +235,7 @@ const handleOk = async () => {
                 precio: priceRef.value,
                 tipo_iva: IVA.value,
                 pdf: pdfUrl.ruta,
-                empresaId: 15,
+                empresaId: 1,
                 categoriaId: value.value
             }
 
