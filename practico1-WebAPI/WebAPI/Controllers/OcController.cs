@@ -57,14 +57,25 @@ namespace WebAPI.Controllers
             }
         }
 
-
-        //cambiar este
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("user/{id}")]
+        public IActionResult Get(string id)
         {
             try
             {
-                var ordenes = _blOC.ObtenerTodasLasOcs();
+                var ordenes = _blOC.ObtenerOCPorUserId(id);
+                return Ok(ordenes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al obtener las órdenes: {ex.Message}");
+            }
+        } 
+        [HttpGet("Empresa/{id}")]
+        public IActionResult GetbyEmpresaId(int id)
+        {
+            try
+            {
+                var ordenes = _blOC.ObtenerOCPorEmpresaId(id);
                 return Ok(ordenes);
             }
             catch (Exception ex)

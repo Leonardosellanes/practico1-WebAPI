@@ -28,9 +28,13 @@ namespace BusinessLayer.BLs
         {
             return _dalOC.obtenerCarrito(clienteId);
         }
-        public List<Orden> ObtenerTodasLasOcs()
+        public List<Orden> ObtenerOCPorUserId(string id)
         {
-            return _dalOC.ObtenerTodasLasOcs();
+            return _dalOC.ObtenerOCPorUserId(id);
+        }
+        public List<Orden> ObtenerOCPorEmpresaId(int id)
+        {
+            return _dalOC.ObtenerOCPorEmpresaId(id);
         }
 
         public void CrearOC(Orden orden)

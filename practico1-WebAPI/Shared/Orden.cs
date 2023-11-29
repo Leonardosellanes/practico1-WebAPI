@@ -28,14 +28,15 @@ namespace Shared
 
         public String ClienteId { get; set; }
 
-        
-
         public List<Carrito>? Carritos { get; set; }
 
         public Reclamo? Rcs { get; set; } = null;
 
         public UsuCliente Cli { get; set; }
 
+        public int? EmpresaId { get; set; }
 
+        public int? SucursalId { get; set; }
+        
     }
 }

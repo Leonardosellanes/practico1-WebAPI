@@ -41,7 +41,7 @@ namespace DataAccessLayer.DALs
                     {
                         Id = cp.Id,
                         Cantidad = cp.Cantidad,
-                        POs = new Producto
+                        POs = cp.POs != null ? new Producto
                         {
                             Id = cp.POs.Id,
                             Titulo = cp.POs.Titulo,
@@ -52,15 +52,16 @@ namespace DataAccessLayer.DALs
                             Pdf = cp.POs.Pdf,
                             EmpresaId = cp.POs.EmpresaId,
                             CategoriaId = cp.POs.CategoriaId,
-                            Categoria = new Categoria
+                            Categoria = cp.POs.CategoriaAsociada != null ? new Categoria
                             {
                                 Id = cp.POs.CategoriaAsociada.Id,
                                 Nombre = cp.POs.CategoriaAsociada.Nombre
-                            }
-                        }
+                            } : null
+                        } : null
                     }).ToList() : null
                 };
         }
+
 
         public Orden obtenerCarrito(string clienteId)
         {
@@ -153,30 +154,32 @@ namespace DataAccessLayer.DALs
 
         }
 
-        public List<Orden> ObtenerTodasLasOcs()
+        public List<Orden> ObtenerOCPorUserId(string id)
         {
             return _dbContext.OC
                 .Include(oc => oc.CarritoProducto)
-                .Select(o => new Orden
+                .Include(rc => rc.Rcs)
+                .Where(oc => oc.Cliente.Id == id)
+                .Select(oc => new Orden
                 {
-                    Id = o.Id,
-                    MedioDePago = o.MedioDePago,
-                    DireccionDeEnvio = o.DireccionDeEnvio,
-                    FechaEstimadaEntrega = o.FechaEstimadaEntrega,
-                    Total = o.Total,
-                    EstadoOrden = o.EstadoOrden,
-                    Fecha = o.Fecha,
-                    Carritos = o.CarritoProducto != null ? o.CarritoProducto.Select(cp => new Carrito
+                    Id = oc.Id,
+                    MedioDePago = oc.MedioDePago,
+                    DireccionDeEnvio = oc.DireccionDeEnvio,
+                    FechaEstimadaEntrega = oc.FechaEstimadaEntrega,
+                    Total = oc.Total,
+                    EstadoOrden = oc.EstadoOrden,
+                    Fecha = oc.Fecha,
+                    Carritos = oc.CarritoProducto != null ? oc.CarritoProducto.Select(cp => new Carrito
                     {
                         Id = cp.Id,
                         Cantidad = cp.Cantidad,
-                        ProductoId = cp.ProductoId,
                         POs = new Producto
                         {
                             Id = cp.POs.Id,
                             Titulo = cp.POs.Titulo,
                             Descripcion = cp.POs.Descripcion,
                             Foto = cp.POs.Foto,
+                            Base64 = GetImage(cp.POs.Foto),
                             Precio = cp.POs.Precio,
                             Tipo_iva = cp.POs.Tipo_iva,
                             Pdf = cp.POs.Pdf,
@@ -188,8 +191,65 @@ namespace DataAccessLayer.DALs
                                 Nombre = cp.POs.CategoriaAsociada.Nombre
                             }
                         }
-                    }).ToList() : null
-                }).ToList();
+                    }).ToList() : new List<Carrito>(),
+                    Rcs = oc.Rcs != null ? new Reclamo
+                    {
+                        Id = oc.Rcs.Id,
+                        Fecha = oc.Rcs.Fecha,
+                        Descripcion = oc.Rcs.Descripcion
+
+                    } : null
+                })
+                .ToList();  
+        }
+
+        public List<Orden> ObtenerOCPorEmpresaId(int id)
+        {
+            return _dbContext.OC
+                .Include(oc => oc.CarritoProducto)
+                .Include(rc => rc.Rcs)
+                .Where(oc => oc.EmpresaId == id)
+                .Select(oc => new Orden
+                {
+                    Id = oc.Id,
+                    MedioDePago = oc.MedioDePago,
+                    DireccionDeEnvio = oc.DireccionDeEnvio,
+                    FechaEstimadaEntrega = oc.FechaEstimadaEntrega,
+                    Total = oc.Total,
+                    EstadoOrden = oc.EstadoOrden,
+                    Fecha = oc.Fecha,
+                    Carritos = oc.CarritoProducto != null ? oc.CarritoProducto.Select(cp => new Carrito
+                    {
+                        Id = cp.Id,
+                        Cantidad = cp.Cantidad,
+                        POs = new Producto
+                        {
+                            Id = cp.POs.Id,
+                            Titulo = cp.POs.Titulo,
+                            Descripcion = cp.POs.Descripcion,
+                            Foto = cp.POs.Foto,
+                            Base64 = GetImage(cp.POs.Foto),
+                            Precio = cp.POs.Precio,
+                            Tipo_iva = cp.POs.Tipo_iva,
+                            Pdf = cp.POs.Pdf,
+                            EmpresaId = cp.POs.EmpresaId,
+                            CategoriaId = cp.POs.CategoriaId,
+                            Categoria = new Categoria
+                            {
+                                Id = cp.POs.CategoriaAsociada.Id,
+                                Nombre = cp.POs.CategoriaAsociada.Nombre
+                            }
+                        }
+                    }).ToList() : new List<Carrito>(),
+                    Rcs = oc.Rcs != null ? new Reclamo
+                    {
+                        Id = oc.Rcs.Id,
+                        Fecha = oc.Rcs.Fecha,
+                        Descripcion = oc.Rcs.Descripcion
+
+                    } : null
+                })
+                .ToList();
         }
 
         public void CrearOC(Orden orden)

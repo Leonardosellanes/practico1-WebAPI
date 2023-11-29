@@ -10,6 +10,11 @@ export default{
         return axios.get("OC/" + id);
     },
 
+    getOrdenByUserId(id){
+        return axios.get("OC/User/" + id);
+    },
+
+
     createOrden(body){
         return axios.post("Opinion", body);
     },
