@@ -11,7 +11,8 @@ namespace DataAccessLayer.IDALs
     {
         Orden ObtenerOCPorId(long id);
         Orden obtenerCarrito(string clienteId);
-        List<Orden> ObtenerTodasLasOcs();
+        List<Orden> ObtenerOCPorUserId(string id);
+        List<Orden> ObtenerOCPorEmpresaId(int id);
         void CrearOC(Orden orden);
         void ActualizarOC(Orden orden);
         void EliminarOC(long id);

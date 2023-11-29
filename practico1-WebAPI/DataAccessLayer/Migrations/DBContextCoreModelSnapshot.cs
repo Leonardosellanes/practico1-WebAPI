@@ -127,10 +127,10 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
-                    b.Property<long?>("OCId")
+                    b.Property<long>("OCId")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("ProductoId")
+                    b.Property<int>("ProductoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -229,6 +229,7 @@ namespace DataAccessLayer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ClienteId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DireccionDeEnvio")
@@ -236,13 +237,13 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int?>("EmpresaId")
+                        .HasColumnType("int");
+
                     b.Property<string>("EstadoOrden")
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
-
-                    b.Property<int?>("FacturaId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
@@ -255,7 +256,7 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<int?>("ReclamoId")
+                    b.Property<int?>("SucursalId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Total")
@@ -265,11 +266,9 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.HasIndex("FacturaId");
+                    b.HasIndex("EmpresaId");
 
-                    b.HasIndex("ReclamoId")
-                        .IsUnique()
-                        .HasFilter("[ReclamoId] IS NOT NULL");
+                    b.HasIndex("SucursalId");
 
                     b.ToTable("OC");
                 });
@@ -388,7 +387,8 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.HasIndex("OCId");
+                    b.HasIndex("OCId")
+                        .IsUnique();
 
                     b.ToTable("Reclamos");
                 });
@@ -568,11 +568,15 @@ namespace DataAccessLayer.Migrations
                 {
                     b.HasOne("DataAccessLayer.EFModels.OC", "OCs")
                         .WithMany("CarritoProducto")
-                        .HasForeignKey("OCId");
+                        .HasForeignKey("OCId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DataAccessLayer.EFModels.Productos", "POs")
                         .WithMany()
-                        .HasForeignKey("ProductoId");
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("OCs");
 
@@ -611,21 +615,23 @@ namespace DataAccessLayer.Migrations
                 {
                     b.HasOne("DataAccessLayer.EFModels.ApplicationUser", "Cliente")
                         .WithMany("OCs")
-                        .HasForeignKey("ClienteId");
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DataAccessLayer.EFModels.Facturas", "FAs")
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
                         .WithMany()
-                        .HasForeignKey("FacturaId");
+                        .HasForeignKey("EmpresaId");
 
-                    b.HasOne("DataAccessLayer.EFModels.Reclamos", "Rcs")
-                        .WithOne()
-                        .HasForeignKey("DataAccessLayer.EFModels.OC", "ReclamoId");
+                    b.HasOne("DataAccessLayer.EFModels.Sucursales", "SucursalAsociada")
+                        .WithMany()
+                        .HasForeignKey("SucursalId");
 
                     b.Navigation("Cliente");
 
-                    b.Navigation("FAs");
+                    b.Navigation("EmpresaAsociada");
 
-                    b.Navigation("Rcs");
+                    b.Navigation("SucursalAsociada");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Opiniones", b =>
@@ -673,8 +679,8 @@ namespace DataAccessLayer.Migrations
                         .IsRequired();
 
                     b.HasOne("DataAccessLayer.EFModels.OC", "OrdenAsociada")
-                        .WithMany()
-                        .HasForeignKey("OCId")
+                        .WithOne("Rcs")
+                        .HasForeignKey("DataAccessLayer.EFModels.Reclamos", "OCId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -773,6 +779,8 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("DataAccessLayer.EFModels.OC", b =>
                 {
                     b.Navigation("CarritoProducto");
+
+                    b.Navigation("Rcs");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Productos", b =>

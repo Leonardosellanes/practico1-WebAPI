@@ -38,7 +38,7 @@
                             <p>-Tarjeta de credito</p>
                             <template #actions>
                                 <a-input-number id="inputNumber" v-model:value="cantidad" :min="1" :max="10" />
-                                <a-button type="primary" shape="round">
+                                <a-button type="primary" shape="round" @click="agregarACarrito">
                                     Añadir al carrito
                                 </a-button>
                             </template>
@@ -109,6 +109,7 @@ import { LoadingOutlined, PaperClipOutlined } from '@ant-design/icons-vue';
 import { Empty, message } from 'ant-design-vue';
 import CategoriaController from '../../services/CategoriaController';
 import { useRouter, onBeforeRouteUpdate } from 'vue-router';
+import CarritoController from '../../services/CarritoController';
 
 const router = useRouter();
 const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;
@@ -189,6 +190,8 @@ const handleOpinion = () => {
 
 const cardClicked = (item) => {
     console.log(item)
+    productId.value =  item.id;
+    //cargarProducto();
     router.push({ name: 'Product', params: { id: item.id } });
 }
 
@@ -218,7 +221,7 @@ const fetchData = async () => {
 
 onBeforeRouteUpdate(() => {
   // Este hook se ejecutará cuando la ruta se actualice
-  productId.value = route.params.id;
+  //productId.value = route.params.id;
   fetchData();
 });
 
@@ -229,4 +232,26 @@ onBeforeMount(() => {
 onMounted(() => {
     cargarProducto()
 });
+
+const  agregarACarrito =() => {
+    CarritoController.buscarCarritoActual().then((response) => {
+        if (response && response.status === 200) {
+            const productos = response.data.carritos;
+            console.log(response.data);
+            if(productos && productos.some(carrito => carrito.productoId === data.value.id)){            
+                message.info('El producto ya se encuentra en el carrito');
+            }else {
+                const orden = response.data.id;
+                CarritoController.agregarProducto(orden, data.value.id, cantidad.value).then((response) => {
+                    if (response && response.status === 200) {
+                        message.success('Producto agregado al carrito');
+                    } else {
+                        message.error('Error al agregar producto');
+                    }
+                })
+            }
+        }
+    })
+    
+}
 </script>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(DBContextCore))]
-    [Migration("20231119201915_Version_2.0")]
-    partial class Version_20
+    [Migration("20231129001256_Version_1.0")]
+    partial class Version_10
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,13 +37,22 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("EmpresaId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EmpresasId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsAdmin")
                         .HasMaxLength(128)
@@ -64,10 +73,17 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -85,11 +101,22 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationUser");
+                    b.HasIndex("EmpresasId");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.CarritoProducto", b =>
@@ -103,10 +130,10 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
-                    b.Property<long?>("OCId")
+                    b.Property<long>("OCId")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("ProductoId")
+                    b.Property<int>("ProductoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -154,9 +181,6 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -168,8 +192,6 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Empresas");
                 });
@@ -210,6 +232,7 @@ namespace DataAccessLayer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ClienteId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DireccionDeEnvio")
@@ -217,13 +240,13 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int?>("EmpresaId")
+                        .HasColumnType("int");
+
                     b.Property<string>("EstadoOrden")
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
-
-                    b.Property<int?>("FacturaId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
@@ -236,7 +259,7 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<int?>("ReclamoId")
+                    b.Property<int?>("SucursalId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Total")
@@ -246,9 +269,9 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.HasIndex("FacturaId");
+                    b.HasIndex("EmpresaId");
 
-                    b.HasIndex("ReclamoId");
+                    b.HasIndex("SucursalId");
 
                     b.ToTable("OC");
                 });
@@ -261,7 +284,7 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<string>("ClienteId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Descripcion")
@@ -282,50 +305,11 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("ClienteId");
 
                     b.HasIndex("ProductoId");
 
                     b.ToTable("Opiniones");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.EFModels.Personas", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Apellidos")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("Direccion")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("Documento")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<DateTime>("FechaNacimiento")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Nombres")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<int>("Telefono")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Personas");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Productos", b =>
@@ -399,9 +383,15 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("OCId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EmpresaId");
+
+                    b.HasIndex("OCId")
+                        .IsUnique();
 
                     b.ToTable("Reclamos");
                 });
@@ -435,99 +425,6 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("EmpresaId");
 
                     b.ToTable("Sucursales");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.EFModels.Usuarios", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("DataAccessLayer.EFModels.Vehiculos", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Matricula")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("Nombres")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<long>("PersonaId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PersonaId");
-
-                    b.ToTable("Vehiculos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -663,15 +560,26 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("DataAccessLayer.EFModels.ApplicationUser", b =>
+                {
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", null)
+                        .WithMany("Empleados")
+                        .HasForeignKey("EmpresasId");
+                });
+
             modelBuilder.Entity("DataAccessLayer.EFModels.CarritoProducto", b =>
                 {
                     b.HasOne("DataAccessLayer.EFModels.OC", "OCs")
                         .WithMany("CarritoProducto")
-                        .HasForeignKey("OCId");
+                        .HasForeignKey("OCId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DataAccessLayer.EFModels.Productos", "POs")
                         .WithMany()
-                        .HasForeignKey("ProductoId");
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("OCs");
 
@@ -695,13 +603,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("EmpresaAsociada");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.EFModels.Empresas", b =>
-                {
-                    b.HasOne("DataAccessLayer.EFModels.ApplicationUser", null)
-                        .WithMany("Ecs")
-                        .HasForeignKey("ApplicationUserId");
-                });
-
             modelBuilder.Entity("DataAccessLayer.EFModels.Facturas", b =>
                 {
                     b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
@@ -717,34 +618,38 @@ namespace DataAccessLayer.Migrations
                 {
                     b.HasOne("DataAccessLayer.EFModels.ApplicationUser", "Cliente")
                         .WithMany("OCs")
-                        .HasForeignKey("ClienteId");
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DataAccessLayer.EFModels.Facturas", "FAs")
+                    b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
                         .WithMany()
-                        .HasForeignKey("FacturaId");
+                        .HasForeignKey("EmpresaId");
 
-                    b.HasOne("DataAccessLayer.EFModels.Reclamos", "Rcs")
+                    b.HasOne("DataAccessLayer.EFModels.Sucursales", "SucursalAsociada")
                         .WithMany()
-                        .HasForeignKey("ReclamoId");
+                        .HasForeignKey("SucursalId");
 
                     b.Navigation("Cliente");
 
-                    b.Navigation("FAs");
+                    b.Navigation("EmpresaAsociada");
 
-                    b.Navigation("Rcs");
+                    b.Navigation("SucursalAsociada");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Opiniones", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.ApplicationUser", null)
+                    b.HasOne("DataAccessLayer.EFModels.ApplicationUser", "Cliente")
                         .WithMany("OPs")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("ClienteId");
 
                     b.HasOne("DataAccessLayer.EFModels.Productos", "ProductoAsociados")
                         .WithMany("OpinionesAsociadas")
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cliente");
 
                     b.Navigation("ProductoAsociados");
                 });
@@ -771,12 +676,20 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("DataAccessLayer.EFModels.Reclamos", b =>
                 {
                     b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
-                        .WithMany()
+                        .WithMany("Reclamos")
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DataAccessLayer.EFModels.OC", "OrdenAsociada")
+                        .WithOne("Rcs")
+                        .HasForeignKey("DataAccessLayer.EFModels.Reclamos", "OCId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("EmpresaAsociada");
+
+                    b.Navigation("OrdenAsociada");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Sucursales", b =>
@@ -790,17 +703,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("EmpresaAsociada");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.EFModels.Vehiculos", b =>
-                {
-                    b.HasOne("DataAccessLayer.EFModels.Personas", "Persona")
-                        .WithMany("Vehiculos")
-                        .HasForeignKey("PersonaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Persona");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -812,7 +714,7 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Usuarios", null)
+                    b.HasOne("DataAccessLayer.EFModels.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -821,7 +723,7 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Usuarios", null)
+                    b.HasOne("DataAccessLayer.EFModels.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -836,7 +738,7 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.EFModels.Usuarios", null)
+                    b.HasOne("DataAccessLayer.EFModels.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -845,7 +747,7 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("DataAccessLayer.EFModels.Usuarios", null)
+                    b.HasOne("DataAccessLayer.EFModels.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -854,8 +756,6 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.EFModels.ApplicationUser", b =>
                 {
-                    b.Navigation("Ecs");
-
                     b.Navigation("OCs");
 
                     b.Navigation("OPs");
@@ -870,7 +770,11 @@ namespace DataAccessLayer.Migrations
                 {
                     b.Navigation("CategoriasAsociadas");
 
+                    b.Navigation("Empleados");
+
                     b.Navigation("ProductosAsociados");
+
+                    b.Navigation("Reclamos");
 
                     b.Navigation("SucursalesAsociadas");
                 });
@@ -878,11 +782,8 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("DataAccessLayer.EFModels.OC", b =>
                 {
                     b.Navigation("CarritoProducto");
-                });
 
-            modelBuilder.Entity("DataAccessLayer.EFModels.Personas", b =>
-                {
-                    b.Navigation("Vehiculos");
+                    b.Navigation("Rcs");
                 });
 
             modelBuilder.Entity("DataAccessLayer.EFModels.Productos", b =>

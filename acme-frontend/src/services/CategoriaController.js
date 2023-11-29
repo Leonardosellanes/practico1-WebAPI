@@ -3,7 +3,7 @@ import axios from "./axios";
 export default{
 
     getCategorias(id){
-        return axios.get("Categoria/Empresa/" + id);
+        return axios.get("Categoria/Empresa/" + 15);
     },
 
     getById(id){

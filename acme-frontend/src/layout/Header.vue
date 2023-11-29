@@ -22,13 +22,15 @@
             Registro
           </button>
         </router-link>
-        <ShoppingCartOutlined :style="{ fontSize: '24px', color: 'gray' }" />
+        <router-link to="/Carrito">
+            <ShoppingCartOutlined :style="{ fontSize: '24px', color: 'gray' }"/>
+        </router-link>
         <a-dropdown :trigger="['click']">
           <a-avatar style="color: #f56a00; background-color: #fde3cf">U</a-avatar>
           <template #overlay>
             <a-menu>
               <a-menu-item key="0">
-                <a href="http://www.alipay.com/">Perfil</a>
+                <a @click="toProfile">Perfil</a>
               </a-menu-item>
               <a-menu-divider />
               <a-menu-item key="3" @click="handleAuthentication" :style="{ color: isLoggedIn ? 'red' : 'black' }">
@@ -87,9 +89,24 @@ const items = ref([
     onClick: () => {
       router.push('/Reclamos');
     },
-  }
+  },
+  {
+    key: 'Empresas',
+    label: 'Empresas',
+    onClick: () => {
+      router.push('/Empresas');
+    },
+  },
+  {
+  key: 'Sucursales',
+  label: 'Sucursales',
+  onClick: () => {
+    router.push(`/Sucursales/${empresaId}`);
+  },
+}
   
 ]);
+const empresaId = (1)
 
 const handleAuthentication = () => {
   if (isLoggedIn) {
