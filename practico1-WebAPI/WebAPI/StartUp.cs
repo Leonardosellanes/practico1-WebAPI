@@ -25,38 +25,38 @@ namespace WebAPI
         {
             using (var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
-            {
-                using (var dbContext = serviceScope.ServiceProvider.GetService<DBContextCore>())
-                using (var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>())
-                using (var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>())
-                {
-                    #region Agregamos Los Roles Por defecto
-                    async Task CreateRoleIfNotExists(RoleManager<IdentityRole> roleManager, string roleName)
-                    {
-                        var existingRole = await roleManager.FindByNameAsync(roleName);
-
-                        if (existingRole == null)
-                        {
-                            var newRole = new IdentityRole
-                            {
-                                Id = roleName,
-                                Name = roleName,
-                                NormalizedName = roleName.ToUpper(),
-                                ConcurrencyStamp = roleName
-                            };
-
-                            await roleManager.CreateAsync(newRole);
-                        }
-                    }
-
-                    // Llamar a la función para crear los roles
-                    await CreateRoleIfNotExists(roleManager, "ADMIN");
-                    await CreateRoleIfNotExists(roleManager, "MANAGER");
-                    await CreateRoleIfNotExists(roleManager, "USER");
-                    #endregion*/
-                }
-            }
+                .CreateScope()) ;
+            //{
+            //    using (var dbContext = serviceScope.ServiceProvider.GetService<DBContextCore>())
+            //    using (var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>())
+            //    using (var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>())
+            //    {
+            //        #region Agregamos Los Roles Por defecto
+            //        async Task CreateRoleIfNotExists(RoleManager<IdentityRole> roleManager, string roleName)
+            //        {
+            //            var existingRole = await roleManager.FindByNameAsync(roleName);
+            //
+            //            if (existingRole == null)
+            //            {
+            //                var newRole = new IdentityRole
+            //                {
+            //                    Id = roleName,
+            //                    Name = roleName,
+            //                    NormalizedName = roleName.ToUpper(),
+            //                    ConcurrencyStamp = roleName
+            //                };
+            //
+            //                await roleManager.CreateAsync(newRole);
+            //            }
+            //        }
+            //
+            //        // Llamar a la función para crear los roles
+            //        await CreateRoleIfNotExists(roleManager, "ADMIN");
+            //        await CreateRoleIfNotExists(roleManager, "MANAGER");
+            //        await CreateRoleIfNotExists(roleManager, "USER");
+            //        #endregion*/
+            //    }
+            //}
         }
 
         

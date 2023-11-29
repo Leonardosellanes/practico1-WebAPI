@@ -263,8 +263,9 @@ namespace DataAccessLayer.DALs
                     FechaEstimadaEntrega = orden.FechaEstimadaEntrega,
                     Total = orden.Total,
                     EstadoOrden = orden.EstadoOrden,
-                    Fecha = orden.Fecha
-        }
+                    Fecha = orden.Fecha,
+                    EmpresaId = orden.EmpresaId
+                }
                 );
             _dbContext.SaveChanges();
         }

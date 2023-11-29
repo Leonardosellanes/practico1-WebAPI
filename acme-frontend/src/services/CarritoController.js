@@ -29,6 +29,4 @@ export default {
         return axios.put("CarritoProducto", body);
     }
 
-
-
 }
