@@ -19,7 +19,7 @@ export default createStore({
       try {
         const response = await axios.post('/api/Auth/Login', { username, password });
         const token = response.data.token;
-        commit('setToken', token);
+        commit('setAuthToken', token);
       } catch (error) {
         console.error(error.response.data);
       }

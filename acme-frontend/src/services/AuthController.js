@@ -2,8 +2,8 @@ import axios from "./axios";
 
 export default{
 
-    createAdmin(body){
-        return axios.post("Auth/RegisterAdmin", body);
+    createEmpresa(body){
+        return axios.post("/Empresa/RegistrarEmpresa", body);
     },
 
     createCliente(body){

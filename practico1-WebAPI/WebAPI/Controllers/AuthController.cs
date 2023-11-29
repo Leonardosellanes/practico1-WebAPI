@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Shared;
 using Shared.DTOs;
 using System.Data;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -54,40 +55,56 @@ namespace WebAPI.Controllers
             {
                 ApplicationUser user = await userManager.FindByNameAsync(userName: model.Email);
 
+                Console.WriteLine($"User found///////////: {user != null}, UserName: {user.Email}, Password:{user.Id}"  );
                 // Si el usuario existe, está activo, no está bloqueado y la contraseña es correcta
                 if (user != null &&
                     !await userManager.IsLockedOutAsync(user) &&
                     await userManager.CheckPasswordAsync(user, model.Password))
                 {
                     var userRoles = await userManager.GetRolesAsync(user);
-
+                    Console.WriteLine($"User Roles///////////: {string.Join(", ", userRoles)}");
                     var authClaims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, user.Email),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                       new Claim(ClaimTypes.Name, user.Email),
+                       new Claim(ClaimTypes.NameIdentifier, user.Id),
+                       //new Claim(ClaimTypes.WindowsDeviceClaim, user.EmpresaId),
+                       new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
+
+                    foreach (var claim in authClaims)
+                    {
+                        Console.WriteLine($"Type///////////: {claim.Type}, Value////////////: {claim.Value}");
+                    }
 
                     foreach (var userRole in userRoles)
                     {
                         authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                     }
 
-                    var token = GetToken(authClaims);
-
-                    // Restauramos la cantidad de fallos.
-                    await userManager.ResetAccessFailedCountAsync(user);
-
-                    return Ok(new LoginResponse
+                    try
                     {
-                        StatusOk = true,
-                        StatusMessage = "Usuario logueado correctamente!",
-                        IdUsuario = user.Id,
-                        Token = new JwtSecurityTokenHandler().WriteToken(token),
-                        Expiration = token.ValidTo,
-                        Email = user.Email,
-                        ExpirationMinutes = Convert.ToInt32((token.ValidTo - DateTime.UtcNow).TotalMinutes)
-                    });
+                        var token = GetToken(authClaims);
+                        Console.WriteLine($"Token generado con éxito: {token}");
+
+                        // Restauramos la cantidad de fallos.
+                        await userManager.ResetAccessFailedCountAsync(user);
+
+                        return Ok(new LoginResponse
+                        {
+                            StatusOk = true,
+                            StatusMessage = "Usuario logueado correctamente!",
+                            IdUsuario = user.Name,
+                            Token = new JwtSecurityTokenHandler().WriteToken(token),
+                            Expiration = token.ValidTo,
+                            Email = user.Email,
+                            ExpirationMinutes = Convert.ToInt32((token.ValidTo - DateTime.UtcNow).TotalMinutes)
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error al generar el token: {ex.Message}");
+                        throw; // Re-lanza la excepción para que sea capturada por el controlador de excepciones superior.
+                    }
                 }
                 else
                 {
@@ -121,9 +138,11 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "Error en Login, " + ex.Message);
+                Console.WriteLine($"Error en Login/////////////: {ex.Message}");
+                return StatusCode(StatusCodes.Status400BadRequest, "Error en Login, " + (ex.Message ?? "Mensaje de error nulo"));
             }
         }
+
 
         [HttpPost]
         [Route("Register")]
@@ -163,7 +182,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, ex.Message));
+                return StatusCode(StatusCodes.Status400BadRequest, "Error en Login, " + (ex.Message ?? "Mensaje de error nulo"));
             }
         }
 
@@ -185,7 +204,7 @@ namespace WebAPI.Controllers
                     Name = model.Name,
                     LName = model.LName,
                     Address = model.Address,
-                    // Agrega más propiedades según sea necesario para la creación de empleados
+                    EmpresaId = model.EmpresaId,
                 };
 
                 // Crear el usuario en la base de datos
@@ -232,7 +251,8 @@ namespace WebAPI.Controllers
                     Password = model.Password,
                     Name = model.Name,
                     LName = model.LName,
-                    Address = model.ShipAddress
+                    Address = model.ShipAddress,
+                    EmpresaId = model.EmpresaId,
                 };
 
                 // Crear el usuario en la base de datos
@@ -280,7 +300,8 @@ namespace WebAPI.Controllers
                     Name = model.Name,
                     LName = model.LName,
                     Address = model.Address,
-                    IsAdmin = true
+                    IsAdmin = true,
+                    EmpresaId = model.EmpresaId,
                 };
 
                 // Crear el usuario en la base de datos
@@ -305,9 +326,6 @@ namespace WebAPI.Controllers
             }
         }
 
-
-
-
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             string? JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET");
@@ -328,3 +346,4 @@ namespace WebAPI.Controllers
         }
     }
 }
+

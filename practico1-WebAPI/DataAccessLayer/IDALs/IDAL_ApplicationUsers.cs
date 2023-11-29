@@ -13,6 +13,7 @@ namespace DataAccessLayer.IDALs
     {
         void Delete(ApplicationUser applicationUsers);
         List<ApplicationUser> Get();
+        ApplicationUser GetById(string userId);
         void Insert(ApplicationUser applicationUsers);
         void Update(ApplicationUser applicationUsers);
     }

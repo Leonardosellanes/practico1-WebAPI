@@ -1,13 +1,25 @@
 <template>
-  <div>
-    <form @submit.prevent="login">
-      <label>Email:</label>
-      <input v-model="formData.email" type="text" />
+  <div class="container mx-auto mt-10 flex justify-center items-center">
+    <form @submit.prevent="login" class="max-w-md mx-auto bg-white p-8 border rounded-md">
+      <h2 class="text-3xl font-semibold mb-8">Iniciar Sesión</h2>
 
-      <label>Contraseña:</label>
-      <input v-model="formData.password" type="password" />
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-gray-600">Email:</label>
+        <input v-model="formData.email" type="text" id="email" name="email" class="mt-1 p-2 w-full border rounded-md" />
+      </div>
 
-      <button type="submit">Iniciar Sesión</button>
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-gray-600">Contraseña:</label>
+        <input v-model="formData.password" type="password" id="password" name="password" class="mt-1 p-2 w-full border rounded-md" />
+      </div>
+
+      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Iniciar Sesión
+      </button>
+
+      <div v-if="error" class="text-red-500 mt-4">
+        {{ error }}
+      </div>
     </form>
   </div>
 </template>
@@ -22,28 +34,28 @@ const formData = ref({
   email: '',
   password: '',
 });
+const error = ref(null);
 
-const login = () => {
+const login = async () => {
+  try {
+    const data = {
+      Email: formData.value.email,
+      Password: formData.value.password,
+    };
 
-  const data = {
-    email: formData.value.email,
-    password: formData.value.password,
+    const response = await AuthController.Login(data);
+    const token = response.data.token;
+    store.commit('setAuthToken', token);
+    if (store.getters.isAuthenticated) {
+      router.push('/');
+    }
+    formData.value.email = '';
+    formData.value.password = '';
+    error.value = null;
+  } catch (error) {
+    // Manejar errores de inicio de sesión
+    console.error('Error de inicio de sesión:', error.response.data);
+    error.value = 'Inicio de sesión fallido. Verifica tus credenciales.';
   }
-
-  console.log(formData)
-  AuthController.Login(data)
-    .then((response) => {
-      const token = response.data.token;
-      store.commit('setAuthToken', token);
-    })
-    .catch((error) => {
-      console.error('Error de inicio de sesión:', error.response.data);
-    });
-
-
-
-
-
 };
 </script>
-

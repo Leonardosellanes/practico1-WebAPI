@@ -18,7 +18,6 @@ namespace DataAccessLayer
 
         private string _connectionString = "Server=sqlserver,1433;Database=Practico4;User Id=sa;Password=Abc*123!;Encrypt=False;";
 
-
         public DBContextCore()
         { }
 
