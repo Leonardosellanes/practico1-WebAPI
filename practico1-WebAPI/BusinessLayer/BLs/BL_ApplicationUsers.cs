@@ -19,11 +19,11 @@ namespace BusinessLayer.BLs
             _applicationUsers = applicationUsers ?? throw new ArgumentNullException(nameof(applicationUsers));
         }
 
-        public List<ApplicationUser> Get()
+        public List<ApplicationUser> Get(int empresaId)
         {
             try
             {
-                return _applicationUsers.Get();
+                return _applicationUsers.Get(empresaId);
             }
             catch (Exception ex)
             {

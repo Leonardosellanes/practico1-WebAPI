@@ -15,7 +15,7 @@ public class DAL_ApplicationUsers : IDAL_ApplicationUsers
     public DAL_ApplicationUsers(DBContextCore dbContext)
     {
         _dbContext = dbContext;
-    }
+    } 
 
     public void Delete(ApplicationUser applicationUser)
     {
@@ -23,9 +23,22 @@ public class DAL_ApplicationUsers : IDAL_ApplicationUsers
         _dbContext.SaveChanges();
     }
 
-    public List<ApplicationUser> Get()
+    //Roles y empresaId
+    public List<ApplicationUser> Get(int empresaId)
     {
-        return _dbContext.Users.ToList();
+        var usersWithRole = from user in _dbContext.Users
+                            join userRole in _dbContext.UserRoles on user.Id equals userRole.UserId
+                            join role in _dbContext.Roles on userRole.RoleId equals role.Id
+                            where role.Name == "MANAGER" && user.EmpresaId == empresaId
+                            select user;
+
+        return usersWithRole.ToList();
+    }
+
+
+    public ApplicationUser GetById(string userId)
+    {
+        return _dbContext.Users.FirstOrDefault(u => u.Id == userId);
     }
 
     public void Insert(ApplicationUser applicationUser)

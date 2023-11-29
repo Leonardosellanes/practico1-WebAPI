@@ -19,10 +19,10 @@ namespace AcmeSolutions.Controllers
             _bl = bl;
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("{empresaId}")]
+        public IActionResult Get(int empresaId)
         {
-            var users = _bl.Get();
+            var users = _bl.Get(empresaId);
             return Ok(users);
         }
 

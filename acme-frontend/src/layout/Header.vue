@@ -22,7 +22,9 @@
             Registro
           </button>
         </router-link>
-        <ShoppingCartOutlined :style="{ fontSize: '24px', color: 'gray' }" />
+        <router-link to="/Carrito">
+          <ShoppingCartOutlined :style="{ fontSize: '24px', color: 'gray' }" />
+        </router-link>
         <a-dropdown :trigger="['click']">
           <a-avatar style="color: #f56a00; background-color: #fde3cf">U</a-avatar>
           <template #overlay>
@@ -96,13 +98,20 @@ const items = ref([
     },
   },
   {
-  key: 'Sucursales',
-  label: 'Sucursales',
-  onClick: () => {
-    router.push(`/Sucursales/${empresaId}`);
+    key: 'Sucursales',
+    label: 'Sucursales',
+    onClick: () => {
+      router.push(`/Sucursales/${empresaId}`);
+    },
   },
-}
-  
+  {
+    key: 'Empleados',
+    label: 'Empleados',
+    onClick: () => {
+      router.push(`/Empleados`);
+    },
+  }
+
 ]);
 const empresaId = (1)
 
@@ -126,8 +135,8 @@ const toHome = () => {
   current.value[0] = 'Home';
 };
 const toProfile = () => {
-    current.value[0] = ''; 
-    router.push('/Perfil')
+  current.value[0] = '';
+  router.push('/Perfil')
 };
 
 </script>

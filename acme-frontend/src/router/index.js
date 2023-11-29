@@ -134,6 +134,23 @@ const routes = [
                     title: 'Reclamos',
                 },
             },
+
+            {
+                path: '/Carrito',
+                name: 'Carrito',
+                component: () => import('../views/Carrito/CarritoView.vue'),
+                meta: {
+                    title: 'Carrito',
+                },
+            },
+            {
+                path: '/Empleados',
+                name: 'Empleados',
+                component: () => import('../views/Usuario/ListadoEmpleados.vue'),
+                meta: {
+                    title: 'Carrito',
+                },
+            },
         ],
     },
 ];

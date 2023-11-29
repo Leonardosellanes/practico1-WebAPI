@@ -8,6 +8,10 @@ export default {
         return axios.get("Empresa");
     },
 
+    getEmpleados(id) {
+        return axios.get("AppUsers/" + id);
+    },
+    
     getById(id) {
         return axios.get('Empresa/'+id);
     },
@@ -15,6 +19,10 @@ export default {
     create(nombre, rut) {
         let body = { Nombre: nombre, RUT: rut };
         return axios.post('Empresa', body);
+    },
+
+    createEmpleados(body) {
+        return axios.post('Auth/RegisterEmpleado' ,body)
     },
 
     update(id, nombre, rut) {

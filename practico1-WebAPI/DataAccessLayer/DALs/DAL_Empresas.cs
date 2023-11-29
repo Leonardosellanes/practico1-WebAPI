@@ -120,7 +120,6 @@ namespace DataAccessLayer.DALs
                              .ToList();
         }
 
-
         public void Insert(Empresa empresa)
         {
             _dbContext.Empresas.Add(new Empresas { Nombre = empresa.Nombre, RUT = empresa.RUT });

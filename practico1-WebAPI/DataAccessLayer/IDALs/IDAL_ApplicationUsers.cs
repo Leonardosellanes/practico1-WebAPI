@@ -12,7 +12,8 @@ namespace DataAccessLayer.IDALs
     public interface IDAL_ApplicationUsers
     {
         void Delete(ApplicationUser applicationUsers);
-        List<ApplicationUser> Get();
+        List<ApplicationUser> Get(int empresaId);
+        ApplicationUser GetById(string userId);
         void Insert(ApplicationUser applicationUsers);
         void Update(ApplicationUser applicationUsers);
     }
