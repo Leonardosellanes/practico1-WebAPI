@@ -13,7 +13,7 @@ export default {
     },
     
     getById(id) {
-        return axios.get('Empresa/'+id);
+        return axios.get('Empresa/'+1);
     },
 
     create(nombre, rut) {

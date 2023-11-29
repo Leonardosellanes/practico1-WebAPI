@@ -4,14 +4,36 @@ import axios from 'axios';
 export default createStore({
   state: {
     token: null,
+    idUsuario:null,
+    email: '',
+    rol:'',
+    empresaId: null
   },
   mutations: {
-    setToken(state, token) {
-      state.token = token;
+    setToken(state, data) {
+      state.token = data.token;
+      state.idUsuario = data.idUsuario;
+      state.email = data.email;
+      state.rol = data.roles[0];
+      state.empresaId = data.empresaId
+      sessionStorage.setItem('token', data.token);
+      sessionStorage.setItem('idUsuario', data.idUsuario);
+      sessionStorage.setItem('email', data.email);
+      sessionStorage.setItem('rol', data.roles[0]);
+      sessionStorage.setItem('empresaId', data.empresaId);
     },
     clearToken(state) {
       state.token = null;
       state.user = null;
+      state.idUsuario = null
+      state.email = '';
+      state.rol = ''
+      state.empresaId = null
+      sessionStorage.removeItem('idUsuario');
+      sessionStorage.removeItem('email');
+      sessionStorage.removeItem('rol');
+      sessionStorage.removeItem('empresaId');
+      sessionStorage.removeItem('token');
     },
   },
   actions: {

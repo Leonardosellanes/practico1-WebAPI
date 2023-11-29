@@ -4,7 +4,7 @@
             <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Bienvenido"
                 sub-title="Aquí tienes nuestra selección de productos">
                 <template #extra>
-                    <a-input-search v-model:value="searchText" placeholder="input search text" enter-button
+                    <a-input-search v-model:value="searchText" placeholder="Nombre del producto" enter-button
                         @change="onSearch" />
                 </template>
             </a-page-header>

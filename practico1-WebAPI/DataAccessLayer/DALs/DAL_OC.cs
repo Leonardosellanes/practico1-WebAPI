@@ -67,31 +67,42 @@ namespace DataAccessLayer.DALs
         {
             OC oc = _dbContext.OC
                 .Include(o => o.CarritoProducto)
+                .ThenInclude(cp => cp.POs)
                 .FirstOrDefault(o => o.Cliente.Id == clienteId && o.EstadoOrden == "activo");
 
             Orden carrito;
 
             if (oc == null)
             {
-                var nuevoCarritoEF = new EFModels.OC
-                {
-                    Cliente = _dbContext.Usuarios.Find(clienteId),
-                    EstadoOrden = "activo",
-                };
+                ApplicationUser Cliente = _dbContext.Usuarios.Find(clienteId);
 
-                _dbContext.OC.Add(nuevoCarritoEF);
-                _dbContext.SaveChanges();
+                if (Cliente != null) {
 
-                carrito = new Orden
+                    var nuevoCarritoEF = new OC
+                    {
+                        Cliente = Cliente,
+                        EstadoOrden = "activo",
+                    };
+
+                    _dbContext.OC.Add(nuevoCarritoEF);
+                    _dbContext.SaveChanges();
+
+                    carrito = new Orden
+                    {
+                        Id = nuevoCarritoEF.Id,
+                        MedioDePago = nuevoCarritoEF.MedioDePago,
+                        DireccionDeEnvio = nuevoCarritoEF.DireccionDeEnvio,
+                        FechaEstimadaEntrega = nuevoCarritoEF.FechaEstimadaEntrega,
+                        Total = nuevoCarritoEF.Total,
+                        EstadoOrden = nuevoCarritoEF.EstadoOrden,
+                        Fecha = nuevoCarritoEF.Fecha,
+                        ClienteId = Cliente.Id
+                    };
+                }
+                else
                 {
-                    Id = nuevoCarritoEF.Id,
-                    MedioDePago = nuevoCarritoEF.MedioDePago,
-                    DireccionDeEnvio = nuevoCarritoEF.DireccionDeEnvio,
-                    FechaEstimadaEntrega = nuevoCarritoEF.FechaEstimadaEntrega,
-                    Total = nuevoCarritoEF.Total,
-                    EstadoOrden = nuevoCarritoEF.EstadoOrden,
-                    Fecha = nuevoCarritoEF.Fecha
-                };
+                    return null;
+                }
             }
             else
             {
@@ -118,9 +129,11 @@ namespace DataAccessLayer.DALs
                                     Titulo = cp.POs.Titulo,
                                     Descripcion = cp.POs.Descripcion,
                                     Foto = cp.POs.Foto,
+                                    Base64 = GetImage(cp.POs.Foto),
                                     Precio = cp.POs.Precio,
                                     Tipo_iva = cp.POs.Tipo_iva,
                                     Pdf = cp.POs.Pdf,
+                                    Base64pdf = GetPdf(cp.POs.Pdf),
                                     EmpresaId = cp.POs.EmpresaId,
                                     CategoriaId = cp.POs.CategoriaId,
                                     Categoria = cp.POs.CategoriaAsociada != null
@@ -244,6 +257,7 @@ namespace DataAccessLayer.DALs
 
         public void CrearOC(Orden orden)
         {
+
             _dbContext.OC.Add(
                 new OC
                 {
@@ -290,6 +304,28 @@ namespace DataAccessLayer.DALs
         public static string GetImage(string fileName)
         {
             string filePath = Path.Combine("Archivos", "Imagenes", fileName);
+
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    byte[] fileBytes = File.ReadAllBytes(filePath);
+                    return Convert.ToBase64String(fileBytes);
+                }
+                catch (Exception ex)
+                {
+                    return $"Error al leer el archivo: {ex.Message}";
+                }
+            }
+            else
+            {
+                return filePath;
+            }
+        }
+
+        public static string GetPdf(string fileName)
+        {
+            string filePath = Path.Combine("Archivos", "Pdf", fileName);
 
             if (File.Exists(filePath))
             {

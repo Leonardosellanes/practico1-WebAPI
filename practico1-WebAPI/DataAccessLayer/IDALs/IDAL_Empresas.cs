@@ -10,8 +10,9 @@ namespace DataAccessLayer.IDALs
     public interface IDAL_Empresas
     {
         Empresa GetById(int id);
+        Task<Empresa> InsertAndGetAsync(Empresa empresa);
         List<Empresa> GetAll();
-        void Insert(Empresa empresa);
+        Task<int> InsertAsync(Empresa empresa);
         void Update(Empresa empresa);
         void Delete(int id);
     }

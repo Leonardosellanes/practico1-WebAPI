@@ -41,6 +41,11 @@ public class DAL_ApplicationUsers : IDAL_ApplicationUsers
         return _dbContext.Users.FirstOrDefault(u => u.Id == userId);
     }
 
+    public ApplicationUser GetById(string userId)
+    {
+        return _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+    }
+
     public void Insert(ApplicationUser applicationUser)
     {
         _dbContext.Users.Add(applicationUser);
@@ -53,4 +58,5 @@ public class DAL_ApplicationUsers : IDAL_ApplicationUsers
         _dbContext.SaveChanges();
     }
 }
+
 
