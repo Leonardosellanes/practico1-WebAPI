@@ -1,7 +1,12 @@
-﻿using DataAccessLayer;
+﻿using BusinessLayer.BLs;
+using BusinessLayer.IBLs;
+using DataAccessLayer;
+using DataAccessLayer.DALs;
 using DataAccessLayer.EFModels;
+using DataAccessLayer.IDALs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using WebAPI.Controllers;
 
 namespace WebAPI
 {
@@ -20,6 +25,14 @@ namespace WebAPI
             }
         }
 
+        public void ConfigureServices(IServiceCollection services)
+        {   
+            services.AddScoped<AuthController>();
+            services.AddScoped<IDAL_Empresas, DAL_Empresas>();
+            services.AddScoped<IBL_Empresas, BL_Empresas>();
+
+
+        }
 
         internal static async void InitializeDatabase(IApplicationBuilder app) 
         {

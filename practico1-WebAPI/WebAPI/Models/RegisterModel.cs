@@ -27,6 +27,7 @@ namespace WebAPI.Models
         public string? Name { get; set; }
         public string? LName { get; set; }
         public string? Address { get; set; } = String.Empty;
+        public int? EmpresaId { get; set; }
     }
 
     public class RegisterAdminModel
@@ -42,6 +43,7 @@ namespace WebAPI.Models
         public string? Name { get; set; }
         public string? LName { get; set; }
         public string? Address { get; set; }
+        public int? EmpresaId { get; set; }
     }
 
     public class RegisterEmpleadoModel
@@ -57,6 +59,17 @@ namespace WebAPI.Models
         public string? Name { get; set; }
         public string? LName { get; set; }
         public string? Address { get; set; }
+        public int? EmpresaId { get; set; }
+    }
+
+    public class RegistroEmpresaAdminRequest
+    {   
+        public string? NombreEmpresa { get; set; }
+        public string? RUTEmpresa { get; set; }
+        public string? EmailAdmin { get; set; }
+        public string? PasswordAdmin { get; set; }
+        public string? NombreAdmin { get; set; }
+        public string? ApellidoAdmin { get; set; }
     }
 
 }

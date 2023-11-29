@@ -31,7 +31,7 @@
                 <a href="http://www.alipay.com/">Perfil</a>
               </a-menu-item>
               <a-menu-divider />
-              <a-menu-item key="3" @click="handleAuthentication">
+              <a-menu-item key="3" @click="handleAuthentication" :style="{ color: isLoggedIn ? 'red' : 'black' }">
                 {{ isLoggedIn ? 'Cerrar Sesión' : 'Iniciar Sesión' }}
               </a-menu-item>
             </a-menu>

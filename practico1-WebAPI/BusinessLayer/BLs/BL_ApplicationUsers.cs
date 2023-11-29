@@ -58,11 +58,22 @@ namespace BusinessLayer.BLs
             }
         }
 
-        public void Delete(ApplicationUser applicationUser)
+        public bool Delete(string userId)
         {
             try
             {
-                _applicationUsers.Delete(applicationUser);
+                // Lógica para eliminar el usuario por su identificador
+                ApplicationUser userToDelete = _applicationUsers.GetById(userId);
+
+                if (userToDelete != null)
+                {
+                    _applicationUsers.Delete(userToDelete);
+                    return true; // Se eliminó correctamente
+                }
+                else
+                {
+                    return false; // Usuario no encontrado
+                }
             }
             catch (Exception ex)
             {

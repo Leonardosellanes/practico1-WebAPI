@@ -101,11 +101,11 @@ const routes = [
                     },
                   },
                   {
-                    path: 'Administrador',
-                    name: 'RegistroAdministrador',
-                    component: () => import('../views/Login/RegistroAdministrador.vue'),
+                    path: 'Empresa',
+                    name: 'RegistroEmpresa',
+                    component: () => import('../views/Login/RegistroEmpresa.vue'),
                     meta: {
-                      title: 'Registro Administrador',
+                      title: 'Registro Empresa',
                     },
                   },
                 ],
