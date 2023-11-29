@@ -17,10 +17,10 @@ namespace Envios_Tiempo
 
             app.UseRouting();
 
-            /*app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });*/
+            });
         }
     }
 }
