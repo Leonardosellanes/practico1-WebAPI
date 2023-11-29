@@ -32,5 +32,9 @@ namespace Shared
 
         public UsuCliente Cli { get; set; }
 
+        public int? EmpresaId { get; set; }
+
+        public int? SucursalId { get; set; }
+        
     }
 }

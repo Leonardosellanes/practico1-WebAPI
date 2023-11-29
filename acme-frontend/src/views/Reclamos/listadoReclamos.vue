@@ -74,19 +74,19 @@ const columns = [
         key: 'verOrden',
 
     },
-    {
-        title: 'Acciones',
-        key: 'action',
-    },
+    // {
+    //     title: 'Acciones',
+    //     key: 'action',
+    // },
 ];
 const open = ref(false)
 
 
 const cargarReclamos = () => {
     loading.value = true
-    const dataProductos = EmpresasController.getById(1)
+    EmpresasController.getById(1)
         .then((response) => {
-            data.value = response.data.reclamos
+            data.value = response.data.reclamos.reverse();
             loading.value = false;
         })
         .catch((error) => {
@@ -99,7 +99,7 @@ const cargarReclamos = () => {
 const viewOrder = (record) => {
     open.value = true
     loadingModal.value = true
-    const order = OrdenDeCompraController.getOrdenById(record.ocId)
+    OrdenDeCompraController.getOrdenById(record.ocId)
         .then((response) => {
             ordenAsociada.value = response.data
             loadingModal.value = false

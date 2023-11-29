@@ -28,7 +28,7 @@
           <template #overlay>
             <a-menu>
               <a-menu-item key="0">
-                <a href="http://www.alipay.com/">Perfil</a>
+                <a @click="toProfile">Perfil</a>
               </a-menu-item>
               <a-menu-divider />
               <a-menu-item key="3" @click="handleAuthentication">
@@ -87,9 +87,24 @@ const items = ref([
     onClick: () => {
       router.push('/Reclamos');
     },
-  }
+  },
+  {
+    key: 'Empresas',
+    label: 'Empresas',
+    onClick: () => {
+      router.push('/Empresas');
+    },
+  },
+  {
+  key: 'Sucursales',
+  label: 'Sucursales',
+  onClick: () => {
+    router.push(`/Sucursales/${empresaId}`);
+  },
+}
   
 ]);
+const empresaId = (1)
 
 const handleAuthentication = () => {
   if (isLoggedIn) {

@@ -37,10 +37,19 @@ namespace DataAccessLayer.EFModels
 
         public List<CarritoProducto>? CarritoProducto { get; set; }
 
-        [ForeignKey("ReclamoId")]
         public Reclamos? Rcs { get; set; } = null;
 
         [ForeignKey("ClienteId")]
-        public ApplicationUser? Cliente { get; set; } = null;  
+        public ApplicationUser? Cliente { get; set; } = null;
+
+        public int? EmpresaId { get; set; }
+
+        [ForeignKey("EmpresaId")]
+        public Empresas? EmpresaAsociada { get; set; } = null;
+
+        public int? SucursalId { get; set; }
+
+        [ForeignKey("SucursalId")]
+        public Sucursales? SucursalAsociada { get; set; } = null;
     }
 }
