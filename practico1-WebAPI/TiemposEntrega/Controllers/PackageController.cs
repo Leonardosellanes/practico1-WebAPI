@@ -1,54 +1,50 @@
-﻿namespace Envios_Tiempo.Controllers
-{
-    using Microsoft.AspNetCore.Mvc;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using TiemposEntrega;
+﻿using Envios_Tiempo;
+using Microsoft.AspNetCore.Mvc;
+using TiemposEntrega;
 
-    [ApiController]
-    [Route("[controller]")]
-    public class PackageController : ControllerBase
+[ApiController]
+[Route("[controller]")]
+public class PackageController : ControllerBase
+{
+    private List<Warehouse> warehouses = new List<Warehouse>
     {
-        private List<Warehouse> warehouses = new List<Warehouse>
-    {
-        new Warehouse { Id = 1, Name = "Warehouse A", DefaultShippingTimeInDays = 2, Latitude = 40.7128, Longitude = -74.0060 }, // Example location
-        new Warehouse { Id = 2, Name = "Warehouse B", DefaultShippingTimeInDays = 3, Latitude = 34.0522, Longitude = -118.2437 }, // Example location
-        // Add more warehouses with default times and location information
+        new Warehouse { Id = 1, Nombre = "Warehouse A", Diasentregadefault = 2, Direccion = "Dirección del Warehouse A" },
+        new Warehouse { Id = 2, Nombre = "Warehouse B", Diasentregadefault = 3, Direccion = "Dirección del Warehouse B" },
+        // Agregar más almacenes con información de dirección
     };
 
-        [HttpPost]
-        [Route("api/packages/calculate")]
+    [HttpPost("calculate")]
+    public IActionResult CalculateDeliveryTime([FromBody] DeliveryRequest deliveryRequest)
+    {
+        // Simular una demora para la API de prueba
+        Task.Delay(1000).Wait(); // Puedes usar Task.Delay sin bloquear el hilo
 
-        public IActionResult CalculateDeliveryTime([FromBody] DeliveryRequest deliveryRequest)
+        // Encuentra el almacén seleccionado basado en el paquete
+        var selectedWarehouse = warehouses.FirstOrDefault(w => w.Id == deliveryRequest.Package.WarehouseId);
+        if (selectedWarehouse == null)
         {
-            // Simulate a delay for the mock API
-            Thread.Sleep(1000);
-
-            // Find the selected warehouse based on the package
-            var selectedWarehouse = warehouses.FirstOrDefault(w => w.Id == deliveryRequest.Package.WarehouseId);
-            if (selectedWarehouse == null)
-            {
-                return NotFound("Warehouse not found");
-            }
-
-            // Calculate delivery time based on the distance to the user's location
-            double distance = CalculateDistance(selectedWarehouse, deliveryRequest.UserLocation);
-
-            // Calculate delivery time based on the distance and default shipping time
-            int deliveryTime = selectedWarehouse.DefaultShippingTimeInDays + (int)(distance / 100); // Adjust the division factor based on your needs.
-
-            return Ok(new { DeliveryTime = deliveryTime });
+            return NotFound("Almacén no encontrado");
         }
 
-        private double CalculateDistance(Warehouse warehouse, UserLocation userLocation)
+        // Simular datos aleatorios para el número de seguimiento, tiempo de entrega y precio
+        Random random = new Random();
+        string trackingNumber = GenerateTrackingNumber(random, 15);
+        int deliveryTime = selectedWarehouse.Diasentregadefault + random.Next(1, 10); // Tiempo de entrega entre 1 y 10 días
+        double shippingCost = Math.Round(random.NextDouble() * 150 + 50, 1); // Precio de envío aleatorio entre 50 y 200 con 1 solo decimal
+
+        // Devolver los resultados
+        return Ok(new
         {
-            // Replace this with a real distance calculation method (e.g., using the Haversine formula).
-            // The example below is a simplified and non-accurate distance calculation.
-            double latDiff = Math.Abs(warehouse.Latitude - userLocation.Latitude);
-            double lonDiff = Math.Abs(warehouse.Longitude - userLocation.Longitude);
-            return Math.Sqrt(latDiff * latDiff + lonDiff * lonDiff);
-        }
+            TrackingNumber = trackingNumber,
+            DeliveryTime = deliveryTime,
+            ShippingCost = shippingCost
+        });
     }
 
+    private string GenerateTrackingNumber(Random random, int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return new string(Enumerable.Repeat(chars, length)
+          .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
 }
