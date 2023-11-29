@@ -22,7 +22,9 @@
             Registro
           </button>
         </router-link>
-        <ShoppingCartOutlined :style="{ fontSize: '24px', color: 'gray' }" />
+        <router-link to="/Carrito">
+            <ShoppingCartOutlined :style="{ fontSize: '24px', color: 'gray' }"/>
+        </router-link>
         <a-dropdown :trigger="['click']">
           <a-avatar style="color: #f56a00; background-color: #fde3cf">U</a-avatar>
           <template #overlay>

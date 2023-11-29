@@ -134,6 +134,15 @@ const routes = [
                     title: 'Reclamos',
                 },
             },
+
+            {
+                path: '/Carrito',
+                name: 'Carrito',
+                component: () => import('../views/Carrito/CarritoView.vue'),
+                meta: {
+                    title: 'Carrito',
+                },
+            },
         ],
     },
 ];
