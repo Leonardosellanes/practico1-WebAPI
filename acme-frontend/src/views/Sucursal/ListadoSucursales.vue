@@ -1,7 +1,7 @@
 <template>
     <div class=" w-full h-full space-y-10">
         <a-page-header class="demo-page-header" style="border: 1px solid rgb(235, 237, 240)" title="Sucursales"
-            :sub-title=empresa.nombre @back="() => $router.go(-1)"><!--  -->
+            :sub-title=empresa.nombre><!--  -->
             <template #extra>
             <a-button type="primary" @click="showModal">Agregar</a-button>
               <a-modal v-model:open="open" title="Agregar Sucursal" :confirm-loading="confirmLoading" @ok="handleOk">

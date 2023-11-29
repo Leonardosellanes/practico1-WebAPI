@@ -6,21 +6,23 @@
                 <a-modal v-model:open="open" title="Agregar Categoria" :confirm-loading="confirmLoading" @ok="handleOk">
                     <a-space direction="vertical" style="width: 100%;">
                         <a-input v-model:value="nombre" placeholder="Nombre" :status="errorNombre" />
-                        <a-select ref="select" v-model:value="value" style="width: 100%" placeholder="Categoria Asociada" :options="options"/>
+                        <a-select ref="select" v-model:value="value" style="width: 100%" placeholder="Categoria Asociada"
+                            :options="options" />
                     </a-space>
                 </a-modal>
                 <a-modal v-model:open="openEditar" title="Editar Categoria" :confirm-loading="confirmLoading"
                     @ok="handleEditOk">
                     <a-space direction="vertical" style="width: 100%;">
                         <a-input v-model:value="nombre" placeholder="Nombre" :status="errorNombre" />
-                        <a-select ref="select" v-model:value="value" style="width: 100%" :options="options.filter(categoria => categoria.value != editarCategoria.key)"
+                        <a-select ref="select" v-model:value="value" style="width: 100%"
+                            :options="options.filter(categoria => categoria.value != editarCategoria.key)"
                             placeholder="Categoria Asociada" />
                     </a-space>
                 </a-modal>
             </template>
         </a-page-header>
         <div>
-            <div class="w-full flex justify-center" v-if="data.length == 0">
+            <div class="w-full flex justify-center" v-if="loading">
                 <a-spin :indicator="indicator" @spinning="true" />
             </div>
             <div v-else>
@@ -66,7 +68,7 @@ const value = ref('');
 const data = ref([]);
 const editarCategoria = ref([]);
 const errorNombre = ref('')
-
+const loading = ref(false)
 const indicator = h(LoadingOutlined, {
     style: {
         fontSize: '24px',
@@ -93,6 +95,7 @@ const columns = [
 ];
 
 const cargarCategorias = () => {
+    loading.value = true
     const dataCategorias = CategoriaController.getCategorias(1)
         .then((response) => {
             data.value = response.data
@@ -112,8 +115,11 @@ const cargarCategorias = () => {
                     label: categoria.nombre,
                 }))
                 .sort((a, b) => a.label.localeCompare(b.label));
+
+            loading.value = false;
         })
         .catch((error) => {
+            loading.value = false;
             message.error('Error al obtener la lista de categorias');
         });
 }
@@ -126,17 +132,24 @@ const showModal = () => {
 
 const handleOk = () => {
     if (nombre.value != '') {
-        console.log(value.value)
         errorNombre.value = ''
-        const data = {
-            Id: 0,
-            nombre: nombre.value,
-            categoriaId: value.value,
-            empresaId: 1
+        const data = ({});
+        if (value.value == "") {
+            data.value = {
+                Id: 0,
+                nombre: nombre.value,
+                empresaId: 1
+            }
+        } else {
+            data.value = {
+                Id: 0,
+                nombre: nombre.value,
+                categoriaId: value.value,
+                empresaId: 1
+            }
         }
-
         confirmLoading.value = true;
-        const create = CategoriaController.createCategorias(data)
+        const create = CategoriaController.createCategorias(data.value)
             .then(() => {
                 open.value = false;
                 confirmLoading.value = false;
@@ -155,7 +168,7 @@ const handleOk = () => {
 };
 
 const handleEditOk = () => {
-    
+
 
     if (nombre.value != '') {
         errorNombre.value = ''
@@ -167,25 +180,25 @@ const handleEditOk = () => {
     console.log(foundCategory)
     console.log(key)
     if (nombre.value != '') {
-    const data = {
-        id: editarCategoria.value.key,
-        nombre: nombre.value,
-        categoriaId: key,
-        empresaId: 1
-    }
+        const data = {
+            id: editarCategoria.value.key,
+            nombre: nombre.value,
+            categoriaId: key,
+            empresaId: 1
+        }
 
-    console.log(data)
-    confirmLoading.value = true;
-    const create = CategoriaController.editarCategorias(data.id, data)
-        .then(() => {
-            openEditar.value = false;
-            confirmLoading.value = false;
-            message.success('Categoría editada');
-            cargarCategorias()
-        })
-        .catch((error) => {
-            message.error('Error al editar la categoria');
-        });
+        console.log(data)
+        confirmLoading.value = true;
+        const create = CategoriaController.editarCategorias(data.id, data)
+            .then(() => {
+                openEditar.value = false;
+                confirmLoading.value = false;
+                message.success('Categoría editada');
+                cargarCategorias()
+            })
+            .catch((error) => {
+                message.error('Error al editar la categoria');
+            });
     }
     else {
         if (nombre.value == '') {
