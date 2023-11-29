@@ -28,11 +28,11 @@ namespace WebAPI.Controllers
         // GET: api/<PersonasController>
         [ProducesResponseType(typeof(List<Usuario>), 200)]
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(int empresaId)
         {
             try
             {
-                return Ok(_bl.Get());
+                return Ok(_bl.Get(empresaId));
             }
             catch (Exception ex)
             {

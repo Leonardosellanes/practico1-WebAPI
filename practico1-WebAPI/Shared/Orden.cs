@@ -32,7 +32,7 @@ namespace Shared
 
         public Reclamo? Rcs { get; set; } = null;
 
-        public UsuCliente Cli { get; set; }
+        public UsuCliente? Cli { get; set; }
 
         public int? EmpresaId { get; set; }
 

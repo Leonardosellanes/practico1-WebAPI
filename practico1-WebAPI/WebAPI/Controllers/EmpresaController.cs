@@ -62,86 +62,21 @@ namespace WebAPI.Controllers
         }
 
         [ProducesResponseType(typeof(Empresa), 200)]
-        [HttpPost("RegistrarEmpresa")]
-        public async Task<IActionResult> Post([FromBody] RegistroEmpresaAdminRequest request)
+        [HttpPost]
+        public IActionResult Post([FromBody] Empresa e)
         {
             try
             {
-                using (var scope = _serviceScopeFactory.CreateScope())
-                {
-                    var scopedBl = scope.ServiceProvider.GetRequiredService<IBL_Empresas>();
-
-                    int empresaId = await scopedBl.InsertAsync(new Empresa { Nombre = request.NombreEmpresa, RUT = request.RUTEmpresa });
-                    Console.WriteLine($"Empresa ID después de la inserción: {empresaId}");
-                    RegisterAdminModel adminModel = new RegisterAdminModel
-                    {
-                        Email = request.EmailAdmin,
-                        Password = request.PasswordAdmin,
-                        IsAdmin = true,
-                        Name = request.NombreAdmin,
-                        LName = request.ApellidoAdmin,
-                        EmpresaId = empresaId,
-                    };
-
-                    IActionResult result = await RegisterAdmin(adminModel);
-
-                    if (result is ObjectResult objectResult && objectResult.StatusCode == StatusCodes.Status200OK)
-                    {
-                        return Ok(new { EmpresaId = empresaId });
-                    }
-                    else
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, "Error al registrar el administrador.");
-                    }
-                }
+                _bl.Insert(e);
+                return Ok();
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
             }
+            
         }
-
-        private async Task<IActionResult> RegisterAdmin(RegisterAdminModel model)
-        {
-            try
-            {
-                var userExists = await _userManager.FindByNameAsync(model.Email);
-                if (userExists != null)
-                    return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "El usuario ya existe!"));
-                Console.WriteLine($"Valor de empresaId antes de crear adminModel: {model.EmpresaId}");
-
-                ApplicationUser user = new ApplicationUser()
-                {
-                    Email = model.Email,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = model.Email,
-                    Password = model.Password,
-                    Name = model.Name,
-                    LName = model.LName,
-                    Address = model.Address,
-                    IsAdmin = true,
-                    EmpresaId = model.EmpresaId,
-                };
-
-                var result = await _userManager.CreateAsync(user, model.Password);
-
-                if (!result.Succeeded)
-                {
-                    string errors = string.Join(". ", result.Errors.Select(x => x.Description));
-                    return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al crear usuario. Revisar los datos ingresados y probar nuevamente. Errores: " + errors));
-                }
-
-                await _userManager.AddToRoleAsync(user, "ADMIN");
-
-                // correo?
-
-                return Ok(new StatusDTO(true, "Usuario creado como Administrador correctamente!"));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, ex.Message));
-            }
-        }
+        
 
 
         // PUT api/<EmpresaController>

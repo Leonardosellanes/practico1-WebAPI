@@ -14,13 +14,16 @@ export default{
         return axios.get("OC/User/" + id);
     },
 
+    getOrdenByEmpresaId(id){
+        return axios.get("OC/Empresa/" + id);
+    },
 
     createOrden(body){
         return axios.post("Opinion", body);
     },
 
-    editarOrden(id, body){
-        return axios.put("Producto/" + id, body);
+    editarOrden(body){
+        return axios.put("OC", body);
     },
 
     deleteOrden (id){

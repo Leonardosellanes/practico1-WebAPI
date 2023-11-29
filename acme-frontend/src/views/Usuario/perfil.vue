@@ -75,7 +75,7 @@ import { ref, onMounted, h, computed } from 'vue';
 import OrdenDeCompraController from '../../services/OrdenDeCompraController';
 import ReclamosController from '../../services/ReclamosController'
 
-
+const idUsuario = ref(sessionStorage.getItem('idUsuario'));
 const loading = ref(false);
 const confirmLoading = ref(false);
 const open = ref(false);
@@ -126,7 +126,7 @@ const productosAsociados = [];
 
 const cargarOrdenes = () => {
     loading.value = true
-    OrdenDeCompraController.getOrdenByUserId("75157be2-f501-4ed8-b3af-320cace3b28e")
+    OrdenDeCompraController.getOrdenByUserId(idUsuario.value)
         .then((response) => {
             data.value = response.data.reverse()
             loading.value = false;
