@@ -120,7 +120,7 @@ namespace DataAccessLayer.DALs
                              .ToList();
         }
 
-        public async Task<Shared.Empresa> InsertAndGetAsync(Shared.Empresa empresa)
+        public void Insert(Empresa empresa)
         {
             _dbContext.Empresas.Add(new Empresas { Nombre = empresa.Nombre, RUT = empresa.RUT });
             await _dbContext.SaveChangesAsync();

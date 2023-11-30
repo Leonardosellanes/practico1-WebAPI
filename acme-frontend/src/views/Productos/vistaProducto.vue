@@ -26,9 +26,6 @@
                                         No data
                                     </template>
                                 </a-descriptions-item>
-                                <a-descriptions-item label="Tiempo de entrega" :span="2">
-                                    5 Dias
-                                </a-descriptions-item>
                             </a-descriptions>
                         </a-space>
                         <a-card :title="'$' + data.precio" :bordered="false" style="width: 300px">

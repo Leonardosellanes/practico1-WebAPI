@@ -218,6 +218,9 @@ namespace DataAccessLayer.DALs
                     Total = oc.Total,
                     EstadoOrden = oc.EstadoOrden,
                     Fecha = oc.Fecha,
+                    ClienteId = oc.ClienteId,
+                    EmpresaId = oc.EmpresaId,
+                    SucursalId = oc.SucursalId,
                     Carritos = oc.CarritoProducto != null ? oc.CarritoProducto.Select(cp => new Carrito
                     {
                         Id = cp.Id,
@@ -263,8 +266,9 @@ namespace DataAccessLayer.DALs
                     FechaEstimadaEntrega = orden.FechaEstimadaEntrega,
                     Total = orden.Total,
                     EstadoOrden = orden.EstadoOrden,
-                    Fecha = (DateTime)orden.Fecha,
-                    EmpresaId = orden.EmpresaId
+                    Fecha = orden.Fecha,
+                    EmpresaId = orden.EmpresaId,
+                    ClienteId = orden.ClienteId,
                 }
                 );
             _dbContext.SaveChanges();

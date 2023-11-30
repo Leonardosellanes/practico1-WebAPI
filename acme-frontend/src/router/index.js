@@ -143,6 +143,14 @@ const routes = [
                     title: 'Carrito',
                 },
             },
+            {
+                path: '/Empleados',
+                name: 'Empleados',
+                component: () => import('../views/Usuario/ListadoEmpleados.vue'),
+                meta: {
+                    title: 'Carrito',
+                },
+            },
         ],
     },
 ];

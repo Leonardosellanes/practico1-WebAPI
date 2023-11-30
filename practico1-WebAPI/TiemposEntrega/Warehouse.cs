@@ -3,10 +3,8 @@
     public class Warehouse
     {
         public int Id { get; set; }
-        public string? Name { get; set; }
-        public int DefaultShippingTimeInDays { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        public string? Nombre { get; set; }
+        public int Diasentregadefault { get; set; }
+        public string Direccion { get; set; }
     }
 }
-
