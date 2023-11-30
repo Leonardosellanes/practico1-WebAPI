@@ -24,15 +24,15 @@ namespace Shared
 
         public string EstadoOrden { get; set; } = "";
 
-        public DateTime Fecha { get; set; }
+        public DateTime? Fecha { get; set; }
 
-        public String ClienteId { get; set; }
+        public String? ClienteId { get; set; }
 
         public List<Carrito>? Carritos { get; set; }
 
         public Reclamo? Rcs { get; set; } = null;
 
-        public UsuCliente Cli { get; set; }
+        public UsuCliente? Cli { get; set; } = null;
 
         public int? EmpresaId { get; set; }
 
