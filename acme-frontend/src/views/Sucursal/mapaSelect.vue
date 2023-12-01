@@ -4,6 +4,7 @@
     
     <div class="my-card" ref="map"></div>
 
+    <a-card v-if="selectedSucursal != null"> {{ selectedSucursal.nombre }} </a-card>
 </template>
   
 <script>
