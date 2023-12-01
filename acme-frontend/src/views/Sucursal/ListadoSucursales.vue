@@ -63,7 +63,10 @@
               </a-table>
           </div>
       </div>
-      <!--mapaSelect></mapaSelect-->
+      <!--mapaSelect></mapaSelect
+      <mapaIngreso :latitud="latitud" :longitud="longitud" :nombre="nombre"
+                            @actualizar-coordenadas="actualizarCoordenadas" >
+                        </mapaIngreso>-->
   </div>
 </template>
   
@@ -96,6 +99,8 @@
         loading: true,
         router: useRouter(),        
         route: useRoute(),
+
+        ubicacionMapa: { lat: -34.901113, lng: -56.164531 },
 
         indicator: h(LoadingOutlined, {
             style: {
@@ -158,6 +163,7 @@
         },
 
         showModal(){
+            this.ubicacionMapa = { lat: -34.901113, lng: -56.164531 };
             this.nombre = '';
             this.ubicacion = '';
             this.latitud = '';
@@ -220,7 +226,8 @@
                 console.log("Latitud:", this.latitud);
                 console.log("Longitud:", this.longitud);
             }
-
+            this.ubicacionMapa.lat = this.latitud;
+            this.ubicacionMapa.lng = this.longitud;
             this.id = sucursal.key;
             this.nombre = sucursal.name;
             this.tiempoEntrega =  sucursal.tiempo;
@@ -232,7 +239,6 @@
                 Modal.confirm({
                     title: '¿Deseas eliminar esta sucursal?',
                     icon: createVNode(ExclamationCircleOutlined),
-                    // content: 'No se eliminará si tiene datos asociados',
                     onOk: async () => {
                         try {
                             await SucursalesController.delete(sucursal.key);

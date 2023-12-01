@@ -8,16 +8,11 @@ export default {
     },
 
     agregarProducto(idOrden, idProducto, cantidad) {
-        const id = sessionStorage.getItem('idUsuario');
         const body = {
             "cantidad": cantidad,
             "productoId": idProducto,
             "pOs": {},
-            "ocId": idOrden,
-            "oCs": {
-                "ClienteId": id,
-                "cli": {}
-            }
+            "ocId": idOrden
         };
         console.log(body);
         return axios.post("CarritoProducto", body)

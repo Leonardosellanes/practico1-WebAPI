@@ -18,9 +18,6 @@
             }
         },
 
-        mounted(){
-            this.initMap();
-        },
         props:{
             latitud: String,
             longitud: String,
@@ -28,6 +25,9 @@
         },
         methods: {
             initMap() {
+                if(this.map){
+                    this.map = null;
+                }
                 if(this.latitud != '' && this.longitud != ''){
                     this.center.lat = this.latitud;
                     this.center.lng = this.longitud;
@@ -61,8 +61,17 @@
                 this.marker = marker;
                 this.$emit('actualizar-coordenadas', { latitud: location.lat(), longitud: location.lng() });
             },
+    
+        },
+
+        watch: {
             
-            
+            longitud() {
+                this.initMap();
+            },
+            latitud(){
+                this.initMap();
+            }
         },
 
     }

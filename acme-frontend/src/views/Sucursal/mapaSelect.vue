@@ -1,10 +1,13 @@
 <template>
     
+    <a-card v-if="error"> No hay sucursales disponibles </a-card>
+    
     <div class="my-card" ref="map"></div>
 
 </template>
   
 <script>
+import EmpresasController from '../../services/EmpresasController';
 
     export default{
         data(){
@@ -16,43 +19,23 @@
                 loading : true,
                 markers : [],
                 idEmpresa: 0,
-                sucursales: [],                 
+                sucursales: [],         
+                error: false,
+                selectedSucursal: null        
             }
         },
-        beforeMount(){
-            const { id } = this.route.params;
-            this.idEmpresa = id;
+        mounted(){
+            this.idEmpresa = sessionStorage.getItem('empresaId');
             this.buscarEmpresa();
         },
-        mounted(){
-            //this.initMap();
-        },
         methods: {
-           /* initMap() {
-                this.map = new window.google.maps.Map(this.$refs.map, {
-                    center: this.center,
-                    zoom: 10,
-                });
-
-            },
-            addMarkers() {
-                this.sucursales.forEach((sucursal) => {
-                    const marker = new window.google.maps.Marker({
-                    position: sucursal.ubicacion,
-                    map: this.map,
-                    title: sucursal.nombre,
-                    });
-
-                    marker.addListener('click', () => {
-                        this.selectSucursal(sucursal.id);
-                    });
-
-                    this.markers.push(marker);
-                });
-            },
-*/
-            selectSucursal(id){
-                console.log(id);
+            selectSucursal(id, nombre, tiempoEntrega){
+                this.selectedSucursal = {
+                    id: id,
+                    nombre: nombre,
+                    tiempoEntrega: tiempoEntrega
+                }
+                this.$emit('seleccionar-sucursal', this.selectedSucursal);
             },
             
             buscarEmpresa() {
@@ -61,11 +44,54 @@
                     const empresa = response.data;
                     console.log(empresa);
                     this.sucursales = empresa.sucursales;
-                    if (this.sucursales.length > 0){
-                        this.center = JSON.parse(this.sucursales[0].ubicacion.replace(/lat:/g, '"lat":').replace(/lng:/g, '"lng":'));
-                        console.log(this.center);
+                    console.log(this.sucursales);
+
+                    if(this.sucursales.length == 0){
+                        this.error = true;
+                    }else{
+                        const ubi = this.sucursales[0].ubicacion;
+                        const inicioLatitud = ubi.indexOf("lat: ") + 5;
+                        const finLatitud = ubi.indexOf(", lng:");
+                        const latitud = parseFloat(ubi.substring(inicioLatitud, finLatitud));
+
+                        const inicioLongitud = ubi.indexOf("lng: ") + 5;
+                        const longitud = parseFloat(ubi.substring(inicioLongitud));
+
+                        this.center = { lat: latitud, lng: longitud };
+                    
+
+                        this.map = new window.google.maps.Map(this.$refs.map, {
+                            center: this.center,
+                            zoom: 10,
+                        });
+
+                        this.sucursales.forEach((sucursal) => {
+                            const inicioLatitud = sucursal.ubicacion.indexOf("lat: ") + 5;
+                            const finLatitud = sucursal.ubicacion.indexOf(", lng:");
+                            const latitud = parseFloat(sucursal.ubicacion.substring(inicioLatitud, finLatitud));
+
+                            const inicioLongitud = sucursal.ubicacion.indexOf("lng: ") + 5;
+                            const longitud = parseFloat(sucursal.ubicacion.substring(inicioLongitud));
+
+                            const ubi = { lat: latitud, lng: longitud };
+                            console.log('ubi: ' + ubi);
+                            const marker = new window.google.maps.Marker({
+                                position: ubi,
+                                map: this.map,
+                                title: sucursal.nombre,
+                            });
+
+                            
+
+                            marker.addListener('click', () => {
+                                this.selectSucursal(sucursal.id, sucursal.nombre, sucursal.tiempoEntrega);
+                            });
+
+                            this.markers.push(marker);
+                        });
+                        this.loading = false;
                     }
-                    this.loading = false;
+
                 })
                 .catch ((error) => {
                 console.error('Error al obtener empresa:', error);

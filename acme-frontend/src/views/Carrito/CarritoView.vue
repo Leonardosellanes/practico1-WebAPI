@@ -99,13 +99,21 @@
             <a-card class="mt-4" @click="showModalEntrega = true">
                 <a-row justify="space-between" style="width: 100%">
                     <h4>Método de entrega</h4> 
-                    <p v-if="dataCarrito.direccionDeEnvio != ''"> Envío a Domicilio </p>
+                    <a-space direction="vertical" v-if="dataCarrito.direccionDeEnvio != '' && selectEntrega == 'Domicilio'">
+                        <p> Envío a Domicilio </p> 
+                        <p>{{ dataCarrito.direccionDeEnvio }}</p>
+                    </a-space>
+
+                    <a-space direction="vertical" v-if="selectedSucursal && selectEntrega == 'Sucursal'">
+                        <p > Retiro en sucursal </p> 
+                        <p>{{ selectedSucursal.nombre }} </p>
+                    </a-space>
                 </a-row>
             </a-card>
             <a-card class="mt-4">
                 <a-row justify="space-between" style="width: 100%">
                     <h4>Fecha estimada de entrega</h4> 
-                    -
+                    {{ fechaEntrega }}
                 </a-row>
             </a-card>
 
@@ -120,7 +128,7 @@
     <a-modal v-model:open="showModalEntrega" 
         title="¿Cómo quieres recibir tu compra?" 
         :confirm-loading="confirmLoading"
-        @ok="handleOk">
+        @ok="selectMetodo">
         <a-divider type="horizontal" />
         <a-space direction="vertical" style="width: 100%; margin-bottom: 8px;">
             <a-radio-group v-model:value="selectEntrega" style="width: 100%;">
@@ -131,17 +139,52 @@
                 
                 <a-card class="mt-4">
                     <a-radio  :value="'Sucursal'">Retiro en sucursal</a-radio>
+                    
                 </a-card>
             </a-space>
             </a-radio-group>
         </a-space>
     </a-modal>
+
+    <a-modal v-model:open="showModalDireccion" 
+        title="¿Dónde quieres recibir tu compra?"
+        @ok="selectDireccion">
+        <a-divider type="horizontal" />
+        <a-space direction="vertical" style="width: 100%; margin-bottom: 8px;">
+            <a-radio-group v-model:value="selectDir" style="width: 100%;">
+                <a-space direction="vertical" style="width: 100%; ">
+                <a-card>
+                    <a-radio :value="'actual'" :disabled="dirActual == null || dirActual == ''" >Mi dirección actual</a-radio>
+                        
+                        <p v-if="dirActual == null || dirActual == ''"> No se encontró una dirección </p>
+                        <p v-else> {{ dirActual }} </p>
+                    </a-card>
+                
+                <a-card class="mt-4">
+                    <a-radio  :value="'nueva'">Otra dirección</a-radio>
+                    <a-input  class="mt-4" v-if="selectDir == 'nueva'" v-model:value="dirNueva" placeholder="Ingrese una dirección" />
+                </a-card>
+            </a-space>
+            </a-radio-group>
+        </a-space>
+    </a-modal>
+
+    <a-modal v-model:open="showModalSucursales" 
+        title="¿Dónde quieres retirar tu compra?"
+        @ok="confirmSucursal">
+        <a-divider type="horizontal" />
+        <a-space direction="vertical" style="width: 100%; margin-bottom: 8px;">
+            <mapaSelect @seleccionar-sucursal="seleccionarSucursal"></mapaSelect>
+        </a-space>
+    </a-modal>
+
 </template>
 
 <script>
 import { message } from 'ant-design-vue';
 import CarritoController from '../../services/CarritoController';
 import { CloseOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
+import mapaSelect from '../Sucursal/mapaSelect.vue';
 
 export default{
     data() {
@@ -150,9 +193,20 @@ export default{
             productos: [],
             loading: true,
             enableCant: false,
+
             showModalEntrega: false,
+            showModalDireccion: false,
+            showModalSucursales: false,
             costoEnvio: 0,
-            selectEntrega: 'Domicilio'
+
+            selectEntrega: '', //Domicilio o Sucursal
+            selectDir: '', //actual o nueva 
+            dirActual: '',
+            dirNueva: '',
+
+            selectedSucursal: null,
+            fechaEntrega: '-'
+            
         }
     },
     beforeMount(){  
@@ -190,8 +244,59 @@ export default{
                 }else{
                     message.error('Error al modificar producto.');
                 }
-            })
+            })      
+        },
+
+        selectMetodo(){
+            if(this.selectEntrega == ''){
+                message.error('Seleccione una opción');
+                return
+            }
+            if(this.selectEntrega == 'Domicilio'){
+                this.dirActual = sessionStorage.getItem('direccion');                
+                this.showModalDireccion = true;
+            }else{
+                this.showModalSucursales = true;
+            }
+            this.showModalEntrega = false;
+        },
+
+        selectDireccion(){
+            if(this.selectDir == ''){
+                message.error('Seleccione una opción');
+                return
+            }
+            if(this.selectDir == 'actual'){
+                this.dataCarrito.direccionDeEnvio = this.dirActual;
+            }else{
+                if(this.dirNueva == ''){
+                    message.error('Ingrese una dirección');
+                    return
+                }
+                this.dataCarrito.direccionDeEnvio = this.dirNueva;      
+            }
+            this.dataCarrito.sucursalId = null;
+            // llamar API mock con dirNueva
+            // actualizar fecha entrega y costo de envio
+            // guardar codigo de seguimiento
+        },
+
+        seleccionarSucursal(sucursal){
+            console.log(sucursal);
+            this.auxSucursal = sucursal;
+        },
+
+        confirmSucursal(){
+            this.showModalSucursales = false;
+            this.selectedSucursal = this.auxSucursal;
+            const fecha = new Date();
+
+            fecha.setDate(fecha.getDate() + this.selectedSucursal.tiempoEntrega);
+
+            const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };
             
+            this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);
+               
         }
     },
     computed: {
@@ -204,7 +309,7 @@ export default{
         }
     },
 
-    components: { CloseOutlined, EditOutlined, CheckOutlined }
+    components: { CloseOutlined, EditOutlined, CheckOutlined, mapaSelect }
 }
 
 </script>

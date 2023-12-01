@@ -123,25 +123,8 @@ namespace DataAccessLayer.DALs
         public void Insert(Empresa empresa)
         {
             _dbContext.Empresas.Add(new Empresas { Nombre = empresa.Nombre, RUT = empresa.RUT });
-            await _dbContext.SaveChangesAsync();
-            var empresaInsertada = await _dbContext.Empresas.OrderByDescending(e => e.Id).FirstOrDefaultAsync();
-
-            // Convertir Empresas a Shared.Empresa
-            return new Shared.Empresa
-            {
-                Id = empresaInsertada.Id,
-                Nombre = empresaInsertada.Nombre,
-                RUT = empresaInsertada.RUT,
-            };
+            _dbContext.SaveChanges();
         }
-        public async Task<int> InsertAsync(Empresa empresa)
-        {
-            _dbContext.Empresas.Add(new Empresas { Nombre = empresa.Nombre, RUT = empresa.RUT });
-            await _dbContext.SaveChangesAsync();
-            var empresaInsertada = await _dbContext.Empresas.OrderByDescending(e => e.Id).FirstOrDefaultAsync();
-            return empresaInsertada.Id;
-        }
-
         public void Update(Empresa empresa)
         {
             var emp = _dbContext.Empresas.FirstOrDefault(e => e.Id == empresa.Id);
