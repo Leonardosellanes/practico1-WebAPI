@@ -340,7 +340,7 @@ export default{
             this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);
         },
         confirmarCompra(){
-            if(this.fechaEntrega == '-'){
+            if(this.fechaEntrega == '1/1/1'){
                 return
             }
             this.dataCarrito.total = this.totalProductos + this.costoEnvio;          
