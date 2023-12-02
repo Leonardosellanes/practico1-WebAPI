@@ -1,6 +1,7 @@
 <template>
     <a-row justify="space-between" style="width: 97%">
         <a-card style="width: 65%">
+            <div v-if="!moduloPago">
             <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Productos" />
                 
             <a-list>
@@ -64,6 +65,8 @@
                     
                 </a-list-item>
             </a-list>
+            </div>
+            <PagosView v-if="moduloPago" :dataCarrito="dataCarrito"></PagosView>
         </a-card>
         <a-card style="width: 32%">
             <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Resumen de compra" />
@@ -186,6 +189,7 @@ import CarritoController from '../../services/CarritoController';
 import { CloseOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 import mapaSelect from '../Sucursal/mapaSelect.vue';
 import ApiEnvios from '../../services/ApiEnvios';
+import PagosView from './PagosView.vue';
 
 export default{
     data() {
@@ -207,7 +211,9 @@ export default{
 
             selectedSucursal: null,
             fechaEntrega: '-',
-            codSeguimiento: ''
+            codSeguimiento: '',
+
+            moduloPago: false
             
         }
     },
@@ -221,6 +227,23 @@ export default{
                 if (response.status == 200){
                     this.dataCarrito = response.data;
                     this.productos = response.data.carritos;
+                    if(this.dataCarrito.direccionDeEnvio != ''){
+                        this.selectEntrega = 'Domicilio'
+                        this.calcularEnvio();
+                    }
+                    if(this.dataCarrito.sucursalId != null){
+                        this.selectEntrega = 'Sucursal'
+                        this.selectedSucursal = this.dataCarrito.sucursalAsociada;
+                    }
+                    /*if(this.dataCarrito.total != 0){
+                        this.costoEnvio = this.dataCarrito.total - this.totalProductos;
+                    }*/
+                    if(this.dataCarrito.fechaEstimadaEntrega){
+                        const fecha = new Date(this.dataCarrito.fechaEstimadaEntrega);
+                        const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
+                        this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);
+                        
+                    }
                     console.log(this.dataCarrito);
                 }else{
                     message.error('Error al obtener carrito');
@@ -280,6 +303,9 @@ export default{
             }
             this.dataCarrito.sucursalId = null;
 
+            this.calcularEnvio();
+        },
+        calcularEnvio(){
             ApiEnvios.calcularEnvio(this.dataCarrito.direccionDeEnvio).then((response) => {
                 if(response.status == 200){
                     this.costoEnvio = response.data.shippingCost;
@@ -291,7 +317,6 @@ export default{
                 }
             })
         },
-
         seleccionarSucursal(sucursal){
             console.log(sucursal);
             this.auxSucursal = sucursal;
@@ -300,6 +325,7 @@ export default{
         confirmSucursal(){
             this.showModalSucursales = false;
             this.selectedSucursal = this.auxSucursal;
+            this.dataCarrito.sucursalId = this.selectedSucursal.id;
             this.calcularFecha(this.selectedSucursal.tiempoEntrega);
             this.dataCarrito.direccionDeEnvio = '';
             this.codSeguimiento = '';
@@ -314,12 +340,18 @@ export default{
             this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);
         },
         confirmarCompra(){
+            if(this.fechaEntrega == '-'){
+                return
+            }
             this.dataCarrito.total = this.totalProductos + this.costoEnvio;          
             this.dataCarrito.fecha = new Date().toISOString();
-            this.dataCarrito.sucursalId = this.selectedSucursal.id;
+            
             console.log(this.dataCarrito);
             CarritoController.actualizarOrden(this.dataCarrito).then((response) =>{
                 console.log(response);
+                if(response.status == 200){
+                    this.moduloPago = true;
+                }
                 this.getCarrito();
             })
         }
@@ -334,7 +366,7 @@ export default{
         }
     },
 
-    components: { CloseOutlined, EditOutlined, CheckOutlined, mapaSelect }
+    components: { CloseOutlined, EditOutlined, CheckOutlined, mapaSelect, PagosView }
 }
 
 </script>

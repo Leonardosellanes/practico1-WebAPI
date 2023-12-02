@@ -68,6 +68,7 @@ namespace DataAccessLayer.DALs
             OC oc = _dbContext.OC
                 .Include(o => o.CarritoProducto)
                 .ThenInclude(cp => cp.POs)
+                .Include(o => o.SucursalAsociada)
                 .FirstOrDefault(o => o.Cliente.Id == clienteId && o.EstadoOrden == "activo");
 
             Orden carrito;
@@ -116,6 +117,15 @@ namespace DataAccessLayer.DALs
                     Total = oc.Total,
                     EstadoOrden = oc.EstadoOrden,
                     Fecha = oc.Fecha,
+                    SucursalId = oc.SucursalId,
+                    SucursalAsociada = oc.SucursalAsociada != null ? new Sucursal
+                    {
+                        Id = oc.SucursalAsociada.Id,
+                        Nombre = oc.SucursalAsociada.Nombre,
+                        Ubicacion = oc.SucursalAsociada.Ubicacion,
+                        TiempoEntrega = oc.SucursalAsociada.TiempoEntrega,
+                        EmpresaId = oc.SucursalAsociada.EmpresaId
+                    }  : null,
                     Carritos = oc.CarritoProducto != null
                         ? oc.CarritoProducto.Select(cp => new Carrito
                         {

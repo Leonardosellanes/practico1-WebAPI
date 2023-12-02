@@ -37,6 +37,8 @@ namespace Shared
         public int? EmpresaId { get; set; }
 
         public int? SucursalId { get; set; }
+
+        public Sucursal? SucursalAsociada { get; set; }
         
     }
 }
