@@ -13,7 +13,7 @@ namespace BusinessLayer.IBLs
 
         Empresa Get(int id);
 
-        Task<int> InsertAsync(Empresa empresa);
+        void Insert(Empresa empresa);
 
         void Update(Empresa empresa);
 

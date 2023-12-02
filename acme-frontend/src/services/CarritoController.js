@@ -3,7 +3,8 @@ import axios from "./axios";
 export default {
 
     buscarCarritoActual() {
-        return axios.get("OC/carrito/1");
+        const id = sessionStorage.getItem('idUsuario');
+        return axios.get("OC/carrito/"+id);
     },
 
     agregarProducto(idOrden, idProducto, cantidad) {
@@ -11,11 +12,7 @@ export default {
             "cantidad": cantidad,
             "productoId": idProducto,
             "pOs": {},
-            "ocId": idOrden,
-            "oCs": {
-                "ClienteId": "1",
-                "cli": {}
-            }
+            "ocId": idOrden
         };
         console.log(body);
         return axios.post("CarritoProducto", body)

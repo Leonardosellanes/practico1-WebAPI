@@ -11,5 +11,7 @@
         public string Email { get; set; } = string.Empty;
         public IList<string>? Roles { get; set; }
         public int? EmpresaId { get; set; }
+
+        public string? Direccion { get; set; }
     }
 }

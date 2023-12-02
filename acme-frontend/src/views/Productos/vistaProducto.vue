@@ -240,6 +240,7 @@ const  agregarACarrito =() => {
             }else {
                 const orden = response.data.id;
                 CarritoController.agregarProducto(orden, data.value.id, cantidad.value).then((response) => {
+                    console.log(response);
                     if (response && response.status === 200) {
                         message.success('Producto agregado al carrito');
                     } else {

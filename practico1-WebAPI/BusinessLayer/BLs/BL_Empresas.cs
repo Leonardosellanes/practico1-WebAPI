@@ -34,14 +34,9 @@ namespace BusinessLayer.BLs
             return _empresas.GetById(id);
         }
 
-        public async Task<int> InsertAsync(Shared.Empresa empresa)
+        public void Insert(Shared.Empresa empresa)
         {
-            var empresaInsertada = await _empresas.InsertAndGetAsync(empresa);
-
-            // Imprimir el valor de empresa.Id después de la inserción
-            Console.WriteLine($"ID de la empresa después de la inserción en BL: {empresaInsertada.Id}");
-
-            return empresaInsertada.Id;
+            _empresas.Insert(empresa);
         }
 
         public void Update(Empresa empresa)

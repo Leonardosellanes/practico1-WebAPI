@@ -24,9 +24,9 @@ namespace Shared
 
         public string EstadoOrden { get; set; } = "";
 
-        public DateTime Fecha { get; set; }
+        public DateTime? Fecha { get; set; }
 
-        public String ClienteId { get; set; }
+        public String? ClienteId { get; set; }
 
         public List<Carrito>? Carritos { get; set; }
 

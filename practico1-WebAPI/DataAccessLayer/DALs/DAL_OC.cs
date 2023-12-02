@@ -82,6 +82,7 @@ namespace DataAccessLayer.DALs
                     {
                         Cliente = Cliente,
                         EstadoOrden = "activo",
+                        EmpresaId = Cliente.EmpresaId
                     };
 
                     _dbContext.OC.Add(nuevoCarritoEF);
@@ -266,7 +267,7 @@ namespace DataAccessLayer.DALs
                     FechaEstimadaEntrega = orden.FechaEstimadaEntrega,
                     Total = orden.Total,
                     EstadoOrden = orden.EstadoOrden,
-                    Fecha = orden.Fecha,
+                    Fecha = (DateTime)orden.Fecha,
                     EmpresaId = orden.EmpresaId,
                     ClienteId = orden.ClienteId,
                 }
@@ -285,7 +286,7 @@ namespace DataAccessLayer.DALs
                 oc.FechaEstimadaEntrega = orden.FechaEstimadaEntrega;
                 oc.Total = orden.Total;
                 oc.EstadoOrden = orden.EstadoOrden;
-                oc.Fecha = orden.Fecha;
+                oc.Fecha = (DateTime)orden.Fecha;
 
                 _dbContext.SaveChanges();
             }
