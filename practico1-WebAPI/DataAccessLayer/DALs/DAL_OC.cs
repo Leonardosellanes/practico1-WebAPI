@@ -264,7 +264,7 @@ namespace DataAccessLayer.DALs
                 {
                     MedioDePago = orden.MedioDePago,
                     DireccionDeEnvio = orden.DireccionDeEnvio,
-                    FechaEstimadaEntrega = orden.FechaEstimadaEntrega,
+                    FechaEstimadaEntrega = (DateTime)orden.FechaEstimadaEntrega,
                     Total = orden.Total,
                     EstadoOrden = orden.EstadoOrden,
                     Fecha = (DateTime)orden.Fecha,
@@ -277,18 +277,26 @@ namespace DataAccessLayer.DALs
 
         public void ActualizarOC(Orden orden)
         {
+            Console.WriteLine("ID RECIBIDO : ", orden);
             OC oc = _dbContext.OC.FirstOrDefault(o => o.Id == orden.Id);
 
             if (oc != null)
             {
+                Console.WriteLine("encontro la orden");
+
                 oc.MedioDePago = orden.MedioDePago;
                 oc.DireccionDeEnvio = orden.DireccionDeEnvio;
-                oc.FechaEstimadaEntrega = orden.FechaEstimadaEntrega;
+                oc.FechaEstimadaEntrega = (DateTime)orden.FechaEstimadaEntrega;
                 oc.Total = orden.Total;
                 oc.EstadoOrden = orden.EstadoOrden;
                 oc.Fecha = (DateTime)orden.Fecha;
+                oc.SucursalId = orden.SucursalId;
 
                 _dbContext.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("oc = null");
             }
         }
 

@@ -18,7 +18,7 @@ namespace Shared
 
         public string DireccionDeEnvio { get; set; } = "";
 
-        public DateTime FechaEstimadaEntrega { get; set; }
+        public DateTime? FechaEstimadaEntrega { get; set; }
 
         public decimal Total { get; set; } = 0 ;
 
