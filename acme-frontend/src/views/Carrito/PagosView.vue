@@ -7,7 +7,7 @@
                             <a-radio  :value="'Paypal'"> <h4> Paypal </h4> </a-radio>
                             <img class="img" width="40" :src="paypalLogo" />
                         </a-row>
-                        <div ref="paypal"></div>
+                        <div class="mt-8" align-items="center" id="paypal-buttons" v-show="selectedMedio == 'Paypal'"></div>
                     </a-card>
 
                     <a-card>
@@ -35,13 +35,14 @@
                             </a-row>
                             
                         </a-form>
+                        <a-row justify="justify-end"> 
+                            <a-button block type="primary" size="large" @click="confirmar">
+                                CONFIRMAR
+                            </a-button>
+                        </a-row>
                     </a-card>
 
-                    <a-row justify="justify-end"> 
-                        <a-button block type="primary" size="large" @click="confirmar">
-                            CONFIRMAR
-                        </a-button>
-                    </a-row>
+                    
                 </a-space>
             </a-radio-group>
 </template>
@@ -52,6 +53,7 @@ import { message } from "ant-design-vue";
 import ApiTarjetas from "../../services/ApiTarjetas";
 import CarritoController from "../../services/CarritoController";
 import { useRouter } from "vue-router";
+import { loadScript } from '@paypal/paypal-js';
 
 const router = useRouter();
 
@@ -69,17 +71,41 @@ export default{
                 cod: ''
             },
             submit: false,
-
-            loaded: false,
-            paidFor: false
+            router: useRouter()
         }
     },
     mounted: function() {
-        const script = document.createElement("script");
-        script.src =
-        "https://www.paypal.com/sdk/js?client-id=Ae6_5Ia8rJzNPtZL_XG0OjGNq_GuU5Zn2TjngYFwBbQVkZR-d8VIMENDZMlPIPFWeh6yAPghK4RmEWC6";
-        script.addEventListener("load", this.setLoaded);
-        document.body.appendChild(script);
+        loadScript({ 'client-id': 'Ae6_5Ia8rJzNPtZL_XG0OjGNq_GuU5Zn2TjngYFwBbQVkZR-d8VIMENDZMlPIPFWeh6yAPghK4RmEWC6' }).then(() => {
+            paypal.Buttons({
+            createOrder: (data, actions) => {
+            return actions.order.create({
+                purchase_units: [
+                {
+                    amount: {
+                        value: this.carrito.total,
+                    },
+                },
+                ],
+            });
+            },
+            onApprove: (data, actions) => {
+                return actions.order.capture().then((details) => {
+                    console.log('Compra completada:', details);
+                    this.carrito.estadoOrden = 'Pendiente';
+                        this.carrito.medioDePago = 'Paypal';
+                        CarritoController.actualizarOrden(this.carrito).then((response) => {
+                            if(response.status == 200){
+                                this.router.push('/Home')
+                            }
+                        })
+                });
+            },
+            onError: (err) => {
+                console.error('Error en el pago:', err);
+                message.error('Error al procesar el pago')
+            },
+        }).render('#paypal-buttons');
+        });
     },
     
     props:{
@@ -100,8 +126,7 @@ export default{
                         this.carrito.medioDePago = 'Tarjeta crédito/débito';
                         CarritoController.actualizarOrden(this.carrito).then((response) => {
                             if(response.status == 200){
-                                const router = useRouter();
-                                router.push('/Home')
+                                this.router.push('/Home')
                             }
                         })
                     }
@@ -113,35 +138,7 @@ export default{
 
             }
         },
-
-        setLoaded() {
-            this.loaded = true;
-            window.paypal
-                .Buttons({
-                createOrder: (data, actions) => {
-                    return actions.order.create({
-                    purchase_units: [
-                        {
-                        description: 'carrito',
-                        amount: {
-                            currency_code: "USD",
-                            value: this.dataCarrito.total
-                        }
-                        }
-                    ]
-                    });
-                },
-                onApprove: async (data, actions) => {
-                    const order = await actions.order.capture();
-                    this.paidFor = true;
-                    console.log(order);
-                },
-                onError: err => {
-                    console.log(err);
-                }
-                })
-                .render(this.$refs.paypal);
-        }
+        
     },
     components:{ visamaster, paypalLogo },
     computed:{

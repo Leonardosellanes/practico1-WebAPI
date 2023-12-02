@@ -116,12 +116,12 @@
             <a-card class="mt-4">
                 <a-row justify="space-between" style="width: 100%">
                     <h4>Fecha estimada de entrega</h4> 
-                    {{ fechaEntrega }}
+                    {{ fechaEntrega == '1/1/1' ? '-' : fechaEntrega }}
                 </a-row>
             </a-card>
 
             <a-row class="mt-6" justify="center" style="width: 100%;">
-                <a-button block type="primary" size="large" @click="confirmarCompra">
+                <a-button block type="primary" size="large" @click="confirmarCompra" v-if="!moduloPago">
                     CONFIRMAR COMPRA
                 </a-button>
             </a-row>
