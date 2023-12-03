@@ -16,11 +16,11 @@ const requireAuth = (to, from, next) => {
 const routes = [
     {
         path: '/',
-        name: 'Layaout',
+        name: 'Layout',
         component: () => import('../layout/index.vue'),
         redirect: '/Home',
         meta: {
-            title: 'Layaout',
+            title: 'Layout',
         },
         children: [
             {
@@ -30,18 +30,27 @@ const routes = [
                 meta: {
                     title: 'Home',
                 },
+                beforeEnter: (to, from, next) => {
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        if(rol == 'ADMIN'){
+                            next('/Empresas')
+                        }
+                        if(rol == 'EMPLEADO' || rol == 'MANAGER'){
+                            next('/Ordenes')
+                        }
+                        if(rol == 'USER'){
+                            next();
+                        }
+                    } else {
+                       next('/login');
+                    }
+                },
             },
             {
                 path: '/login',
                 name: 'Login',
                 component: () => import('../views/Login/Login.vue'),
-                beforeEnter: (to, from, next) => {
-                    if (store.getters.isAuthenticated) {
-                       next('/Home');
-                    } else {
-                       next();
-                    }
-                 },
                 meta: {
                     title: 'Iniciar Sesión',
                 },
@@ -51,13 +60,6 @@ const routes = [
                 path: '/registro',
                 name: 'Registro',
                 component: () => import('../views/Login/Registro.vue'),
-                beforeEnter: (to, from, next) => {
-                    if (store.getters.isAuthenticated) {
-                       next('/Home');
-                    } else {
-                       next();
-                    }
-                 },
                 meta: {
                   title: 'Registro',
                 },
@@ -66,13 +68,6 @@ const routes = [
                 path: '/registroCliente',
                 name: 'RegistroCliente',
                 component: () => import('../views/Login/RegistroCliente.vue'),
-                beforeEnter: (to, from, next) => {
-                    if (store.getters.isAuthenticated) {
-                       next('/Home');
-                    } else {
-                       next();
-                    }
-                 },
                 meta: {
                   title: 'Registro Cliente',
                 },
@@ -81,13 +76,6 @@ const routes = [
                 path: '/registroEmpresa',
                 name: 'RegistroEmpresa',
                 component: () => import('../views/Login/RegistroEmpresa.vue'),
-                beforeEnter: (to, from, next) => {
-                    if (store.getters.isAuthenticated) {
-                       next('/Home');
-                    } else {
-                       next();
-                    }
-                 },
                 meta: {
                   title: 'Registro Empresa',
                 },
@@ -96,13 +84,6 @@ const routes = [
                 path: '/registroEmpleado',
                 name: 'RegistroEmpleado',
                 component: () => import('../views/Login/RegistroEmpleado.vue'),
-                beforeEnter: (to, from, next) => {
-                    if (store.getters.isAuthenticated) {
-                       next('/Home');
-                    } else {
-                       next();
-                    }
-                 },
                 meta: {
                   title: 'Registro Empleado',
                 },
@@ -111,6 +92,22 @@ const routes = [
                 path: '/Categorias',
                 name: 'Categorias',
                 component: () => import('../views/Categoria/categoria.vue'),
+                beforeEnter: (to, from, next) => {
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        if(rol == 'ADMIN'){
+                            next('/Empresas')
+                        }
+                        if(rol == 'EMPLEADO' || rol == 'MANAGER'){
+                            next()
+                        }
+                        if(rol == 'USER'){
+                            next('/Home');
+                        }
+                    } else {
+                       next('/login');
+                    }
+                 },
                 meta: {
                     title: 'Categorias',
                 },
@@ -121,7 +118,23 @@ const routes = [
                 component: () => import('../views/Productos/producto.vue'),
                 meta: {
                     title: 'Productos',
-                }
+                },
+                beforeEnter: (to, from, next) => {
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        if(rol == 'ADMIN'){
+                            next('/Empresas')
+                        }
+                        if(rol == 'EMPLEADO' || rol == 'MANAGER'){
+                            next('/Ordenes')
+                        }
+                        if(rol == 'USER'){
+                            next('/Home');
+                        }
+                    } else {
+                       next('/login');
+                    }
+                },
             },
             {
                 path: '/Productos/Product/:id',
@@ -129,6 +142,22 @@ const routes = [
                 component: () => import('../views/Productos/vistaProducto.vue'),
                 meta: {
                     title: 'Product',
+                },
+                beforeEnter: (to, from, next) => {
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        if(rol == 'ADMIN'){
+                            next('/Empresas')
+                        }
+                        if(rol == 'EMPLEADO' || rol == 'MANAGER'){
+                            next()
+                        }
+                        if(rol == 'USER'){
+                            next('/Home');
+                        }
+                    } else {
+                       next('/login');
+                    }
                 },
 
             },
@@ -139,6 +168,22 @@ const routes = [
                 meta: {
                     title: 'Empresas',
                 },
+                beforeEnter: (to, from, next) => {
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        if(rol == 'ADMIN'){
+                            next()
+                        }
+                        if(rol == 'EMPLEADO' || rol == 'MANAGER'){
+                            next('/Ordenes')
+                        }
+                        if(rol == 'USER'){
+                            next('/Home');
+                        }
+                    } else {
+                       next('/login');
+                    }
+                },
             },
 
             {
@@ -148,6 +193,22 @@ const routes = [
                 meta: {
                     title: 'Sucursales',
                 },
+                beforeEnter: (to, from, next) => {
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        if(rol == 'ADMIN' || rol == 'MANAGER'){
+                            next()
+                        }
+                        if(rol == 'EMPLEADO' ){
+                            next('/Ordenes')
+                        }
+                        if(rol == 'USER'){
+                            next('/Home');
+                        }
+                    } else {
+                       next('/login');
+                    }
+                },
             },
 
               { 
@@ -155,12 +216,13 @@ const routes = [
                 name: 'Perfil',
                 component: () => import('../views/Usuario/perfil.vue'),
                 beforeEnter: (to, from, next) => {
-                    if (store.getters.isAuthenticated) {
-                       next('/Home');
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        next();
                     } else {
-                       next();
+                       next('/login');
                     }
-                 },
+                },
                 meta: {
                     title: 'Perfil',
                 },
@@ -172,6 +234,22 @@ const routes = [
                 meta: {
                     title: 'Reclamos',
                 },
+                beforeEnter: (to, from, next) => {
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        if(rol == 'ADMIN'){
+                            next('/Empresas')
+                        }
+                        if(rol == 'EMPLEADO' || rol == 'MANAGER'){
+                            next()
+                        }
+                        if(rol == 'USER'){
+                            next('/Home');
+                        }
+                    } else {
+                       next('/login');
+                    }
+                },
             },
             {
                 path: '/Ordenes',
@@ -179,6 +257,22 @@ const routes = [
                 component: () => import('../views/OrdenesCompra/Ordenes.vue'),
                 meta: {
                     title: 'Reclamos',
+                },
+                beforeEnter: (to, from, next) => {
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        if(rol == 'ADMIN'){
+                            next('/Empresas')
+                        }
+                        if(rol == 'EMPLEADO' || rol == 'MANAGER'){
+                            next()
+                        }
+                        if(rol == 'USER'){
+                            next('/Home');
+                        }
+                    } else {
+                       next('/login');
+                    }
                 },
             },
 
@@ -189,13 +283,45 @@ const routes = [
                 meta: {
                     title: 'Carrito',
                 },
+                beforeEnter: (to, from, next) => {
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        if(rol == 'ADMIN'){
+                            next('/Empresas')
+                        }
+                        if(rol == 'EMPLEADO' || rol == 'MANAGER'){
+                            next('/Ordenes')
+                        }
+                        if(rol == 'USER'){
+                            next();
+                        }
+                    } else {
+                       next('/login');
+                    }
+                },
             },
             {
                 path: '/Empleados',
                 name: 'Empleados',
                 component: () => import('../views/Usuario/ListadoEmpleados.vue'),
-                meta: {
-                    title: 'Carrito',
+                beforeEnter: (to, from, next) => {
+                    const rol = sessionStorage.getItem('rol');
+                    if (rol != null) {
+                        if(rol == 'ADMIN'){
+                            next('/Empresas')
+                        }
+                        if(rol == 'EMPLEADO'){
+                            next('/Ordenes')
+                        }
+                        if(rol == 'MANAGER'){
+                            next();
+                        }
+                        if(rol == 'USER'){
+                            next('/Home');
+                        }
+                    } else {
+                       next('/login');
+                    }
                 },
             },
         ],

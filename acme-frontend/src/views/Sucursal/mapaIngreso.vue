@@ -17,7 +17,9 @@
                 
             }
         },
-
+        mounted(){
+            this.initMap();
+        },
         props:{
             latitud: String,
             longitud: String,
