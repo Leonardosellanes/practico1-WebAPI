@@ -14,7 +14,7 @@
                 </template>
             </template>
         </a-table>
-        <a-modal v-model:open="openViewReclamo" title="Informacion de su reclamo" :footer="null">
+        <a-modal v-model:open="openViewReclamo" title="Informacion del reclamo" :footer="null">
             <a-space direction="vertical" style="width: 100%;">
                 <a-card>
                     Fecha: {{ reclamoAsociado.value.fecha }} <br />
@@ -41,7 +41,7 @@
                 </template>
             </a-space>
         </a-modal>
-        <a-modal v-model:open="openEstado" title="Cambiar Estado" @ok="handleEstado" @cancel="handleCancelEstado">
+        <a-modal v-model:open="openEstado" title="Cambiar Estado" @ok="handleEstado(record)" @cancel="handleCancelEstado">
             <a-space direction="vertical" style="width: 100%;">
                 <a-checkbox v-model:checked="checked" :disabled="checked">Pedido preparado</a-checkbox>
                 <a-checkbox v-model:checked="checked2" :disabled="checked2">Pedido enviado</a-checkbox>
@@ -53,10 +53,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, h, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import OrdenDeCompraController from '../../services/OrdenDeCompraController';
-import { useStore } from 'vuex';
-import ServerError from 'ant-design-vue/es/result/serverError';
+import { message } from 'ant-design-vue';
 
 const empresaId = ref(sessionStorage.getItem('empresaId'));
 
@@ -117,8 +116,7 @@ const cargarOrdenes = () => {
     loading.value = true
     OrdenDeCompraController.getOrdenByEmpresaId(empresaId.value)
         .then((response) => {
-            console.log(response.data)
-            data.value = response.data
+            data.value = response.data.filter(item => item.estadoOrden != 'activo')
             loading.value = false;
         })
         .catch((error) => {
@@ -129,17 +127,16 @@ const cargarOrdenes = () => {
 
 const verReclamo = (data) => {
     reclamoAsociado.value = data
-    console.log(reclamoAsociado.value)
     openViewReclamo.value = true
 };
 
 const verProductos = (data) => {
     productosAsociados.value = data
-    console.log(productosAsociados.value)
     openViewProducto.value = true
 };
 
 const CambiarEstado = (data) => {
+
     if (data.estadoOrden == 'Enviado') {
         checked.value = true;
         checked2.value = true;
@@ -157,11 +154,10 @@ const CambiarEstado = (data) => {
     }
     selectedOrder.value = data
     openEstado.value = true
-    console.log(data)
 };
 
 const handleEstado = () => {
-    console.log(selectedOrder.value)
+    
     const estadoOrden = ref('')
 
     if (checked4.value == true) {
@@ -189,15 +185,14 @@ const handleEstado = () => {
         fecha: selectedOrder.value.fecha,
         ClienteId: selectedOrder.value.clienteId
     }
-    console.log(data)
     OrdenDeCompraController.editarOrden(data)
     .then(() => {
-            console.log('Exito')
+            message.success('Estado cambiado')
             cargarOrdenes();
             openEstado.value = false;
         })
         .catch((error) => {
-            console.error('Error :', error);
+            message.error('Ha ocurrido un error')
         });
 };
 

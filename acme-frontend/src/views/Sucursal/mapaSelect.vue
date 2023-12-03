@@ -43,9 +43,9 @@ import EmpresasController from '../../services/EmpresasController';
                 this.loading = true;
                 EmpresasController.getById(this.idEmpresa).then((response) => {
                     const empresa = response.data;
-                    console.log(empresa);
+                    
                     this.sucursales = empresa.sucursales;
-                    console.log(this.sucursales);
+                
 
                     if(this.sucursales.length == 0){
                         this.error = true;
@@ -75,7 +75,6 @@ import EmpresasController from '../../services/EmpresasController';
                             const longitud = parseFloat(sucursal.ubicacion.substring(inicioLongitud));
 
                             const ubi = { lat: latitud, lng: longitud };
-                            console.log('ubi: ' + ubi);
                             const marker = new window.google.maps.Marker({
                                 position: ubi,
                                 map: this.map,

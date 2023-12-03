@@ -54,7 +54,7 @@
                     <template #bodyCell="{ column, record }">
                         <template v-if="column.key === 'action'">
                             <span>
-                                <a @click="realizarReclamo(record)" v-if="record.rcs == null">Realizar reclamo</a>
+                                <a @click="realizarReclamo(record)" v-if="record.rcs == null && estadoOrden == 'Entregado'">Realizar reclamo</a>
                                 <a @click="verReclamo(record.rcs)" v-else>ver Reclamo</a>
                                 <a-divider type="vertical" />
                                 <a @click="verProductos(record.carritos)">Ver productos</a>
@@ -124,11 +124,13 @@ const data = [];
 const reclamoAsociado = [];
 const productosAsociados = [];
 
+const empresaId = ref(sessionStorage.getItem('empresaId'))
+
 const cargarOrdenes = () => {
     loading.value = true
     OrdenDeCompraController.getOrdenByUserId(idUsuario.value)
         .then((response) => {
-            data.value = response.data.reverse()
+            data.value = response.data.filter(item => item.estadoOrden != 'activo').reverse()
             loading.value = false;
         })
         .catch((error) => {
@@ -145,13 +147,11 @@ const realizarReclamo = (data) => {
 
 const verReclamo = (data) => {
     reclamoAsociado.value = data
-    console.log(reclamoAsociado.value)
     openViewReclamo.value = true
 };
 
 const verProductos = (data) => {
     productosAsociados.value = data
-    console.log(productosAsociados.value)
     openViewProducto.value = true
 };
 
@@ -162,7 +162,7 @@ const reclamoOk = () => {
         id: 0,
         descripcion: descripcionReclamo.value,
         fecha: new Date(),
-        empresaId: 1,
+        empresaId: empresaId,
         ocId: idOrden.value
     }
 

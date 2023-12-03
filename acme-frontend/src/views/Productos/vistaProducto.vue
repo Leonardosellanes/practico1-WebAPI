@@ -9,7 +9,7 @@
                     </div>
                     <a-space v-else align="start">
                         <a-image :width="400" :height="400" style="object-fit: cover;"
-                        :src="'data:image/png;base64,' + data.base64"  />
+                            :src="'data:image/png;base64,' + data.base64" />
                         <a-divider type="vertical" style="height: 400px;" />
                         <a-space direction="vertical" style="width: 90%;" align="start">
                             <a-tag color="pink">{{ data.categoria.nombre }}</a-tag>
@@ -79,7 +79,8 @@
         </div>
         <div class="w-1/4 max-w-2/5 overflow-y-scroll flex flex-col items-center justify-start ">
             <div class="flex items-center justify-between mb-2">
-                <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Aqui productos que te pueden interesar" />
+                <a-page-header style="border: 1px solid rgb(235, 237, 240)"
+                    title="Aqui productos que te pueden interesar" />
             </div>
             <a-space direction="vertical">
                 <template v-for="producto in productosAsociados" :key="producto.id">
@@ -130,31 +131,28 @@ const indicator = h(LoadingOutlined, {
 });
 
 const cargarProducto = () => {
-    const dataProductos = ProductosController.getProductoById(productId.value)
+    ProductosController.getProductoById(productId.value)
         .then((response) => {
-            console.log(response.data.categoriaId)
             data.value = response.data
             opiniones.value = response.data.opinionesAsociadas
             cargarAsociados(response.data.categoriaId)
         })
         .catch((error) => {
-            console.error('Error al obtener la lista de categorias:', error);
+            message.error('Error al obtener la lista de categorias:');
         });
 }
 
 const cargarAsociados = (catId) => {
-  const dataProductos = CategoriaController.getById(catId)
-    .then((response) => {
-        console.log(response)
-        CategoriaController.getById(response.data.categoriaAsociada.id)
+    CategoriaController.getById(catId)
         .then((response) => {
-        productosAsociados.value = response.data.productos;
-    })
-    })
-    .catch((error) => {
-        console.log(error)
-      console.error('Error al obtener la lista de productos asociados:', error);
-    });
+            CategoriaController.getById(response.data.categoriaAsociada.id)
+                .then((response) => {
+                    productosAsociados.value = response.data.productos;
+                })
+        })
+        .catch((error) => {
+            message.error('Error al obtener la lista de productos asociados:');
+        });
 };
 
 const showModal = () => {
@@ -170,7 +168,7 @@ const handleOpinion = () => {
         productoId: productId.value
     }
 
-    const crearOpinion = OpinionesController.createOpinion(data)
+    OpinionesController.createOpinion(data)
         .then(() => {
             confirmLoading.value = false
             open.value = false
@@ -186,14 +184,11 @@ const handleOpinion = () => {
 };
 
 const cardClicked = (item) => {
-    console.log(item)
-    productId.value =  item.id;
-    //cargarProducto();
+    productId.value = item.id;
     router.push({ name: 'Product', params: { id: item.id } });
 }
 
 const viewPdf = () => {
-    console.log(data.value.base64pdf)
     if (data.value.base64pdf) {
         const binaryData = atob(data.value.base64pdf);
         const arrayBuffer = new ArrayBuffer(binaryData.length);
@@ -217,9 +212,7 @@ const fetchData = async () => {
 };
 
 onBeforeRouteUpdate(() => {
-  // Este hook se ejecutará cuando la ruta se actualice
-  //productId.value = route.params.id;
-  fetchData();
+    fetchData();
 });
 
 onBeforeMount(() => {
@@ -230,17 +223,15 @@ onMounted(() => {
     cargarProducto()
 });
 
-const  agregarACarrito =() => {
+const agregarACarrito = () => {
     CarritoController.buscarCarritoActual().then((response) => {
         if (response && response.status === 200) {
             const productos = response.data.carritos;
-            console.log(response.data);
-            if(productos && productos.some(carrito => carrito.productoId === data.value.id)){            
+            if (productos && productos.some(carrito => carrito.productoId === data.value.id)) {
                 message.info('El producto ya se encuentra en el carrito');
-            }else {
+            } else {
                 const orden = response.data.id;
                 CarritoController.agregarProducto(orden, data.value.id, cantidad.value).then((response) => {
-                    console.log(response);
                     if (response && response.status === 200) {
                         message.success('Producto agregado al carrito');
                     } else {
@@ -250,6 +241,6 @@ const  agregarACarrito =() => {
             }
         }
     })
-    
+
 }
 </script>

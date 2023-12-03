@@ -43,6 +43,9 @@ import { useRouter } from 'vue-router';
 import { LoadingOutlined } from '@ant-design/icons-vue';
 import { compileString } from 'sass';
 
+
+const empresaId = ref(sessionStorage.getItem('empresaId'))
+
 const data = ref([]);
 const filtered = ref([])
 const router = useRouter();
@@ -62,7 +65,7 @@ const onSelect = option => {
 
 const cargarProductos = () => {
     loading.value = true;
-    EmpresasController.getById(1)
+    EmpresasController.getById(empresaId)
         .then((response) => {
             data.value = response.data.productos.reverse();
             loading.value = false;
@@ -79,8 +82,6 @@ const cardClicked = (item) => {
 };
 
 const filterProductsBySearchText = (products) => {
-    console.log(searchText.value.toLocaleLowerCase())
-
     filtered.value = products.filter((product) =>
         product.titulo.toLowerCase().includes(searchText.value.toLocaleLowerCase())
     );
