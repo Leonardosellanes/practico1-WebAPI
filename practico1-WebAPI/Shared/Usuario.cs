@@ -9,10 +9,10 @@ namespace Shared
 {
     public class Usuario
     {
-        public string? Name { get; set; }
-        public string? LName { get; set; }
-        public string? Address { get; set; }
-        public string Id { get; set; }
-        public string Email { get; set; }
+        public string? name { get; set; }
+        public string? lName { get; set; }
+        public string? address { get; set; }
+        public string id { get; set; }
+        public string email { get; set; }
     }
 }
