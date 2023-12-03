@@ -17,7 +17,7 @@ public class PackageController : ControllerBase
     public IActionResult CalculateDeliveryTime([FromBody] DeliveryRequest deliveryRequest)
     {
         // Simular una demora para la API de prueba
-        Task.Delay(1000).Wait(); // Puedes usar Task.Delay sin bloquear el hilo
+        //Task.Delay(1000).Wait(); // Puedes usar Task.Delay sin bloquear el hilo
 
         // Encuentra el almacén seleccionado basado en el paquete
         var selectedWarehouse = warehouses.FirstOrDefault(w => w.Id == deliveryRequest.Package.WarehouseId);

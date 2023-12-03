@@ -18,7 +18,7 @@ namespace Shared
 
         public string DireccionDeEnvio { get; set; } = "";
 
-        public DateTime FechaEstimadaEntrega { get; set; }
+        public DateTime? FechaEstimadaEntrega { get; set; }
 
         public decimal Total { get; set; } = 0 ;
 
@@ -37,6 +37,8 @@ namespace Shared
         public int? EmpresaId { get; set; }
 
         public int? SucursalId { get; set; }
+
+        public Sucursal? SucursalAsociada { get; set; }
         
     }
 }

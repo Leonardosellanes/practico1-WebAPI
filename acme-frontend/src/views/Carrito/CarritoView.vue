@@ -1,6 +1,7 @@
 <template>
     <a-row justify="space-between" style="width: 97%">
         <a-card style="width: 65%">
+            <div v-if="!moduloPago">
             <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Productos" />
                 
             <a-list>
@@ -64,6 +65,8 @@
                     
                 </a-list-item>
             </a-list>
+            </div>
+            <PagosView v-if="moduloPago" :dataCarrito="dataCarrito"></PagosView>
         </a-card>
         <a-card style="width: 32%">
             <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Resumen de compra" />
@@ -113,12 +116,12 @@
             <a-card class="mt-4">
                 <a-row justify="space-between" style="width: 100%">
                     <h4>Fecha estimada de entrega</h4> 
-                    {{ fechaEntrega }}
+                    {{ fechaEntrega == '1/1/1' ? '-' : fechaEntrega }}
                 </a-row>
             </a-card>
 
             <a-row class="mt-6" justify="center" style="width: 100%;">
-                <a-button block type="primary" size="large" >
+                <a-button block type="primary" size="large" @click="confirmarCompra" v-if="!moduloPago">
                     CONFIRMAR COMPRA
                 </a-button>
             </a-row>
@@ -185,6 +188,8 @@ import { message } from 'ant-design-vue';
 import CarritoController from '../../services/CarritoController';
 import { CloseOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 import mapaSelect from '../Sucursal/mapaSelect.vue';
+import ApiEnvios from '../../services/ApiEnvios';
+import PagosView from './PagosView.vue';
 
 export default{
     data() {
@@ -205,7 +210,10 @@ export default{
             dirNueva: '',
 
             selectedSucursal: null,
-            fechaEntrega: '-'
+            fechaEntrega: '-',
+            codSeguimiento: '',
+
+            moduloPago: false
             
         }
     },
@@ -219,6 +227,24 @@ export default{
                 if (response.status == 200){
                     this.dataCarrito = response.data;
                     this.productos = response.data.carritos;
+                    if(this.dataCarrito.direccionDeEnvio != ''){
+                        this.selectEntrega = 'Domicilio'
+                        this.calcularEnvio();
+                    }
+                    if(this.dataCarrito.sucursalId != null){
+                        this.selectEntrega = 'Sucursal'
+                        this.selectedSucursal = this.dataCarrito.sucursalAsociada;
+                    }
+                    /*if(this.dataCarrito.total != 0){
+                        this.costoEnvio = this.dataCarrito.total - this.totalProductos;
+                    }*/
+                    if(this.dataCarrito.fechaEstimadaEntrega){
+                        const fecha = new Date(this.dataCarrito.fechaEstimadaEntrega);
+                        const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
+                        this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);
+                        
+                    }
+                    console.log(this.dataCarrito);
                 }else{
                     message.error('Error al obtener carrito');
                 }
@@ -276,11 +302,21 @@ export default{
                 this.dataCarrito.direccionDeEnvio = this.dirNueva;      
             }
             this.dataCarrito.sucursalId = null;
-            // llamar API mock con dirNueva
-            // actualizar fecha entrega y costo de envio
-            // guardar codigo de seguimiento
-        },
 
+            this.calcularEnvio();
+        },
+        calcularEnvio(){
+            ApiEnvios.calcularEnvio(this.dataCarrito.direccionDeEnvio).then((response) => {
+                if(response.status == 200){
+                    this.costoEnvio = response.data.shippingCost;
+                    this.codSeguimiento = response.data.trackingNumber;
+                    this.calcularFecha(response.data.deliveryTime);
+                    this.showModalDireccion = false;
+                }else{
+                    message.error('Ocurrió un error al calcular el envío.')
+                }
+            })
+        },
         seleccionarSucursal(sucursal){
             console.log(sucursal);
             this.auxSucursal = sucursal;
@@ -289,14 +325,35 @@ export default{
         confirmSucursal(){
             this.showModalSucursales = false;
             this.selectedSucursal = this.auxSucursal;
+            this.dataCarrito.sucursalId = this.selectedSucursal.id;
+            this.calcularFecha(this.selectedSucursal.tiempoEntrega);
+            this.dataCarrito.direccionDeEnvio = '';
+            this.codSeguimiento = '';
+            this.costoEnvio = 0;
+        },
+
+        calcularFecha(dias){
             const fecha = new Date();
-
-            fecha.setDate(fecha.getDate() + this.selectedSucursal.tiempoEntrega);
-
-            const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };
-            
+            fecha.setDate(fecha.getDate() + dias);
+            this.dataCarrito.fechaEstimadaEntrega = fecha.toISOString();
+            const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
             this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);
-               
+        },
+        confirmarCompra(){
+            if(this.fechaEntrega == '1/1/1'){
+                return
+            }
+            this.dataCarrito.total = this.totalProductos + this.costoEnvio;          
+            this.dataCarrito.fecha = new Date().toISOString();
+            
+            console.log(this.dataCarrito);
+            CarritoController.actualizarOrden(this.dataCarrito).then((response) =>{
+                console.log(response);
+                if(response.status == 200){
+                    this.moduloPago = true;
+                }
+                this.getCarrito();
+            })
         }
     },
     computed: {
@@ -309,7 +366,7 @@ export default{
         }
     },
 
-    components: { CloseOutlined, EditOutlined, CheckOutlined, mapaSelect }
+    components: { CloseOutlined, EditOutlined, CheckOutlined, mapaSelect, PagosView }
 }
 
 </script>
