@@ -200,9 +200,6 @@ const columns = [
 ];
 
 const fileList = ref([]);
-const headers = {
-    authorization: 'authorization-text',
-};
 
 const errorFoto = ref('');
 const errorTitulo = ref('');
@@ -212,56 +209,52 @@ const errorIva = ref('');
 const errorPrecio = ref('');
 const errorPdf = ref('');
 
+const empresaId = ref(sessionStorage.getItem('empresaId'))
+
 const beforeUpload = (file) => {
     fileList.value = [file];
     return false; // Evita la carga automática de archivos
 };
 const handleOk = async () => {
 
-        confirmLoading.value = true
-        try {
-            const imageUrl = await subirImagen();
-            const pdfUrl = await subirPdf();
+    confirmLoading.value = true
+    try {
+        const imageUrl = await subirImagen();
+        const pdfUrl = await subirPdf();
 
-            //Después de que ambas operaciones hayan finalizado con éxito
-            console.log('Imagen subida:', imageUrl);
-            console.log('PDF subido:', pdfUrl);
-
-            const data = {
-                id: 0,
-                titulo: titleRef.value,
-                descripcion: descriptionRef.value,
-                foto: imageUrl.ruta,
-                precio: priceRef.value,
-                tipo_iva: IVA.value,
-                pdf: pdfUrl.ruta,
-                empresaId: 1,
-                categoriaId: value.value
-            }
-
-            const producto = ProductoController.createProducto(data)
-                .then(() => {
-                    open.value = false;
-                    confirmLoading.value = false
-                    message.success('Producto creado')
-                    cargarProductos()
-                })
-                .catch((error) => {
-                    confirmLoading.value = false
-                    console.error(':', error);
-                    message.error('Error al crear el producto');
-                });
-        } catch (error) {
-
-            console.error('Error en handleOk:', error);
+        const data = {
+            id: 0,
+            titulo: titleRef.value,
+            descripcion: descriptionRef.value,
+            foto: imageUrl.ruta,
+            precio: priceRef.value,
+            tipo_iva: IVA.value,
+            pdf: pdfUrl.ruta,
+            empresaId: empresaId,
+            categoriaId: value.value
         }
+
+        ProductoController.createProducto(data)
+            .then(() => {
+                open.value = false;
+                confirmLoading.value = false
+                message.success('Producto creado')
+                cargarProductos()
+            })
+            .catch((error) => {
+                confirmLoading.value = false
+                message.error('Error al crear el producto');
+            });
+    } catch (error) {
+
+        console.error('Error en handleOk:', error);
+    }
 };
 
 const subirImagen = async () => {
     const formData = new FormData();
     formData.append('archivo', fileList.value[0].originFileObj);
 
-    console.log(formData);
     return ArchivosController.cargarImagen(formData)
         .then((response) => response.data)
         .catch((error) => {
@@ -283,9 +276,6 @@ const subirPdf = async () => {
 };
 
 const handleChangePdf = info => {
-    if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
-    }
     if (info.file.status === 'done') {
         message.success(`${info.file.name} Archivo subido exitosamente`);
     } else if (info.file.status === 'error') {
@@ -293,12 +283,9 @@ const handleChangePdf = info => {
     }
 };
 const fileListPdf = ref();
-const headersPdf = {
-    authorization: 'authorization-text',
-};
 
 const cargarCategorias = () => {
-    const dataCategorias = CategoriaController.getCategorias(1)
+    CategoriaController.getCategorias(empresaId)
         .then((response) => {
 
             options.value = response.data
@@ -315,14 +302,13 @@ const cargarCategorias = () => {
 
 const cargarProductos = () => {
     loading.value = true
-    const dataProductos = EmpresasController.getById(1)
+    EmpresasController.getById(empresaId)
         .then((response) => {
             data.value = response.data.productos
-            loading.value= false;
+            loading.value = false;
         })
         .catch((error) => {
-            loading.value= false;
-            console.log(error)
+            loading.value = false;
             message.error('Error al obtener la lista de productos');
         });
 }
@@ -337,8 +323,7 @@ const showModal = () => {
 const handleEditOk = () => {
     const foundCategory = options.value.find((opt) => opt.label === value.value);
     const key = foundCategory ? foundCategory.key : null;
-    console.log(options.value)
-    console.log(value.value)
+
 
     const data = {
         id: editarProducto.value.id,
@@ -348,13 +333,12 @@ const handleEditOk = () => {
         precio: priceRef.value,
         tipo_iva: IVA.value,
         pdf: editarProducto.value.pdf,
-        empresaId: 1,
+        empresaId: empresaId,
         categoriaId: value.value
     }
 
-    console.log(data)
     confirmLoading.value = true;
-    const create = ProductoController.editarProducto(data.id, data)
+    ProductoController.editarProducto(data.id, data)
         .then(() => {
             openEditar.value = false;
             confirmLoading.value = false;
@@ -401,21 +385,19 @@ const viewPdf = (data) => {
 
 
 const viewOpiniones = (data) => {
-    console.log(data)
-    const producto = ProductoController.getProductoById(data.id)
-    .then((response) => {
-           opiniones.value = response.data.opinionesAsociadas;
+    ProductoController.getProductoById(data.id)
+        .then((response) => {
+            opiniones.value = response.data.opinionesAsociadas;
             openOpiniones.value = true;
         })
         .catch((error) => {
             message.error('Error al cargar las opiniones');
         });
-    
+
 };
 
 
 function showPromiseConfirm(producto) {
-    console.log(producto)
     Modal.confirm({
         title: '¿Deseas eliminar este producto?',
         icon: createVNode(ExclamationCircleOutlined),
@@ -461,4 +443,5 @@ onMounted(() => {
 .ant-upload-select-picture-card .ant-upload-text {
     margin-top: 8px;
     color: #666;
-}</style>../../services/ArchivosController
+}
+</style>../../services/ArchivosController
