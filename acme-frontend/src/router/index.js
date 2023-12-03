@@ -36,11 +36,78 @@ const routes = [
                 path: '/login',
                 name: 'Login',
                 component: () => import('../views/Login/Login.vue'),
+                beforeEnter: (to, from, next) => {
+                    if (store.getters.isAuthenticated) {
+                       next('/Home');
+                    } else {
+                       next();
+                    }
+                 },
                 meta: {
                     title: 'Iniciar Sesión',
                 },
             },
 
+            {
+                path: '/registro',
+                name: 'Registro',
+                component: () => import('../views/Login/Registro.vue'),
+                beforeEnter: (to, from, next) => {
+                    if (store.getters.isAuthenticated) {
+                       next('/Home');
+                    } else {
+                       next();
+                    }
+                 },
+                meta: {
+                  title: 'Registro',
+                },
+            },
+            {
+                path: '/registroCliente',
+                name: 'RegistroCliente',
+                component: () => import('../views/Login/RegistroCliente.vue'),
+                beforeEnter: (to, from, next) => {
+                    if (store.getters.isAuthenticated) {
+                       next('/Home');
+                    } else {
+                       next();
+                    }
+                 },
+                meta: {
+                  title: 'Registro Cliente',
+                },
+            },          
+            {
+                path: '/registroEmpresa',
+                name: 'RegistroEmpresa',
+                component: () => import('../views/Login/RegistroEmpresa.vue'),
+                beforeEnter: (to, from, next) => {
+                    if (store.getters.isAuthenticated) {
+                       next('/Home');
+                    } else {
+                       next();
+                    }
+                 },
+                meta: {
+                  title: 'Registro Empresa',
+                },
+              },         
+            {
+                path: '/registroEmpleado',
+                name: 'RegistroEmpleado',
+                component: () => import('../views/Login/RegistroEmpleado.vue'),
+                beforeEnter: (to, from, next) => {
+                    if (store.getters.isAuthenticated) {
+                       next('/Home');
+                    } else {
+                       next();
+                    }
+                 },
+                meta: {
+                  title: 'Registro Empleado',
+                },
+            },
             {
                 path: '/Categorias',
                 name: 'Categorias',
@@ -49,7 +116,6 @@ const routes = [
                     title: 'Categorias',
                 },
             },
-
             {
                 path: '/Productos',
                 name: 'Productos',
@@ -84,36 +150,18 @@ const routes = [
                     title: 'Sucursales',
                 },
             },
-            {
-                path: '/Registro',
-                name: 'Registro',
-                component: () => import('../views/Login/Registro.vue'),
-                meta: {
-                  title: 'Registro',
-                },
-                children: [
-                  {
-                    path: 'cliente',
-                    name: 'RegistroCliente',
-                    component: () => import('../views/Login/RegistroCliente.vue'),
-                    meta: {
-                      title: 'Registro Cliente',
-                    },
-                  },
-                  {
-                    path: 'Empresa',
-                    name: 'RegistroEmpresa',
-                    component: () => import('../views/Login/RegistroEmpresa.vue'),
-                    meta: {
-                      title: 'Registro Empresa',
-                    },
-                  },
-                ],
-              },
+
               { 
                 path: '/Perfil',
                 name: 'Perfil',
                 component: () => import('../views/Usuario/perfil.vue'),
+                beforeEnter: (to, from, next) => {
+                    if (store.getters.isAuthenticated) {
+                       next('/Home');
+                    } else {
+                       next();
+                    }
+                 },
                 meta: {
                     title: 'Perfil',
                 },
@@ -163,8 +211,4 @@ const router = createRouter({
   });
   
   export default router;
-
-
-
-
 

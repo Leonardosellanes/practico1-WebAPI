@@ -1,9 +1,9 @@
-  <template>
-    <div class="container mx-auto mt-10 flex justify-center items-center">
-      <div class="text-center">
-        <h2 class="text-3xl font-semibold mb-8">Registro de Empresa</h2>
-  
-        <form @submit.prevent="submitForm" class="max-w-md mx-auto bg-white p-8 border rounded-md shadow-md">
+<template>
+  <div v-if="!isLoggedIn" class="container mx-auto mt-10 flex justify-center items-center">
+    <div class="text-center">
+      <h2 class="text-3xl font-semibold mb-8">Registro de Empresa</h2>
+
+      <form @submit.prevent="submitForm" class="max-w-md mx-auto bg-white p-8 border rounded-md shadow-md">
         <!-- Campos de Registro de Empresa -->
         <div class="mb-4">
           <label for="nombreEmpresa" class="block text-sm font-medium text-gray-600">Nombre de la Empresa:</label>
@@ -40,47 +40,66 @@
           Registrar Empresa
         </button>
       </form>
-      </div>
     </div>
-  </template>
+  </div>
+</template>
 
-  <script setup>
-  import { ref } from 'vue';
-  import AuthController from '../../services/AuthController';
-  
-  const empresa = ref({
-    nombre: '',
-    rut: '',
-  });
-  
-  const admin = ref({
-    nombre: '',
-    apellido: '',
-    email: '',
-    password: '',
-  });
-  
-  const submitForm = async () => {
-    try {
-      const response = await AuthController.createEmpresa({
-        nombreEmpresa: empresa.value.nombre,
-        RUTEmpresa: empresa.value.rut,
-        NombreAdmin: admin.value.nombre,
-        ApellidoAdmin: admin.value.apellido,
-        EmailAdmin: admin.value.email,
-        PasswordAdmin: admin.value.password,
-      });
-      console.log('Respuesta del servidor:', response.data);
-      //Redirigir?
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Axios Error Details:", error.response);
-        }
-      return StatusCode(StatusCodes.Status500InternalServerError, "Error al registrar empresa y administrador");
-      }
+<script setup>
+import { ref, watch } from 'vue';
+import AuthController from '../../services/AuthController';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
-  };
-  </script>
-  <style scoped>
-  </style>
-  
+const empresa = ref({
+  nombre: '',
+  rut: '',
+});
+
+const admin = ref({
+  nombre: '',
+  apellido: '',
+  email: '',
+  password: '',
+});
+
+const store = useStore();
+const router = useRouter();
+let isLoggedIn = false;
+
+const submitForm = async () => {
+  try {
+    const responseEmpresa = await AuthController.createEmpresa({
+      nombreEmpresa: empresa.value.nombre,
+      RUTEmpresa: empresa.value.rut,
+    });
+
+    const idEmpresa = responseEmpresa.data.id; // 
+
+    const responseAdmin = await AuthController.createAdmin({
+      idEmpresa: idEmpresa,
+      NombreAdmin: admin.value.nombre,
+      ApellidoAdmin: admin.value.apellido,
+      EmailAdmin: admin.value.email,
+      PasswordAdmin: admin.value.password,
+    });
+
+    console.log('Respuestas del servidor:', responseEmpresa.data, responseAdmin.data);
+
+  } catch (error) {
+    console.error('Error al registrar empresa y administrador:', error);
+  }
+};
+
+/*onMounted(() => {
+  isLoggedIn = store.getters.isAuthenticated;
+  if (!store.getters.isAuthenticated) {
+  router.push('/');
+}
+  if (isLoggedIn) {
+    router.push('/Home');
+  }
+});*/
+</script>
+
+<style scoped>
+</style>

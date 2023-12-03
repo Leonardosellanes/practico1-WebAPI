@@ -62,9 +62,10 @@ namespace WebAPI
                             await roleManager.CreateAsync(newRole);
                         }
                     }
-            
+
                     // Llamar a la función para crear los roles
                     await CreateRoleIfNotExists(roleManager, "ADMIN");
+                    await CreateRoleIfNotExists(roleManager, "EMPLEADO");
                     await CreateRoleIfNotExists(roleManager, "MANAGER");
                     await CreateRoleIfNotExists(roleManager, "USER");
                     #endregion*/

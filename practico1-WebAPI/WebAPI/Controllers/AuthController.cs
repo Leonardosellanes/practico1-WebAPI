@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
             {
                 ApplicationUser user = await userManager.FindByNameAsync(userName: model.Email);
 
-                Console.WriteLine($"User found///////////: {user != null}, UserName: {user.Email}, Password:{user.Id}"  );
+                Console.WriteLine($"User found///////////: {user != null}, UserName: {user.Email}, Password:{user.Id}");
                 // Si el usuario existe, está activo, no está bloqueado y la contraseña es correcta
                 if (user != null &&
                     !await userManager.IsLockedOutAsync(user) &&
@@ -319,7 +319,7 @@ namespace WebAPI.Controllers
                 }
 
                 // Agregar el usuario al rol de ADMIN
-                await userManager.AddToRoleAsync(user, "ADMIN");
+                await userManager.AddToRoleAsync(user, "MANAGER");
 
                 // ToDo: Agregar lógica para enviar el correo de confirmación si es necesario.
 

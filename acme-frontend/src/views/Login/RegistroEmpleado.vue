@@ -1,11 +1,11 @@
 <template>
-  <div class="container mx-auto mt-10 flex justify-center items-center">
+  <div v-if="!isLoggedIn" class="container mx-auto mt-10 flex justify-center items-center">
     <form @submit.prevent="submitRegistroEmpleado" class="max-w-md mx-auto bg-white p-8 border rounded-md">
       <h2 class="text-3xl font-semibold mb-8">Registro Empleado</h2>
 
       <div class="mb-4">
         <label for="nombre" class="block text-sm font-medium text-gray-600">Nombre:</label>
-        <input v-model="nombre" type="text" id="nombre" name="nombre" class="mt-1 p-2 w-full border rounded-md" required />
+        <input v-model="name" type="text" id="nombre" name="nombre" class="mt-1 p-2 w-full border rounded-md" required />
       </div>
 
       <div class="mb-4">
@@ -22,35 +22,60 @@
   </div>
 </template>
   
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        name: '',
-        lname: '',
-        address: '',
-        email: '',
-      };
+<script>
+import axios from 'axios';
+import { ref, watch } from 'vue';
+import { useStore } from 'vuex';
+
+
+import { useRouter } from 'vue-router';
+
+export default {
+  data() {
+    return {
+      name: '',
+      email: '',
+      // ... otros campos del formulario para el empleado
+    };
+  },
+  methods: {
+    async submitRegistroEmpleado() {
+      try {
+        const store = useStore();
+        const router = useRouter();
+        const empresaId = store.state.empresaId; // Obtén el ID de la empresa del estado de Vuex
+
+        const response = await axios.post('/api/registro/empleado', {
+          name: this.name,
+          email: this.email,
+          empresaId: empresaId, // Asigna el ID de la empresa al empleado
+          // ... otros campos del formulario para el empleado
+        });
+
+        console.log('Registro de empleado exitoso:', response.data);
+        router.push('/registro-exitoso');
+      } catch (error) {
+        console.error('Error al registrar empleado:', error);
+      }
     },
-    methods: {
-      async submitRegistroEmpleado() {
-        try {
-          const response = await axios.post('/api/registro/empleado', {
-            name: this.name,
-            lname: this.lname,
-            address: this.address,
-            // ... otros campos
-          });
-  
-          console.log('Registro de empleado exitoso:', response.data);
-          this.$router.push('/registro-exitoso');
-        } catch (error) {
-          console.error('Error al registrar empleado:', error);
-        }
-      },
-    },
-  };
-  </script>
-  
+  },
+  setup() {
+    const store = useStore();
+    const isLoggedIn = ref(false);
+    const router = useRouter();
+
+  /*onMounted(() => {
+  isLoggedIn = store.getters.isAuthenticated;
+  if (!store.getters.isAuthenticated) {
+  router.push('/');
+}
+  if (isLoggedIn) {
+    router.push('/Home');
+  }
+});*/
+    return {
+      isLoggedIn,
+    };
+  },
+};
+</script>
