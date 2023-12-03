@@ -13,7 +13,6 @@ const requireAuth = (to, from, next) => {
   };
 //beforeEnter: requireAuth, usar para bloquear
 
-
 const routes = [
     {
         path: '/',

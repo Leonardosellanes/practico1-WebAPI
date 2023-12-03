@@ -6,20 +6,20 @@
       </router-link>
     </div>
     <div class="w-4/6 h-full flex justify-center items-center">
-      <a-menu v-model:selectedKeys="current" mode="horizontal">
-        <a-menu-item v-for="item in items" :key="item.key" :onClick="item.onClick" v-if="canViewItem(items)">
+      <a-menu v-model:selectedKeys="current" mode="horizontal" >
+        <a-menu-item v-for="item in items" :key="item.key"  :onClick="item.onClick" :v-if="canViewItem(item)">
           {{ item.label }}
         </a-menu-item>
       </a-menu>
     </div>
     <div class="w-1/6 h-full flex justify-end items-center mr-8">
       <a-space>
-        <router-link v-if="!isLoggedIn" to="/login">
+        <router-link v-if="isLoggedIn == false" to="/login">
           <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
             Login
           </button>
         </router-link>
-        <router-link v-if="!isLoggedIn" to="/registro">
+        <router-link v-if="isLoggedIn == false" to="/registro">
           <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
             Registro
           </button>
@@ -27,10 +27,10 @@
 
 
 
-        <router-link v-if="isLoggedIn" to="/Carrito">
+        <router-link v-if="isLoggedIn == true" to="/Carrito">
           <ShoppingCartOutlined :style="{ fontSize: '24px', color: 'gray' }" />
         </router-link>
-        <a-dropdown v-if="isLoggedIn" :trigger="['click']">
+        <a-dropdown v-if="isLoggedIn == true" :trigger="['click']">
           <a-avatar style="color: #f56a00; background-color: #fde3cf">U</a-avatar>
           <template #overlay>
             <a-menu>
@@ -38,8 +38,8 @@
                 <a @click="toProfile">Perfil</a>
               </a-menu-item>
               <a-menu-divider />
-              <a-menu-item key="3" @click="handleAuthentication" :style="{ color: !isLoggedIn.value ? 'red' : 'black' }">
-                {{ !isLoggedIn.value? 'Cerrar Sesión' : 'Iniciar Sesión' }}
+              <a-menu-item key="3" @click="handleAuthentication" :style="{ color: 'red'  }">
+                {{ 'Cerrar Sesión' }}
               </a-menu-item>
             </a-menu>
           </template>
@@ -57,7 +57,7 @@ import { ShoppingCartOutlined } from '@ant-design/icons-vue';
 
 const router = useRouter();
 const store = useStore();
-const isLoggedIn = ref(store.getters.isAuthenticated);
+const isLoggedIn = ref(sessionStorage.getItem('idUsuario') != null);
 const current = ref(['Home']);
 const items = ref([
   {
@@ -67,6 +67,7 @@ const items = ref([
       router.push('/Home');
     },
     showWhenLoggedIn: false,
+    visible:false,
     rol: [],
   },
   {
@@ -76,7 +77,7 @@ const items = ref([
       router.push('/Productos');
     },
     showWhenLoggedIn: true,
-    rol: ['ADMIN','USER']
+    rol: ['MANAGER','USER']
   },
   {
     key: 'Categorias',
@@ -120,7 +121,7 @@ const items = ref([
     onClick: () => {
       router.push(`/Sucursales/${empresaId.value}`);
     },
-    showWhenLoggedIn: true,
+    showWhenLoggedIn: true, 
     rol: ['USER']
   },
   {
@@ -137,6 +138,7 @@ const items = ref([
 
 
 const canViewItem = (item) => {
+
   console.log('Item:', item);
   console.log('isLoggedIn:', isLoggedIn.value);
 
@@ -148,7 +150,7 @@ const canViewItem = (item) => {
 
   // Si el elemento tiene roles especificados
   if (item.rol && item.rol.length > 0) {
-    const userRoles = store.getters.rol; // Cambiado de userRoles a userRole
+    const userRoles = sessionStorage.getItem('rol'); // Cambiado de userRoles a userRole
     console.log('Roles permitidos:', item.rol);
     console.log('Roles del usuario:', userRoles);
     
@@ -171,11 +173,11 @@ const canViewItem = (item) => {
 };
 
 watch(
-  () => store.getters.isAuthenticated,
+  () => sessionStorage.getItem('idUsuario'),
   (newValue) => {
-    isLoggedIn.value = newValue;
+    isLoggedIn.value = newValue !== null;
   }
-);
+); 
 
 const empresaId = ref(sessionStorage.getItem('empresaId'))
 
@@ -209,14 +211,6 @@ const toProfile = () => {
   current.value[0] = '';
   router.push('/Perfil');
 };
-
-const handleSession = () => {
-  isLoggedIn.value = store.getters.isAuthenticated;
-};
-
-onMounted(() => {
-  handleSession();
-});
 
 </script>
 
