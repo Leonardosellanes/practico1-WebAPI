@@ -60,6 +60,7 @@ export default createStore({
   },
   getters: {
     isAuthenticated: state => !!state.token,
+    userRole: state => state.rol,
   }, // uso: const isAuthenticated = store.getters.isAuthenticated;
 });
 

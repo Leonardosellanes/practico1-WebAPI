@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto mt-10 flex justify-center items-center">
+  <div v-if="!isLoggedIn" class="container mx-auto mt-10 flex justify-center items-center">
     <div v-if="empresas.length > 0">
       <form @submit.prevent="submitRegistroCliente" class="max-w-md mx-auto bg-white p-8 border rounded-md">
         <h2 class="text-3xl font-semibold mb-8">Registro Cliente</h2>
@@ -56,25 +56,19 @@
 <script setup>
 import AuthController from '../../services/AuthController';
 import EmpresasController from '../../services/EmpresasController';
-import { ref, h, onBeforeMount } from 'vue';
-import CategoriaController from '../../services/CategoriaController'
-import ProductoController from '../../services/ProductosController'
-import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
-import { createVNode } from 'vue';
-import { Modal, message } from 'ant-design-vue';
-import ArchivosController from '../../services/ArchivosController'
+import { ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+const isLoggedIn = ref(false); // Asegúrate de obtener este valor de tu estado de autenticación
 const name = ref('');
-const lname = ref('');
-const email = ref('');
-const password = ref('');
-const shipAddress = ref('');
+// ... (otros campos)
 const empresasSelected = ref('');
 const empresas = ref([]);
 const options = ref([]);
 
 // Obtener la lista de empresas al cargar el componente
-onBeforeMount(() => {
+onMounted(() => {
   loadEmpresas();
 });
 
@@ -88,7 +82,7 @@ const loadEmpresas = () => {
       options.value = response.data.map((empresa) => ({
         value: empresa.id,
         label: empresa.nombre,
-      }))
+      }));
     })
     .catch((error) => {
       console.error('Error al cargar empresas:', error);
@@ -98,10 +92,7 @@ const loadEmpresas = () => {
 const submitRegistroCliente = () => {
   const data = {
     name: name.value,
-    lname: lname.value,
-    email: email.value,
-    password: password.value,
-    shipAddress: shipAddress.value,
+    // ... (otros campos)
     empresaId: empresasSelected.value
   };
 
@@ -115,11 +106,17 @@ const submitRegistroCliente = () => {
     });
 };
 
+/*onMounted(() => {
+  isLoggedIn = store.getters.isAuthenticated;
+  if (!store.getters.isAuthenticated) {
+  router.push('/Home');
+}
+  if (!isLoggedIn.value) {
+    router.push('/Home');
+  }
+});*/
+
 const redirectToHome = () => {
   router.push('/Home');
-  window.location.reload();
 };
 </script>
-
-
-  
