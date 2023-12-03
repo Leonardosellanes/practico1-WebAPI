@@ -8,10 +8,6 @@ export default {
         return axios.get("Empresa");
     },
 
-    getEmpleados(id) {
-        return axios.get("AppUsers/" + id);
-    },
-    
     getById(id) {
         return axios.get('Empresa/'+1);
     },
@@ -21,10 +17,6 @@ export default {
         return axios.post('Empresa', body);
     },
 
-    createEmpleados(body) {
-        return axios.post('Auth/RegisterEmpleado' ,body)
-    },
-
     update(id, nombre, rut) {
         let body = { Id: id, Nombre: nombre, RUT: rut };
         return axios.put('Empresa', body);
@@ -32,5 +24,30 @@ export default {
 
     delete(id) {
         return axios.delete('Empresa/'+id);
+    },
+    
+    getEmpleados(id) {
+        return axios.get("AppUsers/" + id);
+    },
+
+    createEmpleados(body) {
+        return axios.post('Auth/RegisterEmpleado' ,body)
+    },
+
+    updateEmpleado(id, email, password, nombre, apellido) {
+        let body = { 
+            email: email,
+            password: password,
+            name: nombre,
+            lName: apellido,
+            empresaId: sessionStorage.getItem('empresaId')
+
+        };
+        return axios.put('Personas/'+id, body);
+    },
+
+    deleteEmpleado(id){
+        return axios.delete('Personas/'+id);
     }
+
 }

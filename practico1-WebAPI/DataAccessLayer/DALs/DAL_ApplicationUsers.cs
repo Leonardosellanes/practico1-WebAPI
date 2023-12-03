@@ -29,7 +29,7 @@ public class DAL_ApplicationUsers : IDAL_ApplicationUsers
         var usersWithRole = from user in _dbContext.Users
                             join userRole in _dbContext.UserRoles on user.Id equals userRole.UserId
                             join role in _dbContext.Roles on userRole.RoleId equals role.Id
-                            where role.Name == "MANAGER" && user.EmpresaId == empresaId
+                            where role.Name == "EMPLEADO" && user.EmpresaId == empresaId
                             select user;
 
         return usersWithRole.ToList();
