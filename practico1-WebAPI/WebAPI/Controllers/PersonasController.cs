@@ -70,9 +70,11 @@ namespace WebAPI.Controllers
         {
             Usuario usuario = new Usuario
             {
-                Id = user.Id,
-                Email = user.Email,
-                // cosas necesarias
+                id = user.Id,
+                email = user.Email,
+                name = user.Name,
+                lName = user.LName,
+                address = user.Address,
             };
             return usuario;
         }

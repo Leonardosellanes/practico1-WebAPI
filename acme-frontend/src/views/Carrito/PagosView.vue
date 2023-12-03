@@ -131,7 +131,7 @@ export default {
                     if (response.status == 200) {
                         message.success(response.data);
                         this.carrito.estadoOrden = 'Pendiente';
-                        this.carrito.medioDePago = 'Tarjeta crédito/débito';
+                        this.carrito.medioDePago = 'Tarjeta';
                         CarritoController.actualizarOrden(this.carrito).then((response) => {
                             if (response.status == 200) {
                                 this.router.push('/Home')

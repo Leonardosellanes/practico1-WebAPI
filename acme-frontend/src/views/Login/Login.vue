@@ -44,14 +44,6 @@ const formData = ref({
 const error = ref(null);
 const isLoggedIn = ref(store.getters.isAuthenticated);
 
-
-watch(
-  () => store.getters.isAuthenticated,
-  (newValue) => {
-    isLoggedIn.value = newValue;
-  }
-);
-
 const login = () => {
   const data = {
     Email: formData.value.email,
@@ -63,8 +55,13 @@ const login = () => {
       console.log(response.data)
       const token = response.data
       store.commit('setToken', token);
+      isLoggedIn.value = sessionStorage.getItem('idUsuario') != null
       if (isLoggedIn) {
-        router.push('/Home');
+        
+        router.push('/Productos').then(() => {
+    window.location.reload();
+  });
+        
       }
       formData.value.email = '';
       formData.value.password = '';

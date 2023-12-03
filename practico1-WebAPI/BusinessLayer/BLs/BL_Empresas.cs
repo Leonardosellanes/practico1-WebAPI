@@ -43,5 +43,10 @@ namespace BusinessLayer.BLs
         {
             _empresas.Update(empresa);
         }
+
+        public  List<string> Reportes(int empresaId)
+        {
+           return  _empresas.Reportes(empresaId);
+        }
     }
 }

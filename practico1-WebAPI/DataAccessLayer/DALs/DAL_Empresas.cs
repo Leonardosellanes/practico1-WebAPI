@@ -1,5 +1,7 @@
 ﻿using DataAccessLayer.EFModels;
 using DataAccessLayer.IDALs;
+using Microsoft.Data.SqlClient;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 using System;
@@ -147,6 +149,57 @@ namespace DataAccessLayer.DALs
                 _dbContext.Empresas.Remove(empresa);
                 _dbContext.SaveChanges();
             }
+        }
+
+        public List<string> Reportes(int empresaId)
+        {
+            List<string> list = new();
+            try
+            {
+                string connectionString = "Server=sqlserver,1433;Database=Practico4;User Id=sa;Password=Abc*123!;Encrypt=False;"; // Reemplaza con tu cadena de conexión
+
+                using SqlConnection connection = new(connectionString);
+                connection.Open();
+
+                // Consulta SQL
+                string sqlQuery = @"
+                SELECT ISNULL(SUM(total), 0) AS SumaTotal
+                FROM OC
+                WHERE EmpresaId = @EmpresaId
+                  AND EstadoOrden != 'activo'
+                  AND fecha BETWEEN DATEADD(DAY, -7, GETDATE()) AND GETDATE();";
+
+                // Ejecuta la consulta y mapea el resultado a un array
+                decimal resultado = connection.Query<decimal>(sqlQuery, new { EmpresaId = empresaId }).First();
+                list.Add(resultado.ToString());
+
+                string mesQuery = @"
+                    SELECT ISNULL(SUM(total), 0) AS SumaTotal
+                    FROM OC
+                    WHERE EmpresaId = @EmpresaId
+                    AND EstadoOrden != 'activo'
+                    AND fecha BETWEEN DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 1, 0) AND DATEADD(DAY, 0, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0));";
+
+                decimal resultadoMes = connection.Query<decimal>(mesQuery, new { EmpresaId = empresaId }).First();
+                list.Add(resultadoMes.ToString());
+
+                string medioDePagoQuery = @"
+                    SELECT TOP 1 MedioDePago
+                    FROM OC
+                    WHERE EmpresaId = @EmpresaId
+                    AND EstadoOrden != 'activo'
+                    GROUP BY MedioDePago
+                    ORDER BY COUNT(*) DESC;";
+
+                // Ejecuta la consulta para contar MedioDePago y agrega el resultado al array
+                string? medioDePagoMasComun = connection.Query<string>(medioDePagoQuery, new { EmpresaId = empresaId }).FirstOrDefault();
+                list.Add(medioDePagoMasComun ?? "N/A"); // Si no hay resultados, agrega "N/A"
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el reporte: {ex.Message}");
+            }
+            return list;
         }
 
         public static string GetImage(string fileName)

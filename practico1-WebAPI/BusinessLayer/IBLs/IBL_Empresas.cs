@@ -18,5 +18,7 @@ namespace BusinessLayer.IBLs
         void Update(Empresa empresa);
 
         void Delete(int id);
+
+        List<string> Reportes(int empresaId);
     }
 }

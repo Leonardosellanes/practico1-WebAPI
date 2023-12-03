@@ -111,5 +111,20 @@ namespace WebAPI.Controllers
             
         }
 
+        [ProducesResponseType(typeof(Empresa), 200)]
+        [HttpGet("Reportes/{id}")]
+        public IActionResult Reportes(int id)
+        {
+            try
+            {
+                return Ok(_bl.Reportes(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+
+        }
+
     }
 }

@@ -56,7 +56,7 @@
 <script setup>
 import AuthController from '../../services/AuthController';
 import EmpresasController from '../../services/EmpresasController';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -106,15 +106,15 @@ const submitRegistroCliente = () => {
     });
 };
 
-/*onMounted(() => {
-  isLoggedIn = store.getters.isAuthenticated;
-  if (!store.getters.isAuthenticated) {
-  router.push('/Home');
-}
-  if (!isLoggedIn.value) {
-    router.push('/Home');
-  }
-});*/
+// onMounted(() => {
+//   isLoggedIn = sessionStorage.getItem('idUsuario') != null
+//   if (!store.getters.isAuthenticated) {
+//   router.push('/Home');
+// }
+//   if (!isLoggedIn.value) {
+//     router.push('/Home');
+//   }
+// });
 
 const redirectToHome = () => {
   router.push('/Home');
