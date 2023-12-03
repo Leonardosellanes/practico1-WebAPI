@@ -163,7 +163,6 @@
         },
 
         showPromiseConfirm(empresa) {
-            console.log(empresa);
             try {
                 Modal.confirm({
                     title: '¿Deseas eliminar esta empresa?',
@@ -172,7 +171,7 @@
                     onOk: async () => {
                         try {
                             await EmpresasController.delete(empresa.key);
-                            await this.obtenerEmpresas(); 
+                            this.obtenerEmpresas(); 
                             message.success('La empresa ha sido eliminada correctamente.');
                         } catch (error) {
                             console.error('Error al eliminar la empresa:', error);

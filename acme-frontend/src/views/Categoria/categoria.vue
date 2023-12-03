@@ -94,9 +94,11 @@ const columns = [
     },
 ];
 
+const empresaId = ref(sessionStorage.getItem('empresaId'))
+
 const cargarCategorias = () => {
     loading.value = true
-    const dataCategorias = CategoriaController.getCategorias(1)
+    CategoriaController.getCategorias(empresaId)
         .then((response) => {
             data.value = response.data
                 .map((categoria) => ({
@@ -138,18 +140,18 @@ const handleOk = () => {
             data.value = {
                 Id: 0,
                 nombre: nombre.value,
-                empresaId: 1
+                empresaId: empresaId
             }
         } else {
             data.value = {
                 Id: 0,
                 nombre: nombre.value,
                 categoriaId: value.value,
-                empresaId: 1
+                empresaId: empresaId
             }
         }
         confirmLoading.value = true;
-        const create = CategoriaController.createCategorias(data.value)
+        CategoriaController.createCategorias(data.value)
             .then(() => {
                 open.value = false;
                 confirmLoading.value = false;
@@ -169,27 +171,22 @@ const handleOk = () => {
 
 const handleEditOk = () => {
 
-
     if (nombre.value != '') {
         errorNombre.value = ''
     }
 
-    console.log(value.value)
     const foundCategory = options.value.find((opt) => opt.value == value.value);
     const key = foundCategory ? foundCategory.value : null;
-    console.log(foundCategory)
-    console.log(key)
     if (nombre.value != '') {
         const data = {
             id: editarCategoria.value.key,
             nombre: nombre.value,
             categoriaId: key,
-            empresaId: 1
+            empresaId: empresaId
         }
 
-        console.log(data)
         confirmLoading.value = true;
-        const create = CategoriaController.editarCategorias(data.id, data)
+        CategoriaController.editarCategorias(data.id, data)
             .then(() => {
                 openEditar.value = false;
                 confirmLoading.value = false;
@@ -210,9 +207,7 @@ const handleEditOk = () => {
 
 // Puedes implementar una función similar para editar si es necesario
 const editCategory = (category) => {
-    console.log(options.value[0].value)
     errorNombre.value = ''
-
     editarCategoria.value = category
     nombre.value = category.name
     value.value = category.asociated
@@ -222,7 +217,6 @@ const editCategory = (category) => {
 };
 
 function showPromiseConfirm(categoria) {
-    console.log(categoria)
     Modal.confirm({
         title: '¿Deseas eliminar esta categoria?',
         icon: createVNode(ExclamationCircleOutlined),
@@ -239,7 +233,7 @@ function showPromiseConfirm(categoria) {
                 message.success('Categoría eliminada exitosamente');
 
             } catch {
-                return console.log('Oops errors!');
+                message.error('Ha ocurrido un error, intente nuevamente')
             }
             cargarCategorias()
         },

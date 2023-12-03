@@ -102,7 +102,8 @@ namespace WebAPI.Controllers
                             Email = user.Email,
                             EmpresaId = user.EmpresaId,
                             ExpirationMinutes = Convert.ToInt32((token.ValidTo - DateTime.UtcNow).TotalMinutes),
-                            Roles = userRoles
+                            Roles = userRoles,
+                            Direccion = user.Address
                         });
                     }
                     catch (Exception ex)

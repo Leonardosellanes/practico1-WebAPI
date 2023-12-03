@@ -12,6 +12,7 @@
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
     "@fullhuman/postcss-purgecss": "^5.0.0",
+    "@paypal/paypal-js": "^7.1.1",
     "ant-design-vue": "^4.0.6",
     "axios": "^1.6.2",
     "cors": "^2.8.5",

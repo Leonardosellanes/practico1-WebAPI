@@ -21,6 +21,7 @@ export default createStore({
       sessionStorage.setItem('email', data.email);
       sessionStorage.setItem('rol', data.roles[0]);
       sessionStorage.setItem('empresaId', data.empresaId);
+      sessionStorage.setItem('direccion', data.direccion);
     },
     clearToken(state) {
       state.token = null;
@@ -34,6 +35,7 @@ export default createStore({
       sessionStorage.removeItem('rol');
       sessionStorage.removeItem('empresaId');
       sessionStorage.removeItem('token');
+      sessionStorage.removeItem('direccion');
     },
   },
   actions: {

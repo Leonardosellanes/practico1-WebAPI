@@ -118,7 +118,7 @@ const items = ref([
     key: 'Sucursales',
     label: 'Sucursales',
     onClick: () => {
-      router.push(`/Sucursales/${empresaId}`);
+      router.push(`/Sucursales/${empresaId.value}`);
     },
     showWhenLoggedIn: true,
     rol: ['USER']
@@ -177,7 +177,7 @@ watch(
   }
 );
 
-const empresaId = 1;
+const empresaId = ref(sessionStorage.getItem('empresaId'))
 
 const handleAuthentication = () => {
   if (isLoggedIn.value) {

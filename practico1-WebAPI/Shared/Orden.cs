@@ -18,15 +18,15 @@ namespace Shared
 
         public string DireccionDeEnvio { get; set; } = "";
 
-        public DateTime FechaEstimadaEntrega { get; set; }
+        public DateTime? FechaEstimadaEntrega { get; set; }
 
         public decimal Total { get; set; } = 0 ;
 
         public string EstadoOrden { get; set; } = "";
 
-        public DateTime Fecha { get; set; }
+        public DateTime? Fecha { get; set; }
 
-        public String ClienteId { get; set; }
+        public String? ClienteId { get; set; }
 
         public List<Carrito>? Carritos { get; set; }
 
@@ -37,6 +37,8 @@ namespace Shared
         public int? EmpresaId { get; set; }
 
         public int? SucursalId { get; set; }
+
+        public Sucursal? SucursalAsociada { get; set; }
         
     }
 }

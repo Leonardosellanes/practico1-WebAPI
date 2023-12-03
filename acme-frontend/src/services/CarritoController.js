@@ -3,19 +3,16 @@ import axios from "./axios";
 export default {
 
     buscarCarritoActual() {
-        return axios.get("OC/carrito/1");
+        const idUsuario = sessionStorage.getItem('idUsuario');
+        return axios.get("OC/carrito/"+idUsuario);
     },
 
     agregarProducto(idOrden, idProducto, cantidad) {
         const body = {
-            "cantidad": cantidad,
-            "productoId": idProducto,
-            "pOs": {},
-            "ocId": idOrden,
-            "oCs": {
-                "ClienteId": "1",
-                "cli": {}
-            }
+            cantidad: cantidad,
+            productoId: idProducto,
+            pOs: {},
+            ocId: idOrden
         };
         console.log(body);
         return axios.post("CarritoProducto", body)
@@ -27,6 +24,23 @@ export default {
 
     editProductoCarrito(body){
         return axios.put("CarritoProducto", body);
+    },
+
+    actualizarOrden(orden){
+       console.log(orden);
+        const body = {
+            id: orden.id,
+            medioDePago:orden.medioDePago,
+            direccionDeEnvio: orden.direccionDeEnvio,
+            fechaEstimadaEntrega: orden.fechaEstimadaEntrega,
+            total: orden.total,
+            estadoOrden: orden.estadoOrden,
+            fecha: orden.fecha,
+            ClienteId: sessionStorage.getItem('idUsuario'),
+            sucursalId: orden.sucursalId
+        }
+        console.log( body);
+        return axios.put("OC", body);
     }
 
 }

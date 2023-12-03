@@ -127,7 +127,6 @@ const cargarEmpleados = () => {
     loading.value = true
     EmpresasController.getEmpleados(empresaId.value)
         .then((response) => {
-            console.log(response.data)
             data.value = response.data.reverse()
             loading.value = false;
         })

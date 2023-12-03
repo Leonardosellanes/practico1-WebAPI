@@ -73,25 +73,21 @@ const columns = [
         title: 'Orden',
         key: 'verOrden',
 
-    },
-    // {
-    //     title: 'Acciones',
-    //     key: 'action',
-    // },
+    }
 ];
 const open = ref(false)
 
+const empresaId = ref(sessionStorage.getItem('empresaId'))
 
 const cargarReclamos = () => {
     loading.value = true
-    EmpresasController.getById(1)
+    EmpresasController.getById(empresaId)
         .then((response) => {
             data.value = response.data.reclamos.reverse();
             loading.value = false;
         })
         .catch((error) => {
             loading.value = false;
-            console.log(error)
             message.error('Error al obtener la lista de productos');
         });
 }
@@ -107,7 +103,6 @@ const viewOrder = (record) => {
         .catch((error) => {
             loading.value = false;
             loadingModal.value = false
-            console.log(error)
             message.error('Error al obtener la lista de productos');
         });
 }

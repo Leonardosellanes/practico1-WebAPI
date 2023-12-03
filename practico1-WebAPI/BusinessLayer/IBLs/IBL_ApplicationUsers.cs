@@ -11,7 +11,7 @@ namespace BusinessLayer.IBLs
 
 public interface IBL_ApplicationUsers
 {
-    List<ApplicationUser> Get();
+    List<ApplicationUser> Get(int empresaId);
     void Insert(ApplicationUser applicationUser);
     void Update(ApplicationUser applicationUser);
     bool Delete(string userId); // Cambiado para aceptar un string (ID) y devolver un booleano

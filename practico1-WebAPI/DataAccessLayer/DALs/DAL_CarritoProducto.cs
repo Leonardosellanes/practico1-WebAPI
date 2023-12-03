@@ -60,7 +60,8 @@ namespace DataAccessLayer.DALs
 
         public void AgregarCarritoProducto(Carrito carrito)
         {
-            OC o = _dbContext.OC.Find(carrito.OCId);
+            OC o = _dbContext.OC.Include(c => c.Cliente).FirstOrDefault(x => x.Id == carrito.OCId);
+
 
             Productos p = _dbContext.Productos.Find(carrito.ProductoId);
             if (o != null && p != null) { 

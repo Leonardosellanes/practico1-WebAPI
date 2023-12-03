@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using ApiTarjetas;
 
 [ApiController]
 [Route("api/procesarpago")]
 public class VerificacionController : ControllerBase
 {
     [HttpPost]
-    public IActionResult VerifyCard([FromBody] string cardNumber)
+    public IActionResult VerifyCard([FromBody] Tarjeta card)
     {
-        string cardEnding = cardNumber[^2..];
+        string cardEnding = card.numero[^2..];
 
         switch (cardEnding)
         {

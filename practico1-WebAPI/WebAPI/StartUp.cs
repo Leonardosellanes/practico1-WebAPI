@@ -68,7 +68,7 @@ namespace WebAPI
                     await CreateRoleIfNotExists(roleManager, "EMPLEADO");
                     await CreateRoleIfNotExists(roleManager, "MANAGER");
                     await CreateRoleIfNotExists(roleManager, "USER");
-                    #endregion*/
+                    #endregion
                 }
             }
         }

@@ -68,6 +68,7 @@ namespace DataAccessLayer.DALs
             OC oc = _dbContext.OC
                 .Include(o => o.CarritoProducto)
                 .ThenInclude(cp => cp.POs)
+                .Include(o => o.SucursalAsociada)
                 .FirstOrDefault(o => o.Cliente.Id == clienteId && o.EstadoOrden == "activo");
 
             Orden carrito;
@@ -82,6 +83,7 @@ namespace DataAccessLayer.DALs
                     {
                         Cliente = Cliente,
                         EstadoOrden = "activo",
+                        EmpresaId = Cliente.EmpresaId
                     };
 
                     _dbContext.OC.Add(nuevoCarritoEF);
@@ -115,6 +117,15 @@ namespace DataAccessLayer.DALs
                     Total = oc.Total,
                     EstadoOrden = oc.EstadoOrden,
                     Fecha = oc.Fecha,
+                    SucursalId = oc.SucursalId,
+                    SucursalAsociada = oc.SucursalAsociada != null ? new Sucursal
+                    {
+                        Id = oc.SucursalAsociada.Id,
+                        Nombre = oc.SucursalAsociada.Nombre,
+                        Ubicacion = oc.SucursalAsociada.Ubicacion,
+                        TiempoEntrega = oc.SucursalAsociada.TiempoEntrega,
+                        EmpresaId = oc.SucursalAsociada.EmpresaId
+                    }  : null,
                     Carritos = oc.CarritoProducto != null
                         ? oc.CarritoProducto.Select(cp => new Carrito
                         {
@@ -263,10 +274,10 @@ namespace DataAccessLayer.DALs
                 {
                     MedioDePago = orden.MedioDePago,
                     DireccionDeEnvio = orden.DireccionDeEnvio,
-                    FechaEstimadaEntrega = orden.FechaEstimadaEntrega,
+                    FechaEstimadaEntrega = (DateTime)orden.FechaEstimadaEntrega,
                     Total = orden.Total,
                     EstadoOrden = orden.EstadoOrden,
-                    Fecha = orden.Fecha,
+                    Fecha = (DateTime)orden.Fecha,
                     EmpresaId = orden.EmpresaId,
                     ClienteId = orden.ClienteId,
                 }
@@ -276,18 +287,26 @@ namespace DataAccessLayer.DALs
 
         public void ActualizarOC(Orden orden)
         {
+            Console.WriteLine("ID RECIBIDO : ", orden);
             OC oc = _dbContext.OC.FirstOrDefault(o => o.Id == orden.Id);
 
             if (oc != null)
             {
+                Console.WriteLine("encontro la orden");
+
                 oc.MedioDePago = orden.MedioDePago;
                 oc.DireccionDeEnvio = orden.DireccionDeEnvio;
-                oc.FechaEstimadaEntrega = orden.FechaEstimadaEntrega;
+                oc.FechaEstimadaEntrega = (DateTime)orden.FechaEstimadaEntrega;
                 oc.Total = orden.Total;
                 oc.EstadoOrden = orden.EstadoOrden;
-                oc.Fecha = orden.Fecha;
+                oc.Fecha = (DateTime)orden.Fecha;
+                oc.SucursalId = orden.SucursalId;
 
                 _dbContext.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("oc = null");
             }
         }
 

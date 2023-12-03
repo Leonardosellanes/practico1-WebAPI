@@ -1,6 +1,7 @@
 <template>
     <a-row justify="space-between" style="width: 97%">
         <a-card style="width: 65%">
+            <div v-if="!moduloPago">
             <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Productos" />
                 
             <a-list>
@@ -64,6 +65,8 @@
                     
                 </a-list-item>
             </a-list>
+            </div>
+            <PagosView v-if="moduloPago" :dataCarrito="dataCarrito"></PagosView>
         </a-card>
         <a-card style="width: 32%">
             <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Resumen de compra" />
@@ -99,18 +102,26 @@
             <a-card class="mt-4" @click="showModalEntrega = true">
                 <a-row justify="space-between" style="width: 100%">
                     <h4>Método de entrega</h4> 
-                    <p v-if="dataCarrito.direccionDeEnvio != ''"> Envío a Domicilio </p>
+                    <a-space direction="vertical" v-if="dataCarrito.direccionDeEnvio != '' && selectEntrega == 'Domicilio'">
+                        <p> Envío a Domicilio </p> 
+                        <p>{{ dataCarrito.direccionDeEnvio }}</p>
+                    </a-space>
+
+                    <a-space direction="vertical" v-if="selectedSucursal && selectEntrega == 'Sucursal'">
+                        <p > Retiro en sucursal </p> 
+                        <p>{{ selectedSucursal.nombre }} </p>
+                    </a-space>
                 </a-row>
             </a-card>
             <a-card class="mt-4">
                 <a-row justify="space-between" style="width: 100%">
                     <h4>Fecha estimada de entrega</h4> 
-                    -
+                    {{ fechaEntrega == '1/1/1' ? '-' : fechaEntrega }}
                 </a-row>
             </a-card>
 
             <a-row class="mt-6" justify="center" style="width: 100%;">
-                <a-button block type="primary" size="large" >
+                <a-button block type="primary" size="large" @click="confirmarCompra" v-if="!moduloPago">
                     CONFIRMAR COMPRA
                 </a-button>
             </a-row>
@@ -120,7 +131,7 @@
     <a-modal v-model:open="showModalEntrega" 
         title="¿Cómo quieres recibir tu compra?" 
         :confirm-loading="confirmLoading"
-        @ok="handleOk">
+        @ok="selectMetodo">
         <a-divider type="horizontal" />
         <a-space direction="vertical" style="width: 100%; margin-bottom: 8px;">
             <a-radio-group v-model:value="selectEntrega" style="width: 100%;">
@@ -131,17 +142,54 @@
                 
                 <a-card class="mt-4">
                     <a-radio  :value="'Sucursal'">Retiro en sucursal</a-radio>
+                    
                 </a-card>
             </a-space>
             </a-radio-group>
         </a-space>
     </a-modal>
+
+    <a-modal v-model:open="showModalDireccion" 
+        title="¿Dónde quieres recibir tu compra?"
+        @ok="selectDireccion">
+        <a-divider type="horizontal" />
+        <a-space direction="vertical" style="width: 100%; margin-bottom: 8px;">
+            <a-radio-group v-model:value="selectDir" style="width: 100%;">
+                <a-space direction="vertical" style="width: 100%; ">
+                <a-card>
+                    <a-radio :value="'actual'" :disabled="dirActual == null || dirActual == ''" >Mi dirección actual</a-radio>
+                        
+                        <p v-if="dirActual == null || dirActual == ''"> No se encontró una dirección </p>
+                        <p v-else> {{ dirActual }} </p>
+                    </a-card>
+                
+                <a-card class="mt-4">
+                    <a-radio  :value="'nueva'">Otra dirección</a-radio>
+                    <a-input  class="mt-4" v-if="selectDir == 'nueva'" v-model:value="dirNueva" placeholder="Ingrese una dirección" />
+                </a-card>
+            </a-space>
+            </a-radio-group>
+        </a-space>
+    </a-modal>
+
+    <a-modal v-model:open="showModalSucursales" 
+        title="¿Dónde quieres retirar tu compra?"
+        @ok="confirmSucursal">
+        <a-divider type="horizontal" />
+        <a-space direction="vertical" style="width: 100%; margin-bottom: 8px;">
+            <mapaSelect @seleccionar-sucursal="seleccionarSucursal"></mapaSelect>
+        </a-space>
+    </a-modal>
+
 </template>
 
 <script>
 import { message } from 'ant-design-vue';
 import CarritoController from '../../services/CarritoController';
 import { CloseOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
+import mapaSelect from '../Sucursal/mapaSelect.vue';
+import ApiEnvios from '../../services/ApiEnvios';
+import PagosView from './PagosView.vue';
 
 export default{
     data() {
@@ -150,9 +198,23 @@ export default{
             productos: [],
             loading: true,
             enableCant: false,
+
             showModalEntrega: false,
+            showModalDireccion: false,
+            showModalSucursales: false,
             costoEnvio: 0,
-            selectEntrega: 'Domicilio'
+
+            selectEntrega: '', //Domicilio o Sucursal
+            selectDir: '', //actual o nueva 
+            dirActual: '',
+            dirNueva: '',
+
+            selectedSucursal: null,
+            fechaEntrega: '-',
+            codSeguimiento: '',
+
+            moduloPago: false
+            
         }
     },
     beforeMount(){  
@@ -165,6 +227,24 @@ export default{
                 if (response.status == 200){
                     this.dataCarrito = response.data;
                     this.productos = response.data.carritos;
+                    if(this.dataCarrito.direccionDeEnvio != ''){
+                        this.selectEntrega = 'Domicilio'
+                        this.calcularEnvio();
+                    }
+                    if(this.dataCarrito.sucursalId != null){
+                        this.selectEntrega = 'Sucursal'
+                        this.selectedSucursal = this.dataCarrito.sucursalAsociada;
+                    }
+                    /*if(this.dataCarrito.total != 0){
+                        this.costoEnvio = this.dataCarrito.total - this.totalProductos;
+                    }*/
+                    if(this.dataCarrito.fechaEstimadaEntrega){
+                        const fecha = new Date(this.dataCarrito.fechaEstimadaEntrega);
+                        const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
+                        this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);
+                        
+                    }
+                    console.log(this.dataCarrito);
                 }else{
                     message.error('Error al obtener carrito');
                 }
@@ -190,8 +270,90 @@ export default{
                 }else{
                     message.error('Error al modificar producto.');
                 }
+            })      
+        },
+
+        selectMetodo(){
+            if(this.selectEntrega == ''){
+                message.error('Seleccione una opción');
+                return
+            }
+            if(this.selectEntrega == 'Domicilio'){
+                this.dirActual = sessionStorage.getItem('direccion');                
+                this.showModalDireccion = true;
+            }else{
+                this.showModalSucursales = true;
+            }
+            this.showModalEntrega = false;
+        },
+
+        selectDireccion(){
+            if(this.selectDir == ''){
+                message.error('Seleccione una opción');
+                return
+            }
+            if(this.selectDir == 'actual'){
+                this.dataCarrito.direccionDeEnvio = this.dirActual;
+            }else{
+                if(this.dirNueva == ''){
+                    message.error('Ingrese una dirección');
+                    return
+                }
+                this.dataCarrito.direccionDeEnvio = this.dirNueva;      
+            }
+            this.dataCarrito.sucursalId = null;
+
+            this.calcularEnvio();
+        },
+        calcularEnvio(){
+            ApiEnvios.calcularEnvio(this.dataCarrito.direccionDeEnvio).then((response) => {
+                if(response.status == 200){
+                    this.costoEnvio = response.data.shippingCost;
+                    this.codSeguimiento = response.data.trackingNumber;
+                    this.calcularFecha(response.data.deliveryTime);
+                    this.showModalDireccion = false;
+                }else{
+                    message.error('Ocurrió un error al calcular el envío.')
+                }
             })
+        },
+        seleccionarSucursal(sucursal){
+            console.log(sucursal);
+            this.auxSucursal = sucursal;
+        },
+
+        confirmSucursal(){
+            this.showModalSucursales = false;
+            this.selectedSucursal = this.auxSucursal;
+            this.dataCarrito.sucursalId = this.selectedSucursal.id;
+            this.calcularFecha(this.selectedSucursal.tiempoEntrega);
+            this.dataCarrito.direccionDeEnvio = '';
+            this.codSeguimiento = '';
+            this.costoEnvio = 0;
+        },
+
+        calcularFecha(dias){
+            const fecha = new Date();
+            fecha.setDate(fecha.getDate() + dias);
+            this.dataCarrito.fechaEstimadaEntrega = fecha.toISOString();
+            const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
+            this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);
+        },
+        confirmarCompra(){
+            if(this.fechaEntrega == '1/1/1'){
+                return
+            }
+            this.dataCarrito.total = this.totalProductos + this.costoEnvio;          
+            this.dataCarrito.fecha = new Date().toISOString();
             
+            console.log(this.dataCarrito);
+            CarritoController.actualizarOrden(this.dataCarrito).then((response) =>{
+                console.log(response);
+                if(response.status == 200){
+                    this.moduloPago = true;
+                }
+                this.getCarrito();
+            })
         }
     },
     computed: {
@@ -204,7 +366,7 @@ export default{
         }
     },
 
-    components: { CloseOutlined, EditOutlined, CheckOutlined }
+    components: { CloseOutlined, EditOutlined, CheckOutlined, mapaSelect, PagosView }
 }
 
 </script>
