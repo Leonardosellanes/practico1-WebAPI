@@ -85,6 +85,15 @@ export default {
     mounted: function () {
         loadScript({ 'client-id': 'Ae6_5Ia8rJzNPtZL_XG0OjGNq_GuU5Zn2TjngYFwBbQVkZR-d8VIMENDZMlPIPFWeh6yAPghK4RmEWC6' }).then(() => {
             paypal.Buttons({
+                style: {
+                    layout: 'horizontal', // o 'vertical'
+                    color: 'gold', // o 'blue', 'silver', 'black'
+                    shape: 'rect', // o 'pill'
+                    label: 'paypal', // o 'checkout', 'credit', 'pay'
+                    height: 40, // altura en píxeles
+                    tagline:false
+                },
+        
                 createOrder: (data, actions) => {
                     return actions.order.create({
                         purchase_units: [

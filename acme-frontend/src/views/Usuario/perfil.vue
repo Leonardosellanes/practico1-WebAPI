@@ -57,7 +57,7 @@
                                 </a-form-item>
 
                                 <a-form-item :wrapper-col="{ offset: 20, span: 16 }">
-                                    <a-button type="primary" html-type="submit" :loading="confirmLoading">Submit</a-button>
+                                    <a-button type="primary" html-type="submit" :loading="confirmLoading">OK</a-button>
                                 </a-form-item>
                             </a-form>
                         </a-space>
@@ -78,7 +78,7 @@
                                 </a-form-item>
 
                                 <a-form-item :wrapper-col="{ offset: 20, span: 16 }">
-                                    <a-button type="primary" html-type="submit" :loading="confirmLoading">Aceptar</a-button>
+                                    <a-button type="primary" html-type="submit" :loading="confirmLoading">OK</a-button>
                                 </a-form-item>
                             </a-form>
                         </a-space>
@@ -109,15 +109,15 @@
                         </a-space>
                     </div>
                 </a-card>
-                <a-table :columns="columns" :data-source="data.value" class="w-full px-6"
+                <a-table :columns="columns" :data-source="data" class="w-full px-6"
                     v-if="rol == 'USER' && loading == false">
                     <template #title>Tus ordenes de compra</template>
                     <template #bodyCell="{ column, record }">
                         <template v-if="column.key === 'action'">
                             <span>
                                 <a @click="realizarReclamo(record)"
-                                    v-if="record.rcs == null && estadoOrden == 'Entregado'">Realizar reclamo</a>
-                                <a @click="verReclamo(record.rcs)" v-else>ver Reclamo</a>
+                                    v-if="record.rcs == null && record.estadoOrden == 'Entregado'">Realizar reclamo</a>
+                                <a @click="verReclamo(record.rcs)" v-else-if="record.rcs != null">ver Reclamo</a>
                                 <a-divider type="vertical" />
                                 <a @click="verProductos(record.carritos)">Ver productos</a>
                             </span>
@@ -208,15 +208,16 @@ const columns = [
         width: '15%'
     },
 ];
-const data = [];
+const data = ref([]);
 const reclamoAsociado = [];
-const productosAsociados = [];
+const productosAsociados = ref([]);
 const infoUser = ref(null);
 
 const cargarOrdenes = () => {
     loading.value = true
     OrdenDeCompraController.getOrdenByUserId(idUsuario.value)
         .then((response) => {
+            console.log(response)
             data.value = response.data.filter(item => item.estadoOrden != 'activo').reverse()
             loading.value = false;
         })
