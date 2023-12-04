@@ -112,7 +112,7 @@ namespace WebAPI.Controllers
                 if (updatedUser.Address != null)
                     existingUser.Address = updatedUser.Address;
 
-                if (updatedUser.EmpresaId == null)
+                if (updatedUser.EmpresaId != null)
                     existingUser.EmpresaId = updatedUser.EmpresaId;
 
                 _dal.Update(existingUser);

@@ -150,10 +150,10 @@ const routes = [
                             next('/Empresas')
                         }
                         if(rol == 'EMPLEADO' || rol == 'MANAGER'){
-                            next()
+                            next('/Ordenes')
                         }
                         if(rol == 'USER'){
-                            next('/Home');
+                            next();
                         }
                     } else {
                        next('/login');
