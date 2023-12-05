@@ -3,64 +3,98 @@
         <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Productos" sub-title="Productos de la empresa">
             <template #extra>
                 <a-button type="primary" @click="showModal">Agregar</a-button>
-                <a-modal v-model:open="open" title="Nuevo Producto" :confirm-loading="confirmLoading" @ok="handleOk">
-                    <a-space direction="vertical" style="width: 100%;">
-                        Foto:
-                        <a-upload v-model:file-list="fileList" :before-upload="beforeUpload" :status="errorFoto">
-                            <a-button>Seleccionar Imagen</a-button>
-                        </a-upload>
+                <a-modal v-model:open="open" title="Nuevo Producto" :footer="false" :afterClose="onModalClosed">
+                    <a-form :model="formModel" name="basic" :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }"
+                        style="margin-top: 10%;" autocomplete="off" @finish="handleOk">
+                        <a-form-item label="Foto" :rules="[{ required: true, message: 'La foto es obligatoria' }]">
+                            <a-upload v-model:file-list="fileList" :before-upload="beforeUpload">
+                                <a-button>Seleccionar Imagen</a-button>
+                            </a-upload>
+                        </a-form-item>
 
-                        <a-input v-model:value="titleRef" placeholder="Titulo" :status="errorTitulo" />
+                        <a-form-item label="Titulo" name="titleRef"
+                            :rules="[{ required: true, message: 'El título es obligatorio' }]">
+                            <a-input v-model:value="formModel.titleRef" placeholder="Titulo" />
+                        </a-form-item>
 
-                        <a-textarea v-model:value="descriptionRef" :rows="4" placeholder="Descripcion"
-                            :status="errorDescripcion" />
+                        <a-form-item label="Descripcion" name="descriptionRef"
+                            :rules="[{ required: true, message: 'La descripción es obligatoria' }]">
+                            <a-textarea v-model:value="formModel.descriptionRef" :rows="4" placeholder="Descripcion" />
+                        </a-form-item>
 
-                        <a-select ref="select" v-model:value="value" style="width: 100%" :options="options"
-                            :status="errorCategoria" placeholder="Categoria" />
+                        <a-form-item label="Categoria" name="value"
+                            :rules="[{ required: true, message: 'La categoría es obligatoria' }]">
+                            <a-select v-model:value="formModel.value" style="width: 100%" :options="options"
+                                placeholder="Categoria" />
+                        </a-form-item>
 
-                        <a-input-number v-model:value="priceRef" placeholder="Precio" :status="errorPrecio" />
+                        <a-form-item label="Precio" name="priceRef"
+                            :rules="[{ required: true, message: 'El precio es obligatorio' }]">
+                            <a-input-number v-model:value="formModel.priceRef" placeholder="Precio" />
+                        </a-form-item>
 
-                        <a-select ref="select" v-model:value="IVA" style="width: 100%" :options="optionsIVA"
-                            :status="errorIva" placeholder="IVA" />
+                        <a-form-item label="IVA" name="IVA" :rules="[{ required: true, message: 'El IVA es obligatorio' }]">
+                            <a-select v-model:value="formModel.IVA" style="width: 100%" :options="optionsIVA"
+                                placeholder="IVA" />
+                        </a-form-item>
 
-                        PDF:
-                        <a-upload v-model:file-list="fileListPdf" name="file" :before-upload="handleChangePdf"
-                            :status="errorPdf">
-                            <a-button>
-                                Seleccionar PDF
-                            </a-button>
-                        </a-upload>
+                        <a-form-item label="PDF" :rules="[{ required: true, message: 'El pdf es obligatorio' }]">
+                            <a-upload v-model:file-list="fileListPdf" name="file" :before-upload="handleChangePdf">
+                                <a-button>Seleccionar PDF</a-button>
+                            </a-upload>
+                        </a-form-item>
 
-                    </a-space>
+                        <a-form-item :wrapper-col="{ offset: 20, span: 16 }">
+                            <a-button type="primary" html-type="submit" :loading="confirmLoading">OK</a-button>
+                        </a-form-item>
+                    </a-form>
                 </a-modal>
-                <a-modal v-model:open="openEditar" title="Editar Categoria" :confirm-loading="confirmLoading"
+                <a-modal v-model:open="openEditar" title="Editar Producto" :footer="false" :afterClose="onModalClosed"
                     @ok="handleEditOk">
-                    <a-space direction="vertical" style="width: 100%;">
-                        Foto:
-                        <a-upload v-model:file-list="fileList" :before-upload="beforeUpload">
-                            <a-button>Seleccionar Imagen</a-button>
-                        </a-upload>
+                    <a-form :model="formModel" name="basic" :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }"
+                        style="margin-top: 10%;" autocomplete="off" @finish="handleEditOk">
+                        <a-form-item label="Foto" :rules="[{ required: true, message: 'La foto es obligatoria' }]">
+                            <a-upload v-model:file-list="fileList" :before-upload="beforeUpload">
+                                <a-button>Seleccionar Imagen</a-button>
+                            </a-upload>
+                        </a-form-item>
 
-                        <a-input v-model:value="titleRef" placeholder="Titulo" />
+                        <a-form-item label="Titulo" name="titleRef"
+                            :rules="[{ required: true, message: 'El título es obligatorio' }]">
+                            <a-input v-model:value="formModel.titleRef" placeholder="Titulo" />
+                        </a-form-item>
 
-                        <a-textarea v-model:value="descriptionRef" :rows="4" placeholder="Descripcion" />
+                        <a-form-item label="Descripcion" name="descriptionRef"
+                            :rules="[{ required: true, message: 'La descripción es obligatoria' }]">
+                            <a-textarea v-model:value="formModel.descriptionRef" :rows="4" placeholder="Descripcion" />
+                        </a-form-item>
 
-                        <a-select ref="select" v-model:value="value" style="width: 100%" :options="options"
-                            placeholder="Categoria" />
+                        <a-form-item label="Categoria" name="value"
+                            :rules="[{ required: true, message: 'La categoría es obligatoria' }]">
+                            <a-select v-model:value="formModel.value" style="width: 100%" :options="options"
+                                placeholder="Categoria" />
+                        </a-form-item>
 
-                        <a-input-number v-model:value="priceRef" placeholder="Precio" />
+                        <a-form-item label="Precio" name="priceRef"
+                            :rules="[{ required: true, message: 'El precio es obligatorio' }]">
+                            <a-input-number v-model:value="formModel.priceRef" placeholder="Precio" />
+                        </a-form-item>
 
-                        <a-select ref="select" v-model:value="IVA" style="width: 100%" :options="optionsIVA"
-                            placeholder="IVA" />
+                        <a-form-item label="IVA" name="IVA" :rules="[{ required: true, message: 'El IVA es obligatorio' }]">
+                            <a-select v-model:value="formModel.IVA" style="width: 100%" :options="optionsIVA"
+                                placeholder="IVA" />
+                        </a-form-item>
 
-                        PDF:
-                        <a-upload v-model:file-list="fileListPdf" name="file" :before-upload="handleChangePdf">
-                            <a-button>
-                                Seleccionar PDF
-                            </a-button>
-                        </a-upload>
+                        <a-form-item label="PDF" :rules="[{ required: true, message: 'El pdf es obligatorio' }]">
+                            <a-upload v-model:file-list="fileListPdf" name="file" :before-upload="handleChangePdf">
+                                <a-button>Seleccionar PDF</a-button>
+                            </a-upload>
+                        </a-form-item>
 
-                    </a-space>
+                        <a-form-item :wrapper-col="{ offset: 20, span: 16 }">
+                            <a-button type="primary" html-type="submit" :loading="confirmLoading">OK</a-button>
+                        </a-form-item>
+                    </a-form>
                 </a-modal>
 
                 <a-modal v-model:open="openOpiniones" title="Opiniones" :footer="null" :closable="true"
@@ -118,14 +152,28 @@
 </template>
 
 <script setup>
-import { ref, h, onMounted } from 'vue';
+import { ref, h, onMounted, reactive } from 'vue';
 import CategoriaController from '../../services/CategoriaController'
 import ProductoController from '../../services/ProductosController'
 import EmpresasController from '../../services/EmpresasController';
 import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { createVNode } from 'vue';
-import { Modal, message } from 'ant-design-vue';
+import { List, Modal, message } from 'ant-design-vue';
 import ArchivosController from '../../services/ArchivosController'
+
+
+const empresaId = ref(sessionStorage.getItem('empresaId'))
+
+const formModel = reactive({
+    titleRef: '',
+    descriptionRef: '',
+    value: '',
+    priceRef: null,
+    IVA: '',
+});
+
+const fileList = ref([]);
+const fileListPdf = ref([]);
 
 const loading = ref(false)
 const open = ref(false);
@@ -148,11 +196,7 @@ const optionsIVA = ref([
         label: 'General',
     },]);
 const value = ref('');
-const IVA = ref('');
 const data = ref([]);
-const titleRef = ref('');
-const descriptionRef = ref('');
-const priceRef = ref(null);
 const editarProducto = ref([]);
 const opiniones = ref([])
 const indicator = h(LoadingOutlined, {
@@ -199,23 +243,26 @@ const columns = [
     },
 ];
 
-const fileList = ref([]);
 
-const errorFoto = ref('');
-const errorTitulo = ref('');
-const errorDescripcion = ref('');
-const errorCategoria = ref('');
-const errorIva = ref('');
-const errorPrecio = ref('');
-const errorPdf = ref('');
 
-const empresaId = ref(sessionStorage.getItem('empresaId'))
+
 
 const beforeUpload = (file) => {
     fileList.value = [file];
     return false; // Evita la carga automática de archivos
 };
+
 const handleOk = async () => {
+
+    if (fileList.value.length == 0){
+        message.info('Ingrese una imagen')
+        return
+    }
+
+    if (fileListPdf.value.length == 0){
+        message.info('Ingrese un pdf')
+        return
+    }
 
     confirmLoading.value = true
     try {
@@ -224,14 +271,14 @@ const handleOk = async () => {
 
         const data = {
             id: 0,
-            titulo: titleRef.value,
-            descripcion: descriptionRef.value,
+            titulo: formModel.titleRef,
+            descripcion: formModel.descriptionRef,
             foto: imageUrl.ruta,
-            precio: priceRef.value,
-            tipo_iva: IVA.value,
+            precio: formModel.priceRef,
+            tipo_iva: formModel.IVA,
             pdf: pdfUrl.ruta,
-            empresaId: empresaId,
-            categoriaId: value.value
+            empresaId: empresaId.value,
+            categoriaId: formModel.value
         }
 
         ProductoController.createProducto(data)
@@ -282,10 +329,10 @@ const handleChangePdf = info => {
         message.error(`${info.file.name} Error al subir.`);
     }
 };
-const fileListPdf = ref();
+
 
 const cargarCategorias = () => {
-    CategoriaController.getCategorias(empresaId)
+    CategoriaController.getCategorias(empresaId.value)
         .then((response) => {
 
             options.value = response.data
@@ -302,9 +349,9 @@ const cargarCategorias = () => {
 
 const cargarProductos = () => {
     loading.value = true
-    EmpresasController.getById(empresaId)
+    EmpresasController.getById(empresaId.value)
         .then((response) => {
-            data.value = response.data.productos
+            data.value = response.data.productos.reverse()
             loading.value = false;
         })
         .catch((error) => {
@@ -314,27 +361,36 @@ const cargarProductos = () => {
 }
 
 const showModal = () => {
-    nombre.value = '';
-    value.value = null;
     open.value = true;
 };
 
 
-const handleEditOk = () => {
-    const foundCategory = options.value.find((opt) => opt.label === value.value);
-    const key = foundCategory ? foundCategory.key : null;
+const handleEditOk = async() => {
+    const imageUrl = ref('')
+    const pdfUrl = ref('')
 
+    if(fileList.value.length == 0 ){
+        imageUrl.value = editarProducto.value.foto
+    } else {
+        imageUrl.value = await subirImagen();
+    }
+
+    if(fileListPdf.value.length == 0 ){
+        pdfUrl.value = editarProducto.value.pdf
+    } else {
+        pdfUrl.value = await subirPdf();
+    }
 
     const data = {
         id: editarProducto.value.id,
-        titulo: titleRef.value,
-        descripcion: descriptionRef.value,
-        foto: editarProducto.value.foto,
-        precio: priceRef.value,
-        tipo_iva: IVA.value,
-        pdf: editarProducto.value.pdf,
-        empresaId: empresaId,
-        categoriaId: value.value
+        titulo: formModel.titleRef,
+        descripcion: formModel.descriptionRef,
+        foto: imageUrl.value.ruta,
+        precio: formModel.priceRef,
+        tipo_iva: formModel.IVA,
+        pdf: pdfUrl.value.ruta,
+        empresaId: empresaId.value,
+        categoriaId: formModel.value
     }
 
     confirmLoading.value = true;
@@ -342,6 +398,8 @@ const handleEditOk = () => {
         .then(() => {
             openEditar.value = false;
             confirmLoading.value = false;
+            fileList.length = 0;
+            fileListPdf.length = 0;
             message.success('Producto editado');
             cargarProductos();
         })
@@ -354,12 +412,12 @@ const handleEditOk = () => {
 // Puedes implementar una función similar para editar si es necesario
 const editProducto = (producto) => {
 
-    editarProducto.value = producto;
-    titleRef.value = producto.titulo,
-        descriptionRef.value = producto.descripcion,
-        value.value = producto.categoriaId,
-        priceRef.value = producto.precio,
-        IVA.value = producto.tipo_iva
+    editarProducto.value = producto,
+        formModel.titleRef = producto.titulo,
+        formModel.descriptionRef = producto.descripcion,
+        formModel.value = producto.categoriaId,
+        formModel.priceRef = producto.precio,
+        formModel.IVA = producto.tipo_iva
 
     openEditar.value = true;
 };
@@ -394,6 +452,16 @@ const viewOpiniones = (data) => {
             message.error('Error al cargar las opiniones');
         });
 
+};
+
+const onModalClosed = () => {
+    formModel.titleRef = '',
+    formModel.descriptionRef = '',
+    formModel.value = ''
+    formModel.priceRef = null,
+    formModel.IVA = ''
+    fileList.value = []
+    fileListPdf.value = []
 };
 
 

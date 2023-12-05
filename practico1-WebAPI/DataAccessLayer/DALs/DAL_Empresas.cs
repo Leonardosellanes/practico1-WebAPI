@@ -197,6 +197,42 @@ namespace DataAccessLayer.DALs
                 // Ejecuta la consulta para contar MedioDePago y agrega el resultado al array
                 string? medioDePagoMasComun = connection.Query<string>(medioDePagoQuery, new { EmpresaId = empresaId }).FirstOrDefault();
                 list.Add(medioDePagoMasComun ?? "N/A"); // Si no hay resultados, agrega "N/A"
+
+                string masCompradoQuery = @"
+                    SELECT TOP 1 CONCAT(P.titulo, ': ', SUM(CP.cantidad)) AS ProductoYCantidad
+                    FROM carritoProducto CP
+                    JOIN OC ON CP.OCid = OC.Id
+                    JOIN Productos P ON CP.ProductoId = P.Id
+                    WHERE OC.EmpresaId = @EmpresaId
+                      AND OC.EstadoOrden != 'activo'
+                    GROUP BY P.Titulo
+                    ORDER BY SUM(CP.cantidad) DESC;";
+
+                string? productoMasComprado = connection.Query<string>(masCompradoQuery, new { EmpresaId = empresaId }).First();
+                list.Add(productoMasComprado ?? "N/A"); // Si no hay resultados, agrega "N/A"
+
+                string metodoDeEnvioQuery = @"
+                    SELECT TOP 1
+                      CASE 
+                        WHEN OC.SucursalId IS NOT NULL THEN 'Retiro en sucursal'
+                        WHEN OC.SucursalId IS NULL THEN 'Envío a domicilio'
+                        ELSE 'No Definido' -- Puedes ajustar esto según tus necesidades
+                      END AS MetodoEnvioPreferido,
+                      COUNT(*) AS CantidadOrdenes
+                    FROM OC
+                    WHERE OC.EmpresaId = EmpresaId
+                      AND OC.EstadoOrden != 'activo'
+                    GROUP BY 
+                      CASE 
+                        WHEN OC.SucursalId IS NOT NULL THEN 'Retiro en sucursal'
+                        WHEN OC.SucursalId IS NULL THEN 'Envío a domicilio'
+                        ELSE 'No Definido'
+                      END
+                    ORDER BY CantidadOrdenes DESC;
+                    ";
+
+                string? metodoFavorito = connection.Query<string>(metodoDeEnvioQuery, new { EmpresaId = empresaId }).First();
+                list.Add(metodoFavorito ?? "N/A"); // Si no hay resultados, agrega "N/A"
             }
             catch (Exception ex)
             {
