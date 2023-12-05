@@ -122,10 +122,13 @@ namespace DataAccessLayer.DALs
                              .ToList();
         }
 
-        public void Insert(Empresa empresa)
+        public Empresa Insert(Empresa empresa)
         {
-            _dbContext.Empresas.Add(new Empresas { Nombre = empresa.Nombre, RUT = empresa.RUT });
+            Empresas e = new Empresas{ Nombre = empresa.Nombre, RUT = empresa.RUT };
+            _dbContext.Empresas.Add(e);
             _dbContext.SaveChanges();
+            empresa.Id = e.Id;
+            return empresa;
         }
         public void Update(Empresa empresa)
         {

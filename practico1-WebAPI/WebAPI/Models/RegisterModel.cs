@@ -38,11 +38,10 @@ namespace WebAPI.Models
 
         [Required(ErrorMessage = "La contraseña es requerida")]
         public string Password { get; set; } = string.Empty;
-        public bool IsAdmin { get; set; } = true;
+        public bool? IsAdmin { get; set; } = true;
         // Propiedades adicionales para el administrador
         public string? Name { get; set; }
         public string? LName { get; set; }
-        public string? Address { get; set; }
         public int? EmpresaId { get; set; }
     }
 

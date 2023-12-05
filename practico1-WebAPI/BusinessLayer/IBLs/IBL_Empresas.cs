@@ -13,7 +13,7 @@ namespace BusinessLayer.IBLs
 
         Empresa Get(int id);
 
-        void Insert(Empresa empresa);
+        Empresa Insert(Empresa empresa);
 
         void Update(Empresa empresa);
 

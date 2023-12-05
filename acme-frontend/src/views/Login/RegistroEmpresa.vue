@@ -45,10 +45,11 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import AuthController from '../../services/AuthController';
-import { useStore } from 'vuex';
+import EmpresasController from '../../services/EmpresasController';
 import { useRouter } from 'vue-router';
+import { message } from 'ant-design-vue';
 
 const empresa = ref({
   nombre: '',
@@ -62,43 +63,41 @@ const admin = ref({
   password: '',
 });
 
-const store = useStore();
 const router = useRouter();
 let isLoggedIn = false;
 
-const submitForm = async () => {
+const submitForm = () => {
   try {
-    const responseEmpresa = await AuthController.createEmpresa({
-      nombreEmpresa: empresa.value.nombre,
-      RUTEmpresa: empresa.value.rut,
-    });
-
-    const idEmpresa = responseEmpresa.data.id; // 
-
-    const responseAdmin = await AuthController.createAdmin({
-      idEmpresa: idEmpresa,
-      NombreAdmin: admin.value.nombre,
-      ApellidoAdmin: admin.value.apellido,
-      EmailAdmin: admin.value.email,
-      PasswordAdmin: admin.value.password,
-    });
-
-    console.log('Respuestas del servidor:', responseEmpresa.data, responseAdmin.data);
+    EmpresasController.create(empresa.value.nombre, empresa.value.rut).then((response) => {
+      if(response.status == 200){
+        console.log(response);
+        const empresaId = response.data.id;
+        const body = {
+          empresaId: empresaId,
+          name: admin.value.nombre,
+          lname: admin.value.apellido,
+          email: admin.value.email,
+          password: admin.value.password
+        }
+        AuthController.createManager(body).then((response) => {
+          console.log(response);
+          if(response.status == 200){
+            router.push('/login');
+          }
+          else{
+            message.error('Ha ocurrido un error al registrar usuario');
+          }
+        })
+      }else{
+        message.error('Ha ocurrido un error al registrar empresa');
+      }
+    })
 
   } catch (error) {
     console.error('Error al registrar empresa y administrador:', error);
   }
 };
 
-/*onMounted(() => {
-  isLoggedIn = store.getters.isAuthenticated;
-  if (!store.getters.isAuthenticated) {
-  router.push('/');
-}
-  if (isLoggedIn) {
-    router.push('/Home');
-  }
-});*/
 </script>
 
 <style scoped>
