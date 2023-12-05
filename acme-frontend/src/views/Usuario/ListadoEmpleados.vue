@@ -3,7 +3,7 @@
         <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="Empleados">
             <template #extra>
                 <a-button type="primary" @click="selected = 0; open = true;">Agregar</a-button>
-                <a-modal v-model:open="open" title="Agregar Empleado" :confirm-loading="confirmLoading" :footer="false">
+                <a-modal v-model:open="open" title="Agregar Empleado" :confirm-loading="confirmLoading" :footer="false" :afterClose="modalClose">
                     <a-form :model="formState" name="basic" :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }"
                         style="margin-top: 10%;" autocomplete="off" @finish="onFinish">
                         <a-form-item label="Nombre" name="name" :rules="[{ required: true, message: 'Ingrese el nombre' }]">
@@ -20,19 +20,10 @@
                             <a-input v-model:value="formState.email" />
                         </a-form-item>
 
-                        <!--a-form-item label="Direccion" name="address"
-                            :rules="[{ required: true, message: 'Ingrese una direccion' }]">
-                            <a-input v-model:value="formState.address" />
-                        </a-form-item -->
-
                         <a-form-item label="Contraseña" name="password"
                             :rules="[{ required: true, message: 'Ingrese una contraseña' }]">
                             <a-input-password v-model:value="formState.password" />
                         </a-form-item>
-
-                        <!--a-form-item name="isAdmin" :wrapper-col="{ offset: 6, span: 16 }">
-                            <a-checkbox v-model:checked="formState.isAdmin">Admin</a-checkbox>
-                        </a-form-item -->
 
                         <a-form-item :wrapper-col="{ offset: 20, span: 16 }">
                             <a-button type="primary" html-type="submit" :loading="confirmLoading">OK</a-button>
@@ -43,10 +34,6 @@
         </a-page-header>
         <a-table :columns="columns" :data-source="data.value" class="w-full px-6" v-if="loading == false">
             <template #bodyCell="{ column, record }">
-                <!-- template v-if="column.key === 'isAdmin'">
-                    <span v-if="record.isAdmin == false">No</span>
-                    <span v-else>Si</span>
-                </template -->
                 <template v-if="column.key === 'action'">
                     <span>
                         <a @click="modalEdit(record)">Editar</a>
@@ -124,6 +111,14 @@ const modalEdit = (record) => {
     formState.password = record.password;
     selected.value = record.id;
     open.value = true;
+}
+
+const modalClose = () => {
+    formState.name = '';
+    formState.lName = '';
+    formState.email = '';
+    formState.password = '';
+    selected.value = 0;
 }
 
 const cargarEmpleados = () => {

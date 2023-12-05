@@ -65,7 +65,7 @@ const onSelect = option => {
 
 const cargarProductos = () => {
     loading.value = true;
-    EmpresasController.getById(empresaId)
+    EmpresasController.getById(empresaId.value)
         .then((response) => {
             data.value = response.data.productos.reverse();
             loading.value = false;

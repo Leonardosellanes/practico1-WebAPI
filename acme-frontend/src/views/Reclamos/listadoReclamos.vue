@@ -81,7 +81,7 @@ const empresaId = ref(sessionStorage.getItem('empresaId'))
 
 const cargarReclamos = () => {
     loading.value = true
-    EmpresasController.getById(empresaId)
+    EmpresasController.getById(empresaId.value)
         .then((response) => {
             data.value = response.data.reclamos.reverse();
             loading.value = false;

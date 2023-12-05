@@ -30,14 +30,14 @@
     <div class="w-1/6 h-full flex justify-end items-center mr-8">
       <a-space>
         <router-link v-if="isLoggedIn == false" to="/login">
-          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            Login
-          </button>
+          <a-button type="primary">
+            Iniciar Sesion
+          </a-button>
         </router-link>
         <router-link v-if="isLoggedIn == false" to="/registro">
-          <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+          <a-button >
             Registro
-          </button>
+          </a-button>
         </router-link>
         <router-link v-if="isLoggedIn == true && rol == 'USER'" to="/Carrito">
           <ShoppingCartOutlined :style="{ fontSize: '24px', color: 'gray' }" />
@@ -218,8 +218,6 @@ const itemsAdmin = ref([
 //     isLoggedIn.value = newValue !== null;
 //   }
 // );
-
-
 
 console.log(rol.value)
 
