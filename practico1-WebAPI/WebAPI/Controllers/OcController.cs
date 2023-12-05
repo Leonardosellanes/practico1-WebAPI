@@ -99,11 +99,18 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Orden orden)
+        public async Task<IActionResult> PutAsync([FromBody] Orden orden)
         {
             try
-            {                
+            {
                 _blOC.ActualizarOC(orden);
+
+                if (orden.EstadoOrden == "Finalizada")
+                {
+                    var emailSender = HttpContext.RequestServices.GetRequiredService<IEmailSender>();
+                    await emailSender.SendOrderConfirmationAsync("federicodn3@gmail.com", orden);
+                }
+
                 return Ok("Orden actualizada exitosamente.");
             }
             catch (Exception ex)

@@ -10,6 +10,11 @@ export default{
         return axios.post("Auth/RegisterCliente", body);
     },
 
+    createAdmin(body){
+        return axios.post("Auth/RegisterAdmin", body);
+    },
+
+
     Login(body){
         return axios.post("Auth/Login", body);
     },

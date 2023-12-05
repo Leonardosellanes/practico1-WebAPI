@@ -6,7 +6,13 @@ using DataAccessLayer.EFModels;
 using DataAccessLayer.IDALs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using WebAPI.Controllers;
+using WebAPI.Models;
 
 namespace WebAPI
 {
@@ -25,11 +31,24 @@ namespace WebAPI
             }
         }
 
+
+        public IConfiguration Configuration { get; }
+
+        public StartUp(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
+
         {   
             services.AddScoped<AuthController>();
             services.AddScoped<IDAL_Empresas, DAL_Empresas>();
             services.AddScoped<IBL_Empresas, BL_Empresas>();
+            services.AddHostedService<EmailSenderBackgroundService>();
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<EmailConfiguration>(Configuration.GetSection("EmailConfiguration"));
+
 
 
         }
