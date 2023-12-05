@@ -126,7 +126,7 @@ const routes = [
                             next('/Empresas')
                         }
                         if(rol == 'EMPLEADO' || rol == 'MANAGER'){
-                            next('/Ordenes')
+                            next()
                         }
                         if(rol == 'USER'){
                             next('/Home');

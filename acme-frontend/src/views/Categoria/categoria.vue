@@ -140,14 +140,14 @@ const handleOk = () => {
             data.value = {
                 Id: 0,
                 nombre: nombre.value,
-                empresaId: empresaId
+                empresaId: empresaId.value
             }
         } else {
             data.value = {
                 Id: 0,
                 nombre: nombre.value,
                 categoriaId: value.value,
-                empresaId: empresaId
+                empresaId: empresaId.value
             }
         }
         confirmLoading.value = true;
@@ -177,16 +177,28 @@ const handleEditOk = () => {
 
     const foundCategory = options.value.find((opt) => opt.value == value.value);
     const key = foundCategory ? foundCategory.value : null;
+
+    console.log(key)
+    const data = ref()
     if (nombre.value != '') {
-        const data = {
-            id: editarCategoria.value.key,
-            nombre: nombre.value,
-            categoriaId: key,
-            empresaId: empresaId
+        if (key == null) {
+            data.value = {
+                id: editarCategoria.value.key,
+                nombre: nombre.value,
+                empresaId: empresaId
+            }
+        } else {
+            data.value = {
+                id: editarCategoria.value.key,
+                nombre: nombre.value,
+                categoriaId: key,
+                empresaId: empresaId
+            }
         }
 
+
         confirmLoading.value = true;
-        CategoriaController.editarCategorias(data.id, data)
+        CategoriaController.editarCategorias(data.value.id, data.value)
             .then(() => {
                 openEditar.value = false;
                 confirmLoading.value = false;
