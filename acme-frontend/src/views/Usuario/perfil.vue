@@ -170,7 +170,7 @@
                     </a-card>
                     <a-card style="width: 100%">
                         <div class="flex justify-between">
-                            <p>Metodo de envio facorito</p>
+                            <p>Metodo de envio favorito</p>
                             <p>{{ Reportes[4] }}</p>
                         </div>
                     </a-card>
