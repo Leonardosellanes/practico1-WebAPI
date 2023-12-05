@@ -235,14 +235,10 @@ export default{
                         this.selectEntrega = 'Sucursal'
                         this.selectedSucursal = this.dataCarrito.sucursalAsociada;
                     }
-                    /*if(this.dataCarrito.total != 0){
-                        this.costoEnvio = this.dataCarrito.total - this.totalProductos;
-                    }*/
                     if(this.dataCarrito.fechaEstimadaEntrega){
                         const fecha = new Date(this.dataCarrito.fechaEstimadaEntrega);
                         const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
-                        this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);
-                        
+                        this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);                       
                     }
                     console.log(this.dataCarrito);
                 }else{
@@ -340,7 +336,7 @@ export default{
             this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);
         },
         confirmarCompra(){
-            if(this.fechaEntrega == '1/1/1'){
+            if(this.fechaEntrega == '1/1/1' || this.productos.length == 0){
                 return
             }
             this.dataCarrito.total = this.totalProductos + this.costoEnvio;          

@@ -292,7 +292,7 @@ namespace WebAPI.Controllers
                     Password = model.Password,
                     Name = model.Name,
                     LName = model.LName,
-                    Address = model.Address,
+                    //Address = model.Address,
                     IsAdmin = true,
                     EmpresaId = model.EmpresaId,
                 };

@@ -12,7 +12,7 @@
                     <a-modal v-model:open="openViewReclamo" title="Informacion de su reclamo" :footer="null">
                         <a-space direction="vertical" style="width: 100%;">
                             <a-card>
-                                Fecha: {{ reclamoAsociado.value.fecha }} <br />
+                                Fecha: {{ formatearFecha(reclamoAsociado.value.fecha) }} <br />
                             </a-card>
                             <a-card>
                                 Descripcion: {{ reclamoAsociado.value.descripcion }} <br />
@@ -116,7 +116,7 @@
                         <template v-if="column.key === 'action'">
                             <span>
                                 <a @click="realizarReclamo(record)"
-                                    v-if="record.rcs == null && record.estadoOrden == 'Entregado'">Realizar reclamo</a>
+                                    v-if="record.rcs == null && record.estadoOrden != 'Entregado'">Realizar reclamo</a>
                                 <a @click="verReclamo(record.rcs)" v-else-if="record.rcs != null">ver Reclamo</a>
                                 <a-divider type="vertical" />
                                 <a @click="verProductos(record.carritos)">Ver productos</a>
@@ -229,7 +229,7 @@ const indicator = h(LoadingOutlined, {
 const columns = [
     {
         title: 'Fecha',
-        dataIndex: 'fecha',
+        dataIndex: 'fechaFormateada',
         width: '10%'
     },
     {
@@ -238,13 +238,18 @@ const columns = [
         width: '10%'
     },
     {
-        title: 'Direccion',
+        title: 'Direccion de envío',
         dataIndex: 'direccionDeEnvio',
         width: '10%'
     },
     {
+        title: 'Sucursal de retiro',
+        dataIndex: 'sucursal',
+        width: '10%'
+    },
+    {
         title: 'Fecha estimada de entrega',
-        dataIndex: 'fechaEstimadaEntrega',
+        dataIndex: 'fechaEntregaFormateada',
         width: '10%'
     },
     {
@@ -258,7 +263,7 @@ const columns = [
         width: '10%'
     },
     {
-        title: 'Action',
+        title: '',
         key: 'action',
         width: '15%'
     },
@@ -271,19 +276,27 @@ const Reportes = ref([]);
 const cantidadProducto = ref()
 const productoReporte = ref(null)
 const productoTitulo = ref('')
+
 const cargarOrdenes = () => {
     loading.value = true
-    if (rol.value == 'USER') {
-        OrdenDeCompraController.getOrdenByUserId(idUsuario.value)
-            .then((response) => {
-                console.log(response)
-                data.value = response.data.filter(item => item.estadoOrden != 'activo').reverse()
-                loading.value = false;
+
+if (rol.value == 'USER') {
+    OrdenDeCompraController.getOrdenByUserId(idUsuario.value)
+        .then((response) => {
+            console.log(response)
+            data.value = response.data.filter(item => item.estadoOrden != 'activo').reverse()
+            data.value.forEach((item) => {
+                item.fechaFormateada = formatearFecha(item.fecha);
+                item.fechaEntregaFormateada = formatearFecha(item.fechaEstimadaEntrega);
+                item.sucursal = item.sucursalAsociada ? item.sucursalAsociada.nombre : '-';
+                console.log(item);
             })
-            .catch((error) => {
-                loading.value = false;
-                console.error('Error al obtener la lista de prductos:', error);
-            });
+            loading.value = false;
+        })
+        .catch((error) => {
+            loading.value = false;
+            console.error('Error al obtener la lista de prductos:', error);
+        });
     } else if (rol.value == 'MANAGER' || rol.value == 'EMPLEADO') {
         EmpresaController.getReportes(empresaId.value)
             .then((response) => {
@@ -301,7 +314,12 @@ const cargarOrdenes = () => {
                 console.error('Error al obtener la lista de prductos:', error);
             });
     }
+}
 
+const formatearFecha = (date) => {
+    const fecha = new Date(date);
+    const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
+    return fecha.toLocaleDateString('es-ES', opcionesFormato);  
 }
 
 const cargarInfoUser = () => {
@@ -341,13 +359,12 @@ const reclamoOk = () => {
     confirmLoading.value = true
 
     const data = {
-        id: 0,
         descripcion: descripcionReclamo.value,
         fecha: new Date(),
-        empresaId: empresaId,
+        empresaId: empresaId.value,
         ocId: idOrden.value
     }
-
+    console.log(data);
     ReclamosController.createReclamo(data)
         .then(() => {
             confirmLoading.value = false;
@@ -357,7 +374,7 @@ const reclamoOk = () => {
         .catch((error) => {
             confirmLoading.value = false;
             open.value = false
-            console.error('Error al obtener la lista de prductos:', error);
+            console.error('Error al ingresar reclamo:', error);
         });
 }
 

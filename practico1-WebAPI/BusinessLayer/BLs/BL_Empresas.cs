@@ -34,9 +34,9 @@ namespace BusinessLayer.BLs
             return _empresas.GetById(id);
         }
 
-        public void Insert(Shared.Empresa empresa)
+        public Empresa Insert(Empresa empresa)
         {
-            _empresas.Insert(empresa);
+            return _empresas.Insert(empresa);
         }
 
         public void Update(Empresa empresa)
