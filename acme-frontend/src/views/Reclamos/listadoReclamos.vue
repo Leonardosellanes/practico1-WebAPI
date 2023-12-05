@@ -26,10 +26,10 @@
                 </div>
                 <a-space direction="vertical" style="width: 100%;" v-else>
                     <a-card>
-                        Fecha: {{ ordenAsociada.fecha }} <br />
+                        Fecha: {{ formatearFecha(ordenAsociada.fecha) }} <br />
                         Medio de pago: {{ ordenAsociada.medioDePago }} <br />
-                        Direccion de envio: {{ ordenAsociada.direccionDeEnvio }} <br />
-                        Fecha estimada de entrega: {{ ordenAsociada.fechaEstimadaEntrega }} <br />
+                        {{ ordenAsociada.sucursalAsociada == null ? "Dirección de envio: " + ordenAsociada.direccionDeEnvio : "Sucursal de retiro: " + ordenAsociada.sucursalAsociada.nombre }} <br />
+                        Fecha estimada de entrega: {{ formatearFecha(ordenAsociada.fechaEstimadaEntrega) }} <br />
                         Total: {{ ordenAsociada.total }} <br />
                         Estado: {{ ordenAsociada.estadoOrden }} <br />
                     </a-card>
@@ -66,7 +66,7 @@ const columns = [
     },
     {
         title: 'Fecha',
-        dataIndex: 'fecha',
+        dataIndex: 'fechaFormateada',
 
     },
     {
@@ -81,9 +81,12 @@ const empresaId = ref(sessionStorage.getItem('empresaId'))
 
 const cargarReclamos = () => {
     loading.value = true
-    EmpresasController.getById(empresaId)
+    EmpresasController.getById(empresaId.value)
         .then((response) => {
             data.value = response.data.reclamos.reverse();
+            data.value.forEach((item) => {
+                item.fechaFormateada = formatearFecha(item.fecha);
+            })
             loading.value = false;
         })
         .catch((error) => {
@@ -106,6 +109,13 @@ const viewOrder = (record) => {
             message.error('Error al obtener la lista de productos');
         });
 }
+
+const formatearFecha = (date) => {
+    const fecha = new Date(date);
+    const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
+    return fecha.toLocaleDateString('es-ES', opcionesFormato);  
+}
+
 onMounted(() => {
     cargarReclamos()
 });

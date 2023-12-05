@@ -24,6 +24,7 @@ namespace DataAccessLayer.DALs
         {
             OC o = _dbContext.OC
                 .Include(oc => oc.CarritoProducto)
+                .Include(o => o.SucursalAsociada)
                 .FirstOrDefault(oc => oc.Id == id);
 
             return o == null
@@ -57,8 +58,16 @@ namespace DataAccessLayer.DALs
                                 Id = cp.POs.CategoriaAsociada.Id,
                                 Nombre = cp.POs.CategoriaAsociada.Nombre
                             } : null
-                        } : null
-                    }).ToList() : null
+                        } : null,  
+                    }).ToList() : null,
+                    SucursalAsociada = o.SucursalAsociada != null ? new Sucursal
+                        {
+                            Id = o.SucursalAsociada.Id,
+                            Nombre = o.SucursalAsociada.Nombre,
+                            Ubicacion = o.SucursalAsociada.Ubicacion,
+                            TiempoEntrega = o.SucursalAsociada.TiempoEntrega,
+                            EmpresaId = o.SucursalAsociada.EmpresaId
+                        } : null,
                 };
         }
 
@@ -170,6 +179,7 @@ namespace DataAccessLayer.DALs
             return _dbContext.OC
                 .Include(oc => oc.CarritoProducto)
                 .Include(rc => rc.Rcs)
+                .Include(o => o.SucursalAsociada)
                 .Where(oc => oc.Cliente.Id == id)
                 .Select(oc => new Orden
                 {
@@ -209,7 +219,15 @@ namespace DataAccessLayer.DALs
                         Fecha = oc.Rcs.Fecha,
                         Descripcion = oc.Rcs.Descripcion
 
-                    } : null
+                    } : null,
+                    SucursalAsociada = oc.SucursalAsociada != null ? new Sucursal
+                    {
+                        Id = oc.SucursalAsociada.Id,
+                        Nombre = oc.SucursalAsociada.Nombre,
+                        Ubicacion = oc.SucursalAsociada.Ubicacion,
+                        TiempoEntrega = oc.SucursalAsociada.TiempoEntrega,
+                        EmpresaId = oc.SucursalAsociada.EmpresaId
+                    } : null,
                 })
                 .ToList();  
         }
@@ -219,6 +237,7 @@ namespace DataAccessLayer.DALs
             return _dbContext.OC
                 .Include(oc => oc.CarritoProducto)
                 .Include(rc => rc.Rcs)
+                .Include(o => o.SucursalAsociada)
                 .Where(oc => oc.EmpresaId == id)
                 .Select(oc => new Orden
                 {
@@ -261,7 +280,15 @@ namespace DataAccessLayer.DALs
                         Fecha = oc.Rcs.Fecha,
                         Descripcion = oc.Rcs.Descripcion
 
-                    } : null
+                    } : null,
+                    SucursalAsociada = oc.SucursalAsociada != null ? new Sucursal
+                    {
+                        Id = oc.SucursalAsociada.Id,
+                        Nombre = oc.SucursalAsociada.Nombre,
+                        Ubicacion = oc.SucursalAsociada.Ubicacion,
+                        TiempoEntrega = oc.SucursalAsociada.TiempoEntrega,
+                        EmpresaId = oc.SucursalAsociada.EmpresaId
+                    } : null,
                 })
                 .ToList();
         }

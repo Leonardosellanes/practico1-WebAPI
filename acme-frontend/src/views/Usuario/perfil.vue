@@ -12,7 +12,7 @@
                     <a-modal v-model:open="openViewReclamo" title="Informacion de su reclamo" :footer="null">
                         <a-space direction="vertical" style="width: 100%;">
                             <a-card>
-                                Fecha: {{ reclamoAsociado.value.fecha }} <br />
+                                Fecha: {{ formatearFecha(reclamoAsociado.value.fecha) }} <br />
                             </a-card>
                             <a-card>
                                 Descripcion: {{ reclamoAsociado.value.descripcion }} <br />
@@ -68,13 +68,13 @@
                                 style="margin-top: 10%;" autocomplete="off" @finish="onFinishPass">
                                 <a-form-item label="Nueva Contraseña" name="password"
                                     :rules="[{ required: true, message: 'Ingrese la nueva contraseña' }]">
-                                    <a-input-password  v-model:value="formPassword.password" />
+                                    <a-input-password v-model:value="formPassword.password" />
                                 </a-form-item>
 
                                 <a-form-item label="Repetir Contraseña" name="Verify"
                                     :rules="[{ required: true, message: 'Repita la contraseña' }]">
-                                    <a-input-password v-model:value="formPassword.Verify"/> 
-                                
+                                    <a-input-password v-model:value="formPassword.Verify" />
+
                                 </a-form-item>
 
                                 <a-form-item :wrapper-col="{ offset: 20, span: 16 }">
@@ -95,7 +95,7 @@
                         <a @click="openPass = true" class="ml-4">
                             <KeyOutlined />
                         </a>
-                        
+
                     </template>
                     <div class="w-full flex justify-center" v-if="loading == true && infoUser != null">
                         <a-spin :indicator="indicator" @spinning="true" />
@@ -116,7 +116,7 @@
                         <template v-if="column.key === 'action'">
                             <span>
                                 <a @click="realizarReclamo(record)"
-                                    v-if="record.rcs == null && record.estadoOrden == 'Entregado'">Realizar reclamo</a>
+                                    v-if="record.rcs == null && record.estadoOrden != 'Entregado'">Realizar reclamo</a>
                                 <a @click="verReclamo(record.rcs)" v-else-if="record.rcs != null">ver Reclamo</a>
                                 <a-divider type="vertical" />
                                 <a @click="verProductos(record.carritos)">Ver productos</a>
@@ -124,6 +124,57 @@
                         </template>
                     </template>
                 </a-table>
+                <div v-else-if="rol == 'MANAGER' || rol == 'EMPLEADO' && Reportes.length && productoReporte != null > 0"
+                    class="w-full bg-white p-4 rounded-xl ml-4 space-y-4">
+                    <div class="w-full flex items-center justify-between">
+                        <p>Reportes</p>
+                        <div class="space-x-2">
+                            <a-button type="primary" @click="descargarCSV">
+                                Csv
+                            </a-button>
+                            <a-button style="background-color: #f40f02; color: white;" @click="descargarPDF">
+                                <FilePdfOutlined />
+                                Pdf
+                            </a-button>
+                            <a-button style="background-color: #1d6f42; color: white;" @click="descargarExcel">
+                                <FileExcelOutlined />
+                                Excel
+                            </a-button>
+                            
+                        </div>
+                    </div>
+                    
+                    <a-card style="width: 100%">
+                        <div class="flex justify-between">
+                            <p>Generado en la ultima semana</p>
+                            <p>${{ Reportes[0] }}</p>
+                        </div>
+                    </a-card>
+                    <a-card style="width: 100%">
+                        <div class="flex justify-between">
+                            <p>Generado el mes pasado</p>
+                            <p>${{ Reportes[1] }}</p>
+                        </div>
+                    </a-card>
+                    <a-card style="width: 100%">
+                        <div class="flex justify-between">
+                            <p>Metodo de pago favorito</p>
+                            <p>{{ Reportes[2] }}</p>
+                        </div>
+                    </a-card>
+                    <a-card style="width: 100%">
+                        <div class="flex justify-between">
+                            <p>Producto mas vendido</p>
+                            <p>{{ productoTitulo }}(Cantidad:{{ cantidadProducto }})</p>
+                        </div>
+                    </a-card>
+                    <a-card style="width: 100%">
+                        <div class="flex justify-between">
+                            <p>Metodo de envio favorito</p>
+                            <p>{{ Reportes[4] }}</p>
+                        </div>
+                    </a-card>
+                </div>
 
             </div>
         </a-space>
@@ -137,8 +188,12 @@ import { ref, onMounted, h, reactive } from 'vue';
 import OrdenDeCompraController from '../../services/OrdenDeCompraController';
 import ReclamosController from '../../services/ReclamosController'
 import AuthController from '../../services/AuthController';
-import { LoadingOutlined } from '@ant-design/icons-vue';
+import EmpresaController from '../../services/EmpresasController'
+import { LoadingOutlined,FileExcelOutlined,FilePdfOutlined  } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+
 
 const idUsuario = ref(sessionStorage.getItem('idUsuario'));
 const empresaId = ref(sessionStorage.getItem('empresaId'))
@@ -174,7 +229,7 @@ const indicator = h(LoadingOutlined, {
 const columns = [
     {
         title: 'Fecha',
-        dataIndex: 'fecha',
+        dataIndex: 'fechaFormateada',
         width: '10%'
     },
     {
@@ -183,13 +238,18 @@ const columns = [
         width: '10%'
     },
     {
-        title: 'Direccion',
+        title: 'Direccion de envío',
         dataIndex: 'direccionDeEnvio',
         width: '10%'
     },
     {
+        title: 'Sucursal de retiro',
+        dataIndex: 'sucursal',
+        width: '10%'
+    },
+    {
         title: 'Fecha estimada de entrega',
-        dataIndex: 'fechaEstimadaEntrega',
+        dataIndex: 'fechaEntregaFormateada',
         width: '10%'
     },
     {
@@ -203,7 +263,7 @@ const columns = [
         width: '10%'
     },
     {
-        title: 'Action',
+        title: '',
         key: 'action',
         width: '15%'
     },
@@ -212,19 +272,54 @@ const data = ref([]);
 const reclamoAsociado = [];
 const productosAsociados = ref([]);
 const infoUser = ref(null);
+const Reportes = ref([]);
+const cantidadProducto = ref()
+const productoReporte = ref(null)
+const productoTitulo = ref('')
 
 const cargarOrdenes = () => {
     loading.value = true
+
+if (rol.value == 'USER') {
     OrdenDeCompraController.getOrdenByUserId(idUsuario.value)
         .then((response) => {
             console.log(response)
             data.value = response.data.filter(item => item.estadoOrden != 'activo').reverse()
+            data.value.forEach((item) => {
+                item.fechaFormateada = formatearFecha(item.fecha);
+                item.fechaEntregaFormateada = formatearFecha(item.fechaEstimadaEntrega);
+                item.sucursal = item.sucursalAsociada ? item.sucursalAsociada.nombre : '-';
+                console.log(item);
+            })
             loading.value = false;
         })
         .catch((error) => {
             loading.value = false;
             console.error('Error al obtener la lista de prductos:', error);
         });
+    } else if (rol.value == 'MANAGER' || rol.value == 'EMPLEADO') {
+        EmpresaController.getReportes(empresaId.value)
+            .then((response) => {
+                console.log(response.data[3])
+                Reportes.value = response.data
+                const string = response.data[3]
+                const partes = string.split(':');
+                productoTitulo.value = partes[0].trim();
+                cantidadProducto.value = partes[1].trim();
+
+                loading.value = false;
+            })
+            .catch((error) => {
+                loading.value = false;
+                console.error('Error al obtener la lista de prductos:', error);
+            });
+    }
+}
+
+const formatearFecha = (date) => {
+    const fecha = new Date(date);
+    const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
+    return fecha.toLocaleDateString('es-ES', opcionesFormato);  
 }
 
 const cargarInfoUser = () => {
@@ -264,13 +359,12 @@ const reclamoOk = () => {
     confirmLoading.value = true
 
     const data = {
-        id: 0,
         descripcion: descripcionReclamo.value,
         fecha: new Date(),
-        empresaId: empresaId,
+        empresaId: empresaId.value,
         ocId: idOrden.value
     }
-
+    console.log(data);
     ReclamosController.createReclamo(data)
         .then(() => {
             confirmLoading.value = false;
@@ -280,7 +374,7 @@ const reclamoOk = () => {
         .catch((error) => {
             confirmLoading.value = false;
             open.value = false
-            console.error('Error al obtener la lista de prductos:', error);
+            console.error('Error al ingresar reclamo:', error);
         });
 }
 
@@ -324,6 +418,97 @@ const onFinishPass = () => {
             openPassInfo.value = false
         });
 };
+
+const descargarExcel = () => {
+  // Datos que deseas incluir en el archivo Excel (ajusta según tus necesidades)
+  const datos = [
+    ['Este Mes', 'Mes pasado', 'Metodo de pago preferido', 'Producto mas vendido', 'Medio de envio preferido'],
+    [Reportes.value[0], Reportes.value[1], Reportes.value[2], productoTitulo.value+'('+ cantidadProducto.value +')', Reportes.value[4]],
+  ];
+
+  // Crear un objeto de libro de Excel
+  const libro = XLSX.utils.book_new();
+  const hoja = XLSX.utils.aoa_to_sheet(datos);
+
+  // Agregar la hoja al libro
+  XLSX.utils.book_append_sheet(libro, hoja, 'Hoja1');
+
+  // Convertir el libro a un archivo binario
+  const arrayBytes = XLSX.write(libro, { bookType: 'xlsx', type: 'array' });
+    const archivoBinario = new Blob([arrayBytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+  // Crear un enlace de descarga y simular clic
+  const enlaceDescarga = document.createElement('a');
+  enlaceDescarga.href = window.URL.createObjectURL(archivoBinario);
+  enlaceDescarga.download = 'Reporte_Ventas.xlsx';
+  document.body.appendChild(enlaceDescarga);
+  enlaceDescarga.click();
+  document.body.removeChild(enlaceDescarga);
+};
+
+const descargarPDF = () => {
+  // Datos que deseas incluir en el archivo PDF (ajusta según tus necesidades)
+  const datos = [
+    ['Este Mes', Reportes.value[0]],
+    ['Mes pasado', Reportes.value[1]],
+    ['Metodo de pago preferido', Reportes.value[2]],
+    ['Producto mas vendido', `${productoTitulo.value} (${cantidadProducto.value})`],
+    ['Medio de envio preferido', Reportes.value[4]],
+  ];
+
+  // Crear un objeto de documento PDF
+  const pdf = new jsPDF();
+
+  // Configurar estilos y posición
+  const margen = 10;
+  const espacioLinea = 12;
+  const fontSizeTitulo = 16;
+  const fontSizeCuerpo = 12;
+  const colorTitulo = '#3498db';
+  const colorCuerpo = '#333';
+
+  // Agregar encabezado
+  pdf.setFontSize(fontSizeTitulo);
+  pdf.setTextColor(colorTitulo);
+  pdf.text('Informe Mensual', margen, margen);
+
+  // Agregar datos al documento
+  pdf.setFontSize(fontSizeCuerpo);
+  pdf.setTextColor(colorCuerpo);
+  datos.forEach((fila, index) => {
+    const x = margen;
+    const y = margen + (index + 2) * espacioLinea;
+    pdf.text(`${fila[0]}: ${fila[1]}`, x, y);
+  });
+
+  // Guardar o abrir el archivo
+  pdf.save('informe_mensual.pdf');
+};
+
+function descargarCSV() {
+  // Datos que deseas incluir en el archivo CSV (ajusta según tus necesidades)
+  const datos = [
+    ['Este Mes', Reportes.value[0]],
+    ['Mes pasado', Reportes.value[1]],
+    ['Metodo de pago preferido', Reportes.value[2]],
+    ['Producto mas vendido', `${productoTitulo.value} (${cantidadProducto.value})`],
+    ['Medio de envio preferido', Reportes.value[4]],
+  ];
+
+  // Convertir datos a formato CSV
+  const csvContent = datos.map(row => row.join(',')).join('\n');
+
+  // Crear un Blob con el contenido CSV
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+  // Crear un enlace de descarga y simular clic
+  const enlaceDescarga = document.createElement('a');
+  enlaceDescarga.href = window.URL.createObjectURL(blob);
+  enlaceDescarga.download = 'informe_mensual.csv';
+  document.body.appendChild(enlaceDescarga);
+  enlaceDescarga.click();
+  document.body.removeChild(enlaceDescarga);
+}
 
 onMounted(() => {
     cargarInfoUser()

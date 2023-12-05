@@ -61,14 +61,15 @@ namespace WebAPI.Controllers
             
         }
 
+
         [ProducesResponseType(typeof(Empresa), 200)]
         [HttpPost]
         public IActionResult Post([FromBody] Empresa e)
         {
             try
             {
-                _bl.Insert(e);
-                return Ok();
+                return Ok(_bl.Insert(e));
+                
             }
             catch (Exception ex)
             {
@@ -76,8 +77,6 @@ namespace WebAPI.Controllers
             }
             
         }
-        
-
 
         // PUT api/<EmpresaController>
         [HttpPut]

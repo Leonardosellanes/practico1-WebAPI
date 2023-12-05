@@ -17,7 +17,7 @@
         <a-modal v-model:open="openViewReclamo" title="Informacion del reclamo" :footer="null">
             <a-space direction="vertical" style="width: 100%;">
                 <a-card>
-                    Fecha: {{ reclamoAsociado.value.fecha }} <br />
+                    Fecha: {{ formatearFecha (reclamoAsociado.value.fecha) }} <br />
                 </a-card>
                 <a-card>
                     Descripcion: {{ reclamoAsociado.value.descripcion }} <br />
@@ -72,7 +72,7 @@ const retirar =ref(false)
 const columns = [
     {
         title: 'Fecha',
-        dataIndex: 'fecha',
+        dataIndex: 'fechaFormateada',
         width: '10%'
     },
     {
@@ -81,13 +81,18 @@ const columns = [
         width: '10%'
     },
     {
-        title: 'Direccion',
+        title: 'Dirección de envío',
         dataIndex: 'direccionDeEnvio',
         width: '10%'
     },
     {
+        title: 'Sucursal de retiro',
+        dataIndex: 'sucursal',
+        width: '10%'
+    },
+    {
         title: 'Fecha estimada de entrega',
-        dataIndex: 'fechaEstimadaEntrega',
+        dataIndex: 'fechaEntregaFormateada',
         width: '10%'
     },
     {
@@ -101,7 +106,7 @@ const columns = [
         width: '10%'
     },
     {
-        title: 'Action',
+        title: '',
         key: 'action',
         width: '15%'
     },
@@ -117,11 +122,17 @@ const cargarOrdenes = () => {
     OrdenDeCompraController.getOrdenByEmpresaId(empresaId.value)
         .then((response) => {
             data.value = response.data.filter(item => item.estadoOrden != 'activo')
+            data.value.forEach((item) => {
+                item.fechaFormateada = formatearFecha(item.fecha);
+                item.fechaEntregaFormateada = formatearFecha(item.fechaEstimadaEntrega);
+                item.sucursal = item.sucursalAsociada ? item.sucursalAsociada.nombre : '-';
+                console.log(item);
+            })
             loading.value = false;
         })
         .catch((error) => {
             loading.value = false;
-            console.error('Error al obtener la lista de prductos:', error);
+            console.error('Error al obtener la lista de ordenes:', error);
         });
 }
 
@@ -136,7 +147,9 @@ const verProductos = (data) => {
 };
 
 const CambiarEstado = (data) => {
-
+    if (data.estadoOrden == 'Preparado') {
+        checked.value = true;
+    }
     if (data.estadoOrden == 'Enviado') {
         checked.value = true;
         checked2.value = true;
@@ -166,6 +179,8 @@ const handleEstado = () => {
         estadoOrden.value = 'Retirar'
     } else if (checked2.value == true) {
         estadoOrden.value = 'Enviado'
+    } else if (checked.value == true) {
+        estadoOrden.value = 'Preparado'
     } else {
         checked.value = false;
         checked2.value = false;
@@ -183,7 +198,8 @@ const handleEstado = () => {
         total: selectedOrder.value.total,
         estadoOrden: estadoOrden.value,
         fecha: selectedOrder.value.fecha,
-        ClienteId: selectedOrder.value.clienteId
+        ClienteId: selectedOrder.value.clienteId,
+        sucursalId: selectedOrder.value.sucursalAsociada ? selectedOrder.value.sucursalAsociada.id : null
     }
     OrdenDeCompraController.editarOrden(data)
     .then(() => {
@@ -195,6 +211,12 @@ const handleEstado = () => {
             message.error('Ha ocurrido un error')
         });
 };
+
+const formatearFecha = (date) => {
+    const fecha = new Date(date);
+    const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
+    return fecha.toLocaleDateString('es-ES', opcionesFormato);  
+}
 
 const handleCancelEstado = () => {
         checked.value = false;
