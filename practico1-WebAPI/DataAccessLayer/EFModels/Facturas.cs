@@ -15,7 +15,7 @@ namespace DataAccessLayer.EFModels
         public int Id { get; set; }
 
         [Required]
-        public float TotalComisiones { get; set; } 
+        public decimal TotalComisiones { get; set; } 
 
         [Required]
         public DateTime FechaInicio { get; set; }

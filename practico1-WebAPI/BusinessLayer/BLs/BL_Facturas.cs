@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.IBLs;
 using DataAccessLayer.IDALs;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,11 @@ namespace BusinessLayer.BLs
         public Factura Get(int id)
         {
             return _facturas.GetById(id);
+        }
+
+        public Factura Generar(int id)
+        {
+            return _facturas.Generar(id);
         }
 
         public void Insert(Factura factura)

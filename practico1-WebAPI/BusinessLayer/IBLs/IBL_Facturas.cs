@@ -13,6 +13,8 @@ namespace BusinessLayer.IBLs
 
         Factura Get(int id);
 
+        public Factura Generar(int id);
+
         void Insert(Factura factura);
 
         void Update(Factura factura);

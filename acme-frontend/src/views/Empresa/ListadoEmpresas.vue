@@ -39,6 +39,8 @@
                           <span>
                               <a-button type="link" @click="verSucursales(record)">Ver Sucursales</a-button>
                               <a-divider type="vertical" />
+                              <a-button type="link" @click="generarFactura(record)">Generar factura</a-button>
+                              <a-divider type="vertical" />
                               <a-button type="link" @click="edit(record)">Editar</a-button>
                               <a-divider type="vertical" />
                               <a-space>
@@ -52,6 +54,11 @@
           </div>
       </div>
   </div>
+  <a-modal  v-model:open="verFactura" title="Factura">
+    <a-image :width="400" :height="400" style="object-fit: cover;"
+        :src="'data:image/png;base64,' + imageFactura" />
+
+  </a-modal>
 </template>
   
 <script>
@@ -61,6 +68,7 @@
     import { createVNode } from 'vue';
     import { Modal, message } from 'ant-design-vue';
     import { useRouter } from 'vue-router';
+    import ApiFacturas from '../../services/ApiFacturas';
 
     
     export default {
@@ -75,6 +83,8 @@
         id: 0,
         loading: true,
         router: useRouter(),
+        imageFactura: '',
+        verFactura: false,
 
         indicator: h(LoadingOutlined, {
             style: {
@@ -109,6 +119,7 @@
         obtenerEmpresas() {
             this.loading = true;
             EmpresasController.get().then((response) => {
+                console.log(response.data);
                 this.empresas = response.data
                   .map((e) => ({
                       key: e.id,
@@ -162,6 +173,26 @@
             this.openEditar = true;
         },
 
+        generarFactura(empresa){
+            EmpresasController.generarFactura(empresa.key).then((response) => {
+                if (response.status == 200){
+                    console.log(response);
+                    message.success('Factura generada');
+                    ApiFacturas.getFactura(response.data).then((response) => {
+                        console.log(response);
+                        if(response.status == 200){
+                            this.imageFactura = response.data;
+                            this.verFactura = true;
+                        }
+                    })
+                }else{
+                    message.error('Error al generar factura');
+                }
+            }).catch((error) => {
+                console.log(error);
+                message.error(error.response.data);
+            })
+        },
         showPromiseConfirm(empresa) {
             try {
                 Modal.confirm({

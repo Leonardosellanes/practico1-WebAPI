@@ -10,6 +10,7 @@ namespace DataAccessLayer.IDALs
     public interface IDAL_Facturas
     {
         Factura GetById(int id);
+        Factura Generar(int id);
         List<Factura> GetAll();
         void Insert(Factura factura);
         void Update(Factura factura);
