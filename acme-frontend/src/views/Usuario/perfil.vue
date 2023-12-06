@@ -21,7 +21,7 @@
                     </a-modal>
                     <a-modal v-model:open="openViewProducto" title="Productos" :footer="null">
                         <a-space direction="vertical" style="width: 100%;">
-                            <template v-for="product in productosAsociados.value">
+                            <template v-for="product in productosAsociados">
                                 <a-card style="width: 100%; margin-right: 16px;">
                                     <a-card-meta :title="product.pOs.titulo"
                                         :description="'$' + product.pOs.precio.toFixed(2)">
@@ -311,7 +311,7 @@ if (rol.value == 'USER') {
             })
             .catch((error) => {
                 loading.value = false;
-                console.error('Error al obtener la lista de prductos:', error);
+                console.error('Error al obtener las estadisticas:', error);
             });
     }
 }

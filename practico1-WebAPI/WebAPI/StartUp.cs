@@ -46,10 +46,9 @@ namespace WebAPI
             services.AddScoped<IDAL_Empresas, DAL_Empresas>();
             services.AddScoped<IBL_Empresas, BL_Empresas>();
             services.AddHostedService<EmailSenderBackgroundService>();
-            services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<EmailConfiguration>(Configuration.GetSection("EmailConfiguration"));
-
-
+            services.AddTransient<IEmailSender, EmailSender>();
+            
 
         }
 

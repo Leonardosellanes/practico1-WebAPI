@@ -62,7 +62,10 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const isLoggedIn = ref(false); // Asegúrate de obtener este valor de tu estado de autenticación
 const name = ref('');
-// ... (otros campos)
+const lname = ref('')
+const email = ref('')
+const password = ref('')
+const shipAddress = ref('')
 const empresasSelected = ref('');
 const empresas = ref([]);
 const options = ref([]);
@@ -92,7 +95,10 @@ const loadEmpresas = () => {
 const submitRegistroCliente = () => {
   const data = {
     name: name.value,
-    // ... (otros campos)
+    lName: lname.value,
+    shipAddress: shipAddress.value,
+    password: password.value,
+    email: email.value,
     empresaId: empresasSelected.value
   };
 

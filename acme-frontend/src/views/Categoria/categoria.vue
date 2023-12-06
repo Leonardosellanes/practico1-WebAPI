@@ -98,7 +98,7 @@ const empresaId = ref(sessionStorage.getItem('empresaId'))
 
 const cargarCategorias = () => {
     loading.value = true
-    CategoriaController.getCategorias(empresaId)
+    CategoriaController.getCategorias(empresaId.value)
         .then((response) => {
             data.value = response.data
                 .map((categoria) => ({
