@@ -26,7 +26,7 @@
 import axios from 'axios';
 import { ref, watch } from 'vue';
 import { useStore } from 'vuex';
-
+import { message } from 'ant-design-vue';
 
 import { useRouter } from 'vue-router';
 
@@ -45,17 +45,16 @@ export default {
         const router = useRouter();
         const empresaId = store.state.empresaId; // Obtén el ID de la empresa del estado de Vuex
 
-        const response = await axios.post('/api/registro/empleado', {
+        await axios.post('/api/registro/empleado', {
           name: this.name,
           email: this.email,
           empresaId: empresaId, // Asigna el ID de la empresa al empleado
           // ... otros campos del formulario para el empleado
         });
 
-        console.log('Registro de empleado exitoso:', response.data);
         router.push('/registro-exitoso');
       } catch (error) {
-        console.error('Error al registrar empleado:', error);
+        message.error('Error al registrar empleado');
       }
     },
   },
@@ -64,15 +63,6 @@ export default {
     const isLoggedIn = ref(false);
     const router = useRouter();
 
-  /*onMounted(() => {
-  isLoggedIn = store.getters.isAuthenticated;
-  if (!store.getters.isAuthenticated) {
-  router.push('/');
-}
-  if (isLoggedIn) {
-    router.push('/Home');
-  }
-});*/
     return {
       isLoggedIn,
     };

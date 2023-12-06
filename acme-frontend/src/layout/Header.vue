@@ -169,51 +169,6 @@ const itemsAdmin = ref([
   }
 ]);
 
-
-// const canViewItem = (item) => {
-
-//   console.log('Item:', item);
-//   console.log('isLoggedIn:', isLoggedIn.value);
-
-//   // Si el elemento requiere inicio de sesión y el usuario no está logeado, no se muestra
-//   if (item.showWhenLoggedIn && !isLoggedIn.value) {
-//     console.log('No se muestra porque el usuario no está conectado.');
-//     return false;
-//   }
-
-//   // Si el elemento tiene roles especificados
-//   if (item.rol && item.rol.length > 0) {
-//     const userRoles = sessionStorage.getItem('rol') || ''; // Si 'rol' es null o undefined, se establece como una cadena vacía
-//     console.log('Roles permitidos:', item.rol);
-//     console.log('Roles del usuario:', userRoles);
-
-//     // Verifica si el usuario tiene al menos uno de los roles especificados
-//     const canView = item.rol.some(role => userRoles.includes(role));
-//     console.log('Se muestra:', canView);
-
-//     return canView;
-//   }
-
-//   // Si no hay restricciones de roles y el elemento no requiere inicio de sesión, se muestra
-//   if (!item.showWhenLoggedIn) {
-//     console.log('Se muestra porque no hay restricciones de roles.');
-//     return true;
-//   }
-
-//   // En cualquier otro caso, no se muestra
-//   console.log('No se muestra por alguna razón no identificada.');
-//   return false;
-// };
-
-// watch(
-//   () => sessionStorage.getItem('idUsuario'),
-//   (newValue) => {
-//     isLoggedIn.value = newValue !== null;
-//   }
-// );
-
-console.log(rol.value)
-
 const handleAuthentication = () => {
   if (isLoggedIn.value) {
     store.commit('clearToken');

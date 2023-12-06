@@ -59,7 +59,6 @@
                     label: this.nombre,
                     map: map,
                 });
-                console.log(marker);
                 this.marker = marker;
                 this.$emit('actualizar-coordenadas', { latitud: location.lat(), longitud: location.lng() });
             },

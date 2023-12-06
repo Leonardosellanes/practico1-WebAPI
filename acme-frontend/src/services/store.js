@@ -63,10 +63,3 @@ export default createStore({
     userRole: state => state.rol,
   }, // uso: const isAuthenticated = store.getters.isAuthenticated;
 });
-
-/*<script setup>
-import { useStore } from 'vuex';
-
-const store = useStore();
-const token = store.state.token;
-</script>LLamado*/

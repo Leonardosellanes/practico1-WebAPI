@@ -126,7 +126,6 @@ const cargarOrdenes = () => {
                 item.fechaFormateada = formatearFecha(item.fecha);
                 item.fechaEntregaFormateada = formatearFecha(item.fechaEstimadaEntrega);
                 item.sucursal = item.sucursalAsociada ? item.sucursalAsociada.nombre : '-';
-                console.log(item);
             })
             loading.value = false;
         })

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoggedIn" class="max-w-md mx-auto bg-white p-8 border rounded-md text-center flex flex-col ">
+  <div v-if="!isLoggedIn" class="max-w-md mx-auto bg-white p-8 border rounded-md text-center flex flex-col">
    
       <h1 class="text-3xl font-semibold mb-8">Registro Acme</h1>
 

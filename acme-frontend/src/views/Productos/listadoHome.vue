@@ -58,11 +58,6 @@ const indicator = h(LoadingOutlined, {
 });
 const searchText = ref("");
 
-
-const onSelect = option => {
-    console.log('select', option);
-};
-
 const cargarProductos = () => {
     loading.value = true;
     EmpresasController.getById(empresaId.value)

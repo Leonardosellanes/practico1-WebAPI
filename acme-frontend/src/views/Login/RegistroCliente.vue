@@ -104,7 +104,6 @@ const submitRegistroCliente = () => {
 
   AuthController.createCliente(data)
     .then((response) => {
-      console.log('Registro de cliente exitoso:', response.data);
       router.push('/Home');
     })
     .catch((error) => {
