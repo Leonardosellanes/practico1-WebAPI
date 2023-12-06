@@ -7,9 +7,11 @@ using DataAccessLayer.IDALs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebAPI;
+using WebAPI.Models;
 
 Console.WriteLine("################################################################");
 Console.WriteLine("# Init Main                                                   #");
@@ -122,6 +124,10 @@ try
 
     builder.Services.AddTransient<IDAL_CarritoProducto, DAL_CarritoProducto>();
     builder.Services.AddTransient<IBL_CarritoProducto, BL_CarritoProducto>();
+
+    //builder.Services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
+
+    //builder.Services.AddTransient<IEmailSender, EmailSender>();
 
     var app = builder.Build();
 
