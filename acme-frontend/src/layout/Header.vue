@@ -156,13 +156,6 @@ const itemsEmpleado = ref([
     onClick: () => {
       router.push('/Reclamos');
     },
-  },
-  {
-    key: 'Sucursales',
-    label: 'Sucursales',
-    onClick: () => {
-      router.push(`/Sucursales/${empresaId.value}`);
-    },
   }
 ]);
 

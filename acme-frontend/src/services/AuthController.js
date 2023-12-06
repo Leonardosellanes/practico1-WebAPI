@@ -5,7 +5,7 @@ export default{
     createCliente(body){
         return axios.post("Auth/RegisterCliente", body);
     },
-
+  
     createManager(body){
         return axios.post('Auth/RegisterAdmin', body)
     },
