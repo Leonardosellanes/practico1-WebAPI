@@ -240,7 +240,6 @@ export default{
                         const opcionesFormato = { year: 'numeric', month: 'numeric', day: 'numeric' };            
                         this.fechaEntrega = fecha.toLocaleDateString('es-ES', opcionesFormato);                       
                     }
-                    console.log(this.dataCarrito);
                 }else{
                     message.error('Error al obtener carrito');
                 }
@@ -259,7 +258,6 @@ export default{
 
         guardarCant(item){
             CarritoController.editProductoCarrito(item).then((response) => {
-                console.log(response);
                 if (response.status == 200){
                     this.enableCant = false;
                     this.getCarrito();
@@ -314,7 +312,6 @@ export default{
             })
         },
         seleccionarSucursal(sucursal){
-            console.log(sucursal);
             this.auxSucursal = sucursal;
         },
 
@@ -342,9 +339,7 @@ export default{
             this.dataCarrito.total = this.totalProductos + this.costoEnvio;          
             this.dataCarrito.fecha = new Date().toISOString();
             
-            console.log(this.dataCarrito);
             CarritoController.actualizarOrden(this.dataCarrito).then((response) =>{
-                console.log(response);
                 if(response.status == 200){
                     this.moduloPago = true;
                 }

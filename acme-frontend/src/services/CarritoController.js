@@ -14,7 +14,6 @@ export default {
             pOs: {},
             ocId: idOrden
         };
-        console.log(body);
         return axios.post("CarritoProducto", body)
     },
 
@@ -27,7 +26,6 @@ export default {
     },
 
     actualizarOrden(orden){
-       console.log(orden);
         const body = {
             id: orden.id,
             medioDePago:orden.medioDePago,
@@ -39,7 +37,6 @@ export default {
             ClienteId: sessionStorage.getItem('idUsuario'),
             sucursalId: orden.sucursalId
         }
-        console.log( body);
         return axios.put("OC", body);
     }
 

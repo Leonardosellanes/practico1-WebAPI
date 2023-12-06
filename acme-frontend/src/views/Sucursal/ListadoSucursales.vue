@@ -7,7 +7,7 @@
               <a-modal v-model:open="open" title="Agregar Sucursal" :confirm-loading="confirmLoading" @ok="handleOk">
                 <a-divider type="horizontal" />
                     <a-space direction="vertical" style="width: 100%;">
-                        <a-input v-model:value="nombre" placeholder="Nombre" />
+                        <a-input v-model:value="nombre" placeholder="Nombre" :status="error"/>
                         <label>Tiempo de entrega (dias)</label>
                         <a-input v-model:value="tiempoEntrega" type="numeric" />
                         <mapaIngreso :latitud="latitud" :longitud="longitud" :nombre="nombre"
@@ -17,9 +17,9 @@
                             <a-input v-model:value="latitud" placeholder="Latitud" />
                             <a-input v-model:value="longitud" placeholder="Longitud" />
                         </a-space>
-                      
                     </a-space>
               </a-modal>
+              
               <a-modal v-model:open="openEditar" title="Editar Sucursal" :confirm-loading="confirmLoading"
                   @ok="handleEditOk">
                   <a-divider type="horizontal" />
@@ -73,7 +73,7 @@
 <script>
     import EmpresasController from '../../services/EmpresasController';
     import SucursalesController from '../../services/SucursalesController';
-    import { h } from 'vue';
+    import { h,ref } from 'vue';
     import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
     import { createVNode } from 'vue';
     import { Modal, message } from 'ant-design-vue';
@@ -90,7 +90,7 @@
         openEditar: false,
         confirmLoading: false,
         nombre: '',
-        latitud: '',
+        latitud: '' ,
         longitud: '',
         ubicacion: '',
         tiempoEntrega: 0,
@@ -98,8 +98,8 @@
         loading: true,
         router: useRouter(),        
         route: useRoute(),
-
-        ubicacionMapa: { lat: -34.901113, lng: -56.164531 },
+        error: ref(''),
+        ubicacionMapa: { lat: -34.90112055483398, lng: -56.16453648222562 },
 
         indicator: h(LoadingOutlined, {
             style: {
@@ -162,7 +162,7 @@
         },
 
         showModal(){
-            this.ubicacionMapa = { lat: -34.901113, lng: -56.164531 };
+            this.ubicacionMapa = { lat: -34.90112055483398, lng: -56.16453648222562 };
             this.nombre = '';
             this.ubicacion = '';
             this.latitud = '';
@@ -172,6 +172,11 @@
         },
 
         handleOk(){
+           
+            if (this.nombre == '') {
+                this.error = 'error'
+                return
+            }
             this.confirmLoading = true;
             const body = {
                 nombre: this.nombre,
@@ -185,6 +190,7 @@
                     this.open = false;
                     this.confirmLoading = false;
                     this.buscarEmpresa(this.empresa.id);
+                    this.error = ''
                 })
                 .catch((error) => {
                     console.error('Error al crear sucursal:', error);
@@ -192,6 +198,10 @@
         },
 
         handleEditOk(){
+            if (this.nombre == '') {
+                this.error = 'error'
+                return
+            }
             this.confirmLoading = true;
             const body = {
                 id: this.id,
@@ -206,6 +216,7 @@
                     this.openEditar = false;
                     this.confirmLoading = false;
                     this.buscarEmpresa();
+                    this.error = ''
                 })
                 .catch((error) => {
                     console.error('Error al editar sucursal:', error);

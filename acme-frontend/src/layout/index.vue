@@ -13,23 +13,9 @@
 import { ref, onMounted } from 'vue';
 import { RouterView } from 'vue-router';
 import Header from './Header.vue';
-import ProductosController from '../services/ProductosController';
 
-const data = ref([])
 
-const cargarProductos = () => {
-    const dataProductos = ProductosController.getProductos()
-        .then((response) => {
-            data.value = response.data.reverse();
-        })
-        .catch((error) => {
-            console.error('Error al obtener la lista de categorias:', error);
-        });
-}
 
-onMounted(() => {
-    cargarProductos()
-});
 </script>
 
 <style lang="scss" scoped>

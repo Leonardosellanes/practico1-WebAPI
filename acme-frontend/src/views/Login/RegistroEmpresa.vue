@@ -70,7 +70,6 @@ const submitForm = () => {
   try {
     EmpresasController.create(empresa.value.nombre, empresa.value.rut).then((response) => {
       if(response.status == 200){
-        console.log(response);
         const empresaId = response.data.id;
         const body = {
           empresaId: empresaId,
@@ -80,7 +79,6 @@ const submitForm = () => {
           password: admin.value.password
         }
         AuthController.createManager(body).then((response) => {
-          console.log(response);
           if(response.status == 200){
             router.push('/login');
           }
@@ -94,7 +92,7 @@ const submitForm = () => {
     })
 
   } catch (error) {
-    console.error('Error al registrar empresa y administrador:', error);
+    message.error('Error al registrar empresa y administrador');
   }
 };
 
