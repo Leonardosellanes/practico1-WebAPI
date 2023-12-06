@@ -9,7 +9,11 @@ export default {
     },
 
     getById(id) {
-        return axios.get('Empresa/'+1);
+        return axios.get('Empresa/'+ id);
+    },
+
+    getReportes(id) {
+        return axios.get('Empresa/Reportes/' + id);
     },
 
     create(nombre, rut) {
