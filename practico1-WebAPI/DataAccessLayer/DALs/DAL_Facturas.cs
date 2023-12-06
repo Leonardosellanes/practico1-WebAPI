@@ -82,16 +82,18 @@ namespace DataAccessLayer.DALs
                 .LastOrDefault();
 
             decimal totalSum = 0;
-            DateTime fecha;
+            DateTime fecha = new DateTime();
             if ( factura == null)
             {
                 totalSum = _dbContext.OC
                 .Where(oc => oc.EmpresaId == id)
                 .Sum(oc => oc.Total);
-
-                fecha = _dbContext.OC
-                        .Where(oc => oc.EmpresaId == id && oc.Fecha != DateTime.MinValue)
-                        .FirstOrDefault().Fecha;
+                if (totalSum != 0)
+                {
+                    fecha = _dbContext.OC
+                            .Where(oc => oc.EmpresaId == id && oc.Fecha != DateTime.MinValue)
+                            .FirstOrDefault().Fecha;
+                }
 
             } else
             {
@@ -102,29 +104,34 @@ namespace DataAccessLayer.DALs
                 .Where(oc => oc.Fecha > fecha)
                 .Sum(oc => oc.Total);
             }
-
-            decimal porcentaje = totalSum * 0.10m;
-
-            Facturas nueva = new Facturas
+            if (totalSum != 0)
             {
-                TotalComisiones = porcentaje,
-                FechaInicio = fecha,
-                FechaFin = DateTime.Now,
-                EmpresaId = id
-            };
+                decimal porcentaje = totalSum * 0.10m;
 
-            _dbContext.Add(nueva);
-            _dbContext.SaveChanges();
+                Facturas nueva = new Facturas
+                {
+                    TotalComisiones = porcentaje,
+                    FechaInicio = fecha,
+                    FechaFin = DateTime.Now,
+                    EmpresaId = id
+                };
 
-            return new Factura
+                _dbContext.Add(nueva);
+                _dbContext.SaveChanges();
+
+                return new Factura
+                {
+                    Id = nueva.Id,
+                    TotalComisiones = nueva.TotalComisiones,
+                    FechaInicio = nueva.FechaInicio,
+                    FechaFin = nueva.FechaFin,
+                    EmpresaId = nueva.EmpresaId
+                };
+            }
+            else
             {
-                Id = nueva.Id,
-                TotalComisiones = nueva.TotalComisiones,
-                FechaInicio = nueva.FechaInicio,
-                FechaFin = nueva.FechaFin,
-                EmpresaId = nueva.EmpresaId
-            };
-            
+                throw new Exception("No se encontraron ordenes");
+            }
                    
         }
 

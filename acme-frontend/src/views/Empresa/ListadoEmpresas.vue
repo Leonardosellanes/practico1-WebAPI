@@ -173,6 +173,9 @@
                 }else{
                     message.error('Error al generar factura');
                 }
+            }).catch((error) => {
+                console.log(error);
+                message.error(error.response.data);
             })
         },
         showPromiseConfirm(empresa) {
