@@ -39,6 +39,8 @@
                           <span>
                               <a-button type="link" @click="verSucursales(record)">Ver Sucursales</a-button>
                               <a-divider type="vertical" />
+                              <a-button type="link" @click="generarFactura(record)">Generar factura</a-button>
+                              <a-divider type="vertical" />
                               <a-button type="link" @click="edit(record)">Editar</a-button>
                               <a-divider type="vertical" />
                               <a-space>
@@ -109,6 +111,7 @@
         obtenerEmpresas() {
             this.loading = true;
             EmpresasController.get().then((response) => {
+                console.log(response.data);
                 this.empresas = response.data
                   .map((e) => ({
                       key: e.id,
@@ -162,6 +165,16 @@
             this.openEditar = true;
         },
 
+        generarFactura(empresa){
+            EmpresasController.generarFactura(empresa.key).then((response) => {
+                if (response.status == 200){
+                    console.log(response);
+                    message.success('Factura generada');
+                }else{
+                    message.error('Error al generar factura');
+                }
+            })
+        },
         showPromiseConfirm(empresa) {
             try {
                 Modal.confirm({

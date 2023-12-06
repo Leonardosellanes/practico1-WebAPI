@@ -48,6 +48,10 @@ export default {
 
     deleteEmpleado(id){
         return axios.delete('Personas/'+id);
+    },
+
+    generarFactura(id){
+        return axios.get('Factura/generar/'+id);
     }
 
 }
