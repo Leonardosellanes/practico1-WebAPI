@@ -107,6 +107,7 @@ namespace WebAPI.Controllers
 
                 if (orden.EstadoOrden == "Entregado")
                 {
+
                     var emailSender = HttpContext.RequestServices.GetRequiredService<IEmailSender>();
                     await emailSender.SendOrderConfirmationAsync("pedritodiestro@gmail.com", orden);
                 }
