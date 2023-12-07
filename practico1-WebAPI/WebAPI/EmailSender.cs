@@ -9,7 +9,6 @@ namespace WebAPI
     public class EmailSender : IEmailSender
     {
         private readonly EmailConfiguration _emailConfiguration;
-        private readonly IEmailSender _emailSender;
 
         public EmailSender(IOptions<EmailConfiguration> emailConfiguration)
         {
@@ -28,7 +27,6 @@ namespace WebAPI
                     From = new MailAddress(_emailConfiguration.SmtpUsername),
                     Subject = subject,
                     Body = body,
-                    IsBodyHtml = true
                 };
 
                 mailMessage.To.Add(toEmail);
@@ -39,13 +37,10 @@ namespace WebAPI
 
         public async Task SendOrderConfirmationAsync(string toEmail, Orden orden)
         {
-            // Lógica para construir el cuerpo del correo con los detalles de la orden
+            
             var subject = "Confirmación de Orden";
             var body = $"Gracias por tu orden. Detalles de la orden: {orden}";
-
-            // Enviar el correo electrónico
-            await _emailSender.SendEmailAsync(toEmail, subject, body);
+            await SendEmailAsync(toEmail, subject, body);
         }
-    
     }
 }
