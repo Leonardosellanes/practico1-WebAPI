@@ -75,16 +75,18 @@ namespace DataAccessLayer.DALs
 
         public Factura Generar(int id)
         {
+            Console.WriteLine("Hola" + id);
             Facturas factura = _dbContext.Facturas
-                .Include(e => e.EmpresaAsociada)
                 .Where(f => f.EmpresaId == id)
                 .OrderBy(f  => f.Id)
                 .LastOrDefault();
 
+            Console.WriteLine("pase el last" +  factura);
             decimal totalSum = 0;
             DateTime fecha = new DateTime();
             if ( factura == null)
             {
+                Console.WriteLine("Esto es una prueba de que no es null");
                 totalSum = _dbContext.OC
                 .Where(oc => oc.EmpresaId == id)
                 .Sum(oc => oc.Total);
@@ -97,15 +99,21 @@ namespace DataAccessLayer.DALs
 
             } else
             {
+                Console.WriteLine("Esto es una prueba de que es null - else");
                 fecha = factura.FechaFin;
 
                 totalSum = _dbContext.OC
                 .Where(oc => oc.EmpresaId == id)
                 .Where(oc => oc.Fecha > fecha)
                 .Sum(oc => oc.Total);
+
+                //Console.WriteLine("Valor de totalSum: " + totalSum);
+
             }
             if (totalSum != 0)
             {
+                Console.WriteLine(totalSum);
+                Console.WriteLine(totalSum.GetType());
                 decimal porcentaje = totalSum * 0.10m;
 
                 Facturas nueva = new Facturas

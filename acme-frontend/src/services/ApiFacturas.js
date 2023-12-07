@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const url = "http://localhost:5243/reporte";
+const url = "https://localhost:7030/reporte";
 
 export default {
     getFactura(factura) {
         const body = {
             fechaInicio: factura.fechaInicio,
             fechaFin: factura.fechaFin,
-            comisionesTotales: factura.comisionesTotales
+            totalComisiones: factura.totalComisiones.toString()
         };
         console.log(body);
         return axios.post(url, body);
