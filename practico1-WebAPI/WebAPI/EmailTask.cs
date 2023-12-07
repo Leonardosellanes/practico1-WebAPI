@@ -33,7 +33,7 @@ public class EmailSenderBackgroundService : BackgroundService
 
                 foreach (var orden in ordenes)
                 {
-                    if (orden != null && orden.EstadoOrden == "ACTIVA")
+                    if (orden != null && orden.EstadoOrden == "activo")
                     {
                         // Enviar el correo electrónico
                         await emailSender.SendEmailAsync("federicodn3@gmail.com", "Revisa tu Carrito!", "Tienes cosas en tu carrito por comprar");

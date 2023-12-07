@@ -316,6 +316,45 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("ChangePassword")]
+        [ProducesResponseType(typeof(StatusDTO), 200)]
+        //[Authorize] // No es necesario agregar [Authorize] ya que no estás utilizando la autenticación directamente en este método
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+        {
+            try
+            {
+                // Buscar el usuario por ID
+                ApplicationUser user = await userManager.FindByIdAsync(model.UserId);
+
+                // Verifica si el usuario existe y si la contraseña actual es correcta
+                if (user != null && await userManager.CheckPasswordAsync(user, model.OldPassword))
+                {
+                    // Cambia la contraseña del usuario
+                    var result = await userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+                    if (result.Succeeded)
+                    {
+                        return Ok(new StatusDTO(true, "Contraseña cambiada correctamente."));
+                    }
+                    else
+                    {
+                        // Maneja los errores si el cambio de contraseña no fue exitoso
+                        string errors = string.Join(". ", result.Errors.Select(x => x.Description));
+                        return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al cambiar la contraseña. Errores: " + errors));
+                    }
+                }
+                else
+                {
+                    return Unauthorized(new StatusDTO(false, "La contraseña actual es incorrecta o el usuario no existe."));
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al cambiar la contraseña. " + (ex.Message ?? "Mensaje de error nulo")));
+            }
+        }
+
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             string? JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET");

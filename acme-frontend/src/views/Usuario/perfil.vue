@@ -66,13 +66,19 @@
                         <a-space direction="vertical" style="width: 100%;">
                             <a-form :model="formPassword" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 14 }"
                                 style="margin-top: 10%;" autocomplete="off" @finish="onFinishPass">
+
+                                <a-form-item label="Actual Contraseña" name="actPassword"
+                                    :rules="[{ required: true, message: 'Ingrese la actual contraseña' }]">
+                                    <a-input-password v-model:value="formPassword.actPassword" />
+                                </a-form-item>
+
                                 <a-form-item label="Nueva Contraseña" name="password"
                                     :rules="[{ required: true, message: 'Ingrese la nueva contraseña' }]">
                                     <a-input-password v-model:value="formPassword.password" />
                                 </a-form-item>
 
                                 <a-form-item label="Repetir Contraseña" name="Verify"
-                                    :rules="[{ required: true, message: 'Repita la contraseña' }]">
+                                    :rules="[{ required: true, message: 'Repita la nueva contraseña' }]">
                                     <a-input-password v-model:value="formPassword.Verify" />
 
                                 </a-form-item>
@@ -215,8 +221,9 @@ const formEditar = reactive({
 })
 
 const formPassword = reactive({
+    actPassword: '',
     password: '',
-    Verify: ''
+    Verify: '',
 })
 const descripcionReclamo = ref('');
 const idOrden = ref();
@@ -405,10 +412,13 @@ const onFinishPass = () => {
         return
     }
     const data = {
-        password: formPassword.password
+        UserId: idUsuario.value,
+        OldPassword: formPassword.actPassword,
+        NewPassword: formPassword.password,
+        ConfirmPassword: formPassword.Verify
     }
 
-    AuthController.editUser(idUsuario.value, data)
+    AuthController.changePass(data)
         .then(() => {
             message.success('Contraseña actualizada')
             openPass.value = false

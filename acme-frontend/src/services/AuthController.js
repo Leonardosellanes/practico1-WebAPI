@@ -20,6 +20,9 @@ export default{
 
     editUser(id, body) {
         return axios.put("Personas/" + id, body)
-    }
+    },
 
+    changePass(body) {
+        return axios.post("Auth/ChangePassword", body);
+    }
 }
