@@ -4,6 +4,6 @@
     {
         public string FechaInicio { get; set; } = string.Empty;
         public string FechaFin { get; set; } = string.Empty;
-        public string ComisionesTotales { get; set; } = string.Empty;
+        public string totalComisiones { get; set; } = string.Empty;
     }
 }

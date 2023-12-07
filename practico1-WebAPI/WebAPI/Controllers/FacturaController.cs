@@ -58,7 +58,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+                return StatusCode(StatusCodes.Status100Continue, "Mensaje error:" + ex.Message);
             }
 
         }

@@ -12,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,7 +37,7 @@ app.MapPost("/reporte", (RequestData requestData) =>
 
     var fechaInicio = requestData.FechaInicio.ToString();
     var fechaFin = requestData.FechaFin.ToString();
-    var comisionesTotales = requestData.ComisionesTotales.ToString();
+    var comisionesTotales = requestData.totalComisiones.ToString();
 
     DateTime dt1 = DateTime.Now;
     DateTime dt2 = dt1;

@@ -129,7 +129,7 @@ namespace DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalComisiones = table.Column<float>(type: "real", nullable: false),
+                    TotalComisiones = table.Column<float>(type: "decimal", nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaFin = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EmpresaId = table.Column<int>(type: "int", nullable: false)
