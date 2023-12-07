@@ -104,14 +104,6 @@ namespace WebAPI.Controllers
             try
             {
                 _blOC.ActualizarOC(orden);
-
-                if (orden.EstadoOrden == "Entregado")
-                {
-
-                    var emailSender = HttpContext.RequestServices.GetRequiredService<IEmailSender>();
-                    await emailSender.SendOrderConfirmationAsync("pedritodiestro@gmail.com", orden);
-                }
-
                 return Ok("Orden actualizada exitosamente.");
             }
             catch (Exception ex)
