@@ -210,8 +210,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("TotalComisiones")
-                        .HasColumnType("real");
+                    b.Property<decimal>("TotalComisiones")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -229,7 +229,6 @@ namespace DataAccessLayer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ClienteId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DireccionDeEnvio")
@@ -615,9 +614,7 @@ namespace DataAccessLayer.Migrations
                 {
                     b.HasOne("DataAccessLayer.EFModels.ApplicationUser", "Cliente")
                         .WithMany("OCs")
-                        .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClienteId");
 
                     b.HasOne("DataAccessLayer.EFModels.Empresas", "EmpresaAsociada")
                         .WithMany()

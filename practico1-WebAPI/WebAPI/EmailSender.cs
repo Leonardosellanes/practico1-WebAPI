@@ -2,6 +2,7 @@
 using System.Net;
 using WebAPI.Models;
 using Shared;
+using Microsoft.Extensions.Options;
 
 namespace WebAPI
 {
@@ -9,9 +10,9 @@ namespace WebAPI
     {
         private readonly EmailConfiguration _emailConfiguration;
 
-        public EmailSender(EmailConfiguration emailConfiguration)
+        public EmailSender(IOptions<EmailConfiguration> emailConfiguration)
         {
-            _emailConfiguration = emailConfiguration;
+            _emailConfiguration = emailConfiguration.Value;
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string body)

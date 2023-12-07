@@ -13,8 +13,6 @@ export default {
                 direccion: dir
             }
         }
-        console.log(body);
         return axios.post(url, body);
-
     }
 }

@@ -2,6 +2,8 @@
 using FacturaMock.Models;
 using Newtonsoft.Json;
 using System.Globalization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(
+    options => options.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader()
+);
 }
 
 app.UseHttpsRedirection();

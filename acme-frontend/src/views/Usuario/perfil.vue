@@ -21,7 +21,7 @@
                     </a-modal>
                     <a-modal v-model:open="openViewProducto" title="Productos" :footer="null">
                         <a-space direction="vertical" style="width: 100%;">
-                            <template v-for="product in productosAsociados.value">
+                            <template v-for="product in productosAsociados">
                                 <a-card style="width: 100%; margin-right: 16px;">
                                     <a-card-meta :title="product.pOs.titulo"
                                         :description="'$' + product.pOs.precio.toFixed(2)">
@@ -290,13 +290,11 @@ const cargarOrdenes = () => {
 if (rol.value == 'USER') {
     OrdenDeCompraController.getOrdenByUserId(idUsuario.value)
         .then((response) => {
-            console.log(response)
             data.value = response.data.filter(item => item.estadoOrden != 'activo').reverse()
             data.value.forEach((item) => {
                 item.fechaFormateada = formatearFecha(item.fecha);
                 item.fechaEntregaFormateada = formatearFecha(item.fechaEstimadaEntrega);
                 item.sucursal = item.sucursalAsociada ? item.sucursalAsociada.nombre : '-';
-                console.log(item);
             })
             loading.value = false;
         })
@@ -307,7 +305,6 @@ if (rol.value == 'USER') {
     } else if (rol.value == 'MANAGER' || rol.value == 'EMPLEADO') {
         EmpresaController.getReportes(empresaId.value)
             .then((response) => {
-                console.log(response.data[3])
                 Reportes.value = response.data
                 const string = response.data[3]
                 const partes = string.split(':');
@@ -318,7 +315,7 @@ if (rol.value == 'USER') {
             })
             .catch((error) => {
                 loading.value = false;
-                console.error('Error al obtener la lista de prductos:', error);
+                console.error('Error al obtener las estadisticas:', error);
             });
     }
 }
@@ -335,7 +332,6 @@ const cargarInfoUser = () => {
         .then((response) => {
             infoUser.value = response.data
             loading.value = false;
-            console.log(infoUser.value)
             formEditar.name = response.data.name
             formEditar.lName = response.data.lName
             formEditar.address = response.data.address
@@ -371,7 +367,6 @@ const reclamoOk = () => {
         empresaId: empresaId.value,
         ocId: idOrden.value
     }
-    console.log(data);
     ReclamosController.createReclamo(data)
         .then(() => {
             confirmLoading.value = false;
@@ -386,7 +381,6 @@ const reclamoOk = () => {
 }
 
 const onFinish = () => {
-    console.log(formEditar.address)
     const data = {
         address: formEditar.address,
         name: formEditar.name,

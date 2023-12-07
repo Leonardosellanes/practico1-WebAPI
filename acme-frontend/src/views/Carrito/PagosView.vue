@@ -107,7 +107,6 @@ export default {
                 },
                 onApprove: (data, actions) => {
                     return actions.order.capture().then((details) => {
-                        console.log('Compra completada:', details);
                         this.carrito.estadoOrden = 'Pendiente';
                         this.carrito.medioDePago = 'Paypal';
                         CarritoController.actualizarOrden(this.carrito).then((response) => {
@@ -118,7 +117,6 @@ export default {
                     });
                 },
                 onError: (err) => {
-                    console.error('Error en el pago:', err);
                     message.error('Error al procesar el pago')
                 },
             }).render('#paypal-buttons');
@@ -148,7 +146,6 @@ export default {
                         })
                     }
                 }).catch((error) => {
-                    console.log(error);
                     message.error(error.response.data);
                 })
             } else {

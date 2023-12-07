@@ -37,7 +37,6 @@ const formData = ref({
   email: '',
   password: '',
 });
-const error = ref(null);
 const isLoggedIn = ref(store.getters.isAuthenticated);
 
 const login = () => {
@@ -48,7 +47,6 @@ const login = () => {
 
   AuthController.Login(data)
     .then((response) => {
-      console.log(response.data)
       const token = response.data
       store.commit('setToken', token);
       isLoggedIn.value = sessionStorage.getItem('idUsuario') != null
@@ -61,7 +59,6 @@ const login = () => {
       }
       formData.value.email = '';
       formData.value.password = '';
-      error.value = null;
     })
     .catch(() => {
       message.error('Credenciales incorrectas')

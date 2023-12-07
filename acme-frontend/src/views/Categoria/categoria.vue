@@ -98,7 +98,7 @@ const empresaId = ref(sessionStorage.getItem('empresaId'))
 
 const cargarCategorias = () => {
     loading.value = true
-    CategoriaController.getCategorias(empresaId)
+    CategoriaController.getCategorias(empresaId.value)
         .then((response) => {
             data.value = response.data
                 .map((categoria) => ({
@@ -178,7 +178,6 @@ const handleEditOk = () => {
     const foundCategory = options.value.find((opt) => opt.value == value.value);
     const key = foundCategory ? foundCategory.value : null;
 
-    console.log(key)
     const data = ref()
     if (nombre.value != '') {
         if (key == null) {

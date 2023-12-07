@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.EFModels;
 using DataAccessLayer.IDALs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -70,6 +71,68 @@ namespace DataAccessLayer.DALs
                         RUT = factura.EmpresaAsociada.RUT
                     }
                 };
+        }
+
+        public Factura Generar(int id)
+        {
+            Facturas factura = _dbContext.Facturas
+                .Include(e => e.EmpresaAsociada)
+                .Where(f => f.EmpresaId == id)
+                .OrderBy(f  => f.Id)
+                .LastOrDefault();
+
+            decimal totalSum = 0;
+            DateTime fecha = new DateTime();
+            if ( factura == null)
+            {
+                totalSum = _dbContext.OC
+                .Where(oc => oc.EmpresaId == id)
+                .Sum(oc => oc.Total);
+                if (totalSum != 0)
+                {
+                    fecha = _dbContext.OC
+                            .Where(oc => oc.EmpresaId == id && oc.Fecha != DateTime.MinValue)
+                            .FirstOrDefault().Fecha;
+                }
+
+            } else
+            {
+                fecha = factura.FechaFin;
+
+                totalSum = _dbContext.OC
+                .Where(oc => oc.EmpresaId == id)
+                .Where(oc => oc.Fecha > fecha)
+                .Sum(oc => oc.Total);
+            }
+            if (totalSum != 0)
+            {
+                decimal porcentaje = totalSum * 0.10m;
+
+                Facturas nueva = new Facturas
+                {
+                    TotalComisiones = porcentaje,
+                    FechaInicio = fecha,
+                    FechaFin = DateTime.Now,
+                    EmpresaId = id
+                };
+
+                _dbContext.Add(nueva);
+                _dbContext.SaveChanges();
+
+                return new Factura
+                {
+                    Id = nueva.Id,
+                    TotalComisiones = nueva.TotalComisiones,
+                    FechaInicio = nueva.FechaInicio,
+                    FechaFin = nueva.FechaFin,
+                    EmpresaId = nueva.EmpresaId
+                };
+            }
+            else
+            {
+                throw new Exception("No se encontraron ordenes");
+            }
+                   
         }
 
 

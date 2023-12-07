@@ -55,7 +55,6 @@ namespace WebAPI.Controllers
             {
                 ApplicationUser user = await userManager.FindByNameAsync(userName: model.Email);
 
-                Console.WriteLine($"User found///////////: {user != null}, UserName: {user.Email}, Password:{user.Id}");
                 // Si el usuario existe, está activo, no está bloqueado y la contraseña es correcta
                 if (user != null &&
                     !await userManager.IsLockedOutAsync(user) &&

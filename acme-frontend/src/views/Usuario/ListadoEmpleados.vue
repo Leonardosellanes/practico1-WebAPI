@@ -87,16 +87,6 @@ const columns = [
         dataIndex: 'email',
         width: '10%'
     },
-    /*{
-        title: 'Direccion',
-        dataIndex: 'address',
-        width: '10%'
-    },*/
-    /*{
-        title: 'Administrador',
-        key: 'isAdmin',
-        width: '10%'
-    },*/
     {
         title: '',
         key: 'action',
@@ -143,11 +133,12 @@ const modalDelete = (id) => {
                 await EmpresasController.deleteEmpleado(id)
                     .then(() => {
                         cargarEmpleados();
+                        message.success('Empleado eliminado exitosamente');
                     })
                     .catch((error) => {
                         console.error(error);
                     });
-                message.success('Empleado eliminado exitosamente');
+                
 
             } catch {
                 message.error('Ha ocurrido un error, intente nuevamente')
@@ -166,10 +157,11 @@ const onFinish = values => {
             open.value = false;
             confirmLoading.value = false;
             cargarEmpleados();
+            message.success('Empleado creado exitosamente');
         })
         .catch((error) => {
             confirmLoading.value = false;
-            console.error('Error al obtener la lista de empleados:', error);
+            message.error('Ha ocurrido un error, intente nuevamente');
         });
     }else{
         EmpresasController.updateEmpleado(selected.value, formState.email, formState.password, formState.name, formState.lName)
@@ -177,10 +169,11 @@ const onFinish = values => {
             open.value = false;
             confirmLoading.value = false;
             cargarEmpleados();
+            message.success('Empleado editado exitosamente');
         })
         .catch((error) => {
             confirmLoading.value = false;
-            console.error('Error al obtener la lista de empleados:', error);
+            message.error('Ha ocurrido un error, intente nuevamente');
         });
     }
 

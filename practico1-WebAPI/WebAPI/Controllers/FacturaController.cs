@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -47,6 +45,22 @@ namespace WebAPI.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
             }
             
+        }
+
+        // GET api/<FacturaController>/generar/5
+        [ProducesResponseType(typeof(Factura), 200)]
+        [HttpGet("generar/{id}")]
+        public IActionResult Generar(int id)
+        {
+            try
+            {
+                return Ok(_bl.Generar(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Mensaje error:" + ex.Message);
+            }
+
         }
 
         // POST api/<FacturaController>

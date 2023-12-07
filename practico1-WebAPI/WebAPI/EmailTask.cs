@@ -36,14 +36,14 @@ public class EmailSenderBackgroundService : BackgroundService
                     if (orden != null && orden.EstadoOrden == "activo")
                     {
                         // Enviar el correo electrónico
-                        await emailSender.SendEmailAsync("federicodn3@gmail.com", "Revisa tu Carrito!", "Tienes cosas en tu carrito por comprar");
+                        await emailSender.SendEmailAsync("pedritodiestro@gmail.com", "Revisa tu Carrito!", "Tienes cosas en tu carrito por comprar");
                         break;  // Si se encuentra una orden activa, puedes salir del bucle
                     }
                 }
             }
 
             // Espera 24 horas antes de ejecutar la tarea nuevamente
-            await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
         }
     }
 }
