@@ -37,7 +37,6 @@ namespace WebAPI
 
         public async Task SendOrderConfirmationAsync(string toEmail, Orden orden)
         {
-            
             var subject = "Confirmación de Orden";
             var body = $"Gracias por tu orden. Detalles de la orden: {orden}";
             await SendEmailAsync(toEmail, subject, body);
